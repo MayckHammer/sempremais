@@ -54,7 +54,7 @@ export default function Index() {
           <motion.img 
             src={logo} 
             alt="Mi Rebok" 
-            className="w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-4 sm:mb-6 object-contain"
+            className="w-56 h-56 sm:w-80 sm:h-80 mx-auto mb-4 sm:mb-6 object-contain"
             style={{ y: logoY }}
             initial={{ opacity: 0, scale: 0.8, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
