@@ -219,36 +219,36 @@ export default function ClientDashboard() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Location Bar */}
-        <div className="mb-6 slide-up">
-          <div className="gradient-card backdrop-blur rounded-2xl p-4 border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-primary" />
+        <div className="mb-4 sm:mb-6 slide-up">
+          <div className="gradient-card backdrop-blur rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-border">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               </div>
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground mb-1">Sua localização</p>
-                <p className="text-sm font-medium text-foreground">{location.address}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Sua localização</p>
+                <p className="text-xs sm:text-sm font-medium text-foreground truncate">{location.address}</p>
               </div>
               <Button
                 onClick={detectLocation}
                 variant="secondary"
                 size="sm"
                 disabled={loadingLocation}
-                className="rounded-xl"
+                className="rounded-lg sm:rounded-xl h-8 sm:h-9 px-2 sm:px-3 text-xs"
               >
-                <RefreshCw className={`w-4 h-4 mr-2 ${loadingLocation ? 'animate-spin' : ''}`} />
-                Atualizar
+                <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loadingLocation ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline ml-2">Atualizar</span>
               </Button>
             </div>
           </div>
         </div>
 
         {/* Services Grid */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-foreground">Selecione o Serviço</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Selecione o Serviço</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
             {services.map((service) => (
               <ServiceCard
                 key={service.id}
@@ -263,12 +263,12 @@ export default function ClientDashboard() {
         </div>
 
         {/* Top Providers */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Prestadores Próximos</h2>
-            <span className="text-xs text-muted-foreground">Ordenados por avaliação e agilidade</span>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 className="text-base sm:text-lg font-semibold text-foreground">Prestadores Próximos</h2>
+            <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:inline">Ordenados por avaliação</span>
           </div>
-          <div className="grid gap-3">
+          <div className="grid gap-2 sm:gap-3">
             {providers.length > 0 ? (
               providers.map((provider, index) => (
                 <ProviderCard
@@ -283,17 +283,17 @@ export default function ClientDashboard() {
                 />
               ))
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>Nenhum prestador disponível no momento</p>
+              <div className="text-center py-6 sm:py-8 text-muted-foreground text-sm">
+                <p>Nenhum prestador disponível</p>
               </div>
             )}
           </div>
         </div>
 
         {/* My Requests */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4 text-foreground">Minhas Solicitações</h2>
-          <div className="space-y-3">
+        <div className="pb-6">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Minhas Solicitações</h2>
+          <div className="space-y-2 sm:space-y-3">
             {requests.length > 0 ? (
               requests.map((request) => (
                 <RequestCard
@@ -314,9 +314,9 @@ export default function ClientDashboard() {
                 />
               ))
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Clipboard className="w-12 h-12 mx-auto mb-3 text-muted" />
-                <p>Nenhuma solicitação ainda</p>
+              <div className="text-center py-6 sm:py-8 text-muted-foreground">
+                <Clipboard className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 text-muted" />
+                <p className="text-sm">Nenhuma solicitação ainda</p>
               </div>
             )}
           </div>

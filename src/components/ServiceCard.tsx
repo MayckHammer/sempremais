@@ -14,20 +14,20 @@ export function ServiceCard({ icon: Icon, title, description, colorClass, onClic
     <button
       onClick={onClick}
       className={cn(
-        "service-card gradient-card p-4 rounded-2xl border border-border",
+        "service-card gradient-card p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-border",
         "hover:border-primary/50 text-center group transition-all duration-300",
-        "hover:-translate-y-1"
+        "active:scale-95 sm:hover:-translate-y-1"
       )}
     >
       <div className={cn(
-        "w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center",
+        "w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-3 rounded-xl sm:rounded-2xl flex items-center justify-center",
         "transition-colors",
         colorClass
       )}>
-        <Icon className="w-7 h-7" />
+        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
       </div>
-      <span className="text-sm font-medium text-foreground">{title}</span>
-      <p className="text-xs text-muted-foreground mt-1">{description}</p>
+      <span className="text-xs sm:text-sm font-medium text-foreground block">{title}</span>
+      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1 hidden sm:block">{description}</p>
     </button>
   );
 }

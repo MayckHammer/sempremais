@@ -24,25 +24,25 @@ export default function Index() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
+      <section className="relative py-12 sm:py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <img src={logo} alt="Mi Rebok" className="w-32 h-32 mx-auto mb-8 rounded-3xl object-contain" />
-          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
+          <img src={logo} alt="Mi Rebok" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8 rounded-2xl sm:rounded-3xl object-contain" />
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 px-2">
             Guincho e Assistência{' '}
             <span className="text-primary">24 Horas</span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Conectamos você aos melhores prestadores da sua região. Rápido, seguro e com avaliações reais.
+          <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
+            Conectamos você aos melhores prestadores da sua região.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/cadastro/cliente">
-              <Button size="lg" className="gradient-primary text-lg px-8 py-6 rounded-xl w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link to="/cadastro/cliente" className="w-full sm:w-auto">
+              <Button size="lg" className="gradient-primary text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl w-full">
                 Preciso de Ajuda
               </Button>
             </Link>
-            <Link to="/cadastro/prestador">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full sm:w-auto">
+            <Link to="/cadastro/prestador" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full">
                 Sou Prestador
               </Button>
             </Link>
@@ -51,20 +51,20 @@ export default function Index() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 px-4 bg-card/50">
+      <section className="py-10 sm:py-16 px-4 bg-card/50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-foreground mb-12">Nossos Serviços</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <h2 className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">Nossos Serviços</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
             {services.map((service) => (
               <div
                 key={service.title}
-                className="gradient-card p-6 rounded-2xl border border-border text-center hover:border-primary/50 transition-all hover:-translate-y-1"
+                className="gradient-card p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-border text-center hover:border-primary/50 transition-all active:scale-95 sm:hover:-translate-y-1"
               >
-                <div className="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-2xl flex items-center justify-center">
-                  <service.icon className="w-8 h-8 text-primary" />
+                <div className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-primary/20 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                  <service.icon className="w-5 h-5 sm:w-8 sm:h-8 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-1">{service.title}</h3>
-                <p className="text-sm text-muted-foreground">{service.description}</p>
+                <h3 className="font-semibold text-foreground text-xs sm:text-base mb-0.5 sm:mb-1">{service.title}</h3>
+                <p className="text-[10px] sm:text-sm text-muted-foreground hidden sm:block">{service.description}</p>
               </div>
             ))}
           </div>
@@ -72,17 +72,17 @@ export default function Index() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-4">
+      <section className="py-10 sm:py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-foreground mb-12">Por que escolher a Mi Rebok?</h2>
-          <div className="grid sm:grid-cols-3 gap-8">
+          <h2 className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">Por que Mi Rebok?</h2>
+          <div className="grid grid-cols-3 gap-4 sm:gap-8">
             {features.map((feature) => (
               <div key={feature.title} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-accent/20 rounded-full flex items-center justify-center">
-                  <feature.icon className="w-8 h-8 text-accent" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-accent/20 rounded-full flex items-center justify-center">
+                  <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="text-sm sm:text-xl font-semibold text-foreground mb-1 sm:mb-2">{feature.title}</h3>
+                <p className="text-[10px] sm:text-base text-muted-foreground hidden sm:block">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -90,20 +90,20 @@ export default function Index() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-card/50">
+      <section className="py-10 sm:py-16 px-4 bg-card/50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">Pronto para começar?</h2>
-          <p className="text-muted-foreground mb-8">
-            Cadastre-se agora e tenha acesso aos melhores prestadores da região.
+          <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">Pronto para começar?</h2>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 px-4">
+            Cadastre-se e tenha acesso aos melhores prestadores.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/login/cliente">
-              <Button size="lg" className="gradient-primary rounded-xl w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link to="/login/cliente" className="w-full sm:w-auto">
+              <Button size="lg" className="gradient-primary rounded-xl w-full h-11 sm:h-12 text-sm sm:text-base">
                 Entrar como Cliente
               </Button>
             </Link>
-            <Link to="/login/prestador">
-              <Button size="lg" variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full sm:w-auto">
+            <Link to="/login/prestador" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full h-11 sm:h-12 text-sm sm:text-base">
                 Entrar como Prestador
               </Button>
             </Link>
@@ -112,9 +112,9 @@ export default function Index() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
+      <footer className="py-6 sm:py-8 px-4 border-t border-border">
         <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-          <p>© 2024 Mi Rebok - Serviços de Guincho e Assistência 24h</p>
+          <p className="text-xs sm:text-sm">© 2024 Mi Rebok - Guincho e Assistência 24h</p>
         </div>
       </footer>
     </div>

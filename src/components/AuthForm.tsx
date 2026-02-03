@@ -48,27 +48,25 @@ export function AuthForm({ type, role }: AuthFormProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 sm:py-12 bg-background">
       <Card className="w-full max-w-md border-border bg-card">
-        <CardHeader className="text-center">
-          <Link to="/" className="flex justify-center mb-4">
-            <img src={logo} alt="Mi Rebok" className="w-20 h-20 rounded-2xl object-contain" />
+        <CardHeader className="text-center pb-4 sm:pb-6">
+          <Link to="/" className="flex justify-center mb-3 sm:mb-4">
+            <img src={logo} alt="Mi Rebok" className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl object-contain" />
           </Link>
-          <CardTitle className="text-2xl text-foreground">
-            {type === 'login' ? 'Entrar' : 'Criar Conta'} - {roleLabels[role]}
+          <CardTitle className="text-xl sm:text-2xl text-foreground">
+            {type === 'login' ? 'Entrar' : 'Criar Conta'}
           </CardTitle>
-          <CardDescription>
-            {type === 'login'
-              ? `Acesse sua conta de ${roleLabels[role].toLowerCase()}`
-              : `Cadastre-se como ${roleLabels[role].toLowerCase()}`}
+          <CardDescription className="text-sm">
+            {roleLabels[role]}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <CardContent className="pt-0">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {type === 'signup' && (
               <>
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">Nome Completo</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="fullName" className="text-sm">Nome Completo</Label>
                   <Input
                     id="fullName"
                     type="text"
@@ -76,25 +74,25 @@ export function AuthForm({ type, role }: AuthFormProps) {
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Seu nome completo"
                     required
-                    className="bg-muted border-border"
+                    className="bg-muted border-border h-10 sm:h-11 text-sm"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Telefone/WhatsApp</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="phone" className="text-sm">Telefone/WhatsApp</Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="(11) 99999-9999"
-                    className="bg-muted border-border"
+                    className="bg-muted border-border h-10 sm:h-11 text-sm"
                   />
                 </div>
               </>
             )}
             
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="email" className="text-sm">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -102,12 +100,12 @@ export function AuthForm({ type, role }: AuthFormProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="bg-muted border-border"
+                className="bg-muted border-border h-10 sm:h-11 text-sm"
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="password" className="text-sm">Senha</Label>
               <Input
                 id="password"
                 type="password"
@@ -116,16 +114,16 @@ export function AuthForm({ type, role }: AuthFormProps) {
                 placeholder="••••••••"
                 required
                 minLength={6}
-                className="bg-muted border-border"
+                className="bg-muted border-border h-10 sm:h-11 text-sm"
               />
             </div>
 
-            <Button type="submit" className="w-full gradient-primary" disabled={loading}>
+            <Button type="submit" className="w-full gradient-primary h-10 sm:h-11 text-sm" disabled={loading}>
               {loading ? 'Carregando...' : type === 'login' ? 'Entrar' : 'Criar Conta'}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
+          <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-muted-foreground">
             {type === 'login' ? (
               <>
                 Não tem conta?{' '}
@@ -149,7 +147,7 @@ export function AuthForm({ type, role }: AuthFormProps) {
             )}
           </div>
 
-          <div className="mt-4 text-center">
+          <div className="mt-3 sm:mt-4 text-center">
             <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
               ← Voltar para o início
             </Link>

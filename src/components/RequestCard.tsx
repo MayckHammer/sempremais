@@ -73,74 +73,82 @@ export function RequestCard({
   showActions,
 }: RequestCardProps) {
   const Icon = serviceIcons[serviceType] || Truck;
-  const formattedDate = new Date(createdAt).toLocaleString('pt-BR');
+  const formattedDate = new Date(createdAt).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
-    <div className={`gradient-card backdrop-blur rounded-2xl p-4 border border-border ${showActions === 'available' ? 'pulse-ring' : ''}`}>
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
-            <Icon className="w-5 h-5 text-primary" />
+    <div className={`gradient-card backdrop-blur rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-border ${showActions === 'available' ? 'pulse-ring' : ''}`}>
+      <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
-          <div>
-            <h3 className="font-semibold text-foreground capitalize">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-foreground capitalize text-sm sm:text-base truncate">
               {serviceLabels[serviceType] || serviceType}
             </h3>
-            <p className="text-xs text-muted-foreground">{formattedDate}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">{formattedDate}</p>
           </div>
         </div>
-        <Badge className={statusColors[status]}>
+        <Badge className={`${statusColors[status]} text-[10px] sm:text-xs flex-shrink-0`}>
           {statusLabels[status] || status}
         </Badge>
       </div>
 
-      <div className="space-y-2 mb-4">
+      <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
         {description && (
-          <p className="text-sm text-muted-foreground">📋 {description}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">📋 {description}</p>
         )}
-        <p className="text-xs text-muted-foreground flex items-center gap-1">
-          <Phone className="w-3 h-3" /> {clientName} • {clientPhone}
+        <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+          <Phone className="w-3 h-3 flex-shrink-0" /> 
+          <span className="truncate">{clientName} • {clientPhone}</span>
         </p>
         {vehicleInfo && (
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <Car className="w-3 h-3" /> {vehicleInfo}
+          <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+            <Car className="w-3 h-3 flex-shrink-0" /> 
+            <span className="truncate">{vehicleInfo}</span>
           </p>
         )}
-        <p className="text-xs text-muted-foreground flex items-center gap-1">
-          <MapPin className="w-3 h-3" /> {address}
+        <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+          <MapPin className="w-3 h-3 flex-shrink-0" /> 
+          <span className="truncate">{address}</span>
         </p>
         {providerName && (
-          <p className="text-xs text-muted-foreground">👤 Prestador: {providerName}</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground">👤 Prestador: {providerName}</p>
         )}
       </div>
 
       {rating && rating > 0 && (
-        <div className="flex items-center gap-1 text-yellow-400 mb-3">
+        <div className="flex items-center gap-0.5 text-yellow-400 mb-2 sm:mb-3">
           {Array.from({ length: rating }).map((_, i) => (
-            <Star key={i} className="w-4 h-4 fill-current" />
+            <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
           ))}
         </div>
       )}
 
       {showActions === 'available' && (
         <div className="flex gap-2">
-          <Button onClick={onAccept} className="flex-1 gradient-primary">
+          <Button onClick={onAccept} className="flex-1 gradient-primary h-9 sm:h-10 text-sm">
             ✓ Aceitar
           </Button>
-          <Button onClick={onDecline} variant="secondary" className="px-4">
+          <Button onClick={onDecline} variant="secondary" className="px-3 sm:px-4 h-9 sm:h-10">
             ✗
           </Button>
         </div>
       )}
 
       {showActions === 'provider' && status === 'accepted' && (
-        <Button onClick={onComplete} className="w-full gradient-primary">
+        <Button onClick={onComplete} className="w-full gradient-primary h-9 sm:h-10 text-sm">
           ✓ Marcar como Concluído
         </Button>
       )}
 
       {showActions === 'client' && status === 'completed' && !rating && (
-        <Button onClick={onRate} variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+        <Button onClick={onRate} variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground h-9 sm:h-10 text-sm">
           ⭐ Avaliar atendimento
         </Button>
       )}
