@@ -1,81 +1,38 @@
 
 
-# 📱 Mi Rebok - App de Guincho e Assistência 24h
+# Ajuste da Seção Hero - Mi Rebok
 
-## 🎨 Design & Identidade Visual
-- Cores principais baseadas na logo: **laranja (#f97316)** e **cinza escuro (#4a4a4a)**
-- Fundo escuro (slate-900) com detalhes em laranja
-- Design moderno e limpo, otimizado para mobile
-- Logo oficial do Mi Rebok no cabeçalho
+## O que será alterado
 
----
+Vou modificar a seção Hero da página inicial para que fique exatamente como na imagem de referência, com a logo bem maior e toda a hierarquia visual mais impactante.
 
-## 🚀 FASE 1 - MVP (Implementação Inicial)
+## Mudanças Específicas
 
-### 1. Sistema de Autenticação
-- **Área do Cliente**: Cadastro e login para solicitar serviços
-- **Área do Prestador**: Cadastro e login separado para receber solicitações
-- Verificação de email para segurança
+### 1. Logo Grande e Responsiva
+- **Mobile**: Logo de 48x48 (w-48 h-48)
+- **Desktop**: Logo de 64x64 (w-64 h-64)
+- Centralizada com espaçamento adequado
+- Sem borda arredondada extra para manter o design original da logo
 
-### 2. Tela do Cliente
-- Detecção automática de localização por GPS
-- Seleção de serviços disponíveis:
-  - 🚗 Reboque
-  - 🔑 Auxílio Chaveiro
-  - 🛞 Auxílio Borracheiro
-  - 🔄 Destombamento
-  - 📦 Frete (pequeno e grande)
-- Formulário de solicitação com dados do veículo e descrição do problema
-- Lista de prestadores próximos ordenados por ranking e avaliação
-- Histórico de solicitações do cliente
+### 2. Título Principal
+- Texto: "Guincho e Assistência **24 Horas**"
+- "24 Horas" em cor laranja (primary)
+- Fonte grande e bold
+- **Mobile**: texto 3xl
+- **Desktop**: texto 5xl a 6xl
 
-### 3. Tela do Prestador
-- Visualização de solicitações disponíveis na região
-- Botões para aceitar ou recusar serviços
-- Painel com estatísticas pessoais:
-  - Total de serviços realizados
-  - Taxa de aceitação
-  - Avaliação média
-  - Ranking atual
-- Gerenciamento de atendimentos em andamento
+### 3. Subtítulo
+- Texto: "Conectamos você aos melhores prestadores da sua região."
+- Cor cinza (muted-foreground)
+- Espaçamento harmonioso
 
-### 4. Sistema de Ranking Inteligente
-- Prestadores com maior taxa de aceitação aparecem primeiro
-- Prestadores mais ágeis (que respondem rápido) ganham prioridade
-- Sistema de avaliação por estrelas (1-5) pelos clientes
-- O ranking é calculado automaticamente considerando todos esses fatores
+### 4. Botões de Ação
+- **"Preciso de Ajuda"**: Botão laranja preenchido (gradient)
+- **"Sou Prestador"**: Botão com borda laranja (outline)
+- Em mobile: empilhados verticalmente
+- Em desktop: lado a lado
 
-### 5. Fluxo de Atendimento
-- Cliente solicita → Prestadores próximos são notificados
-- Prestador aceita → Cliente é informado
-- Prestador conclui → Cliente pode avaliar
-- Avaliação impacta o ranking do prestador
+## Resultado Esperado
 
----
-
-## 📈 FASE 2 - Recursos Adicionais (Próxima Etapa)
-
-### Pagamentos Integrados (Stripe)
-- Pagamento via PIX, cartão de crédito/débito
-- Orçamento prévio antes da confirmação
-- Histórico de transações
-
-### Painel Administrativo
-- Dashboard com métricas do negócio
-- Gestão de prestadores (aprovação, bloqueio)
-- Relatórios de solicitações e faturamento
-- Visualização de avaliações e reclamações
-
-### Notificações Push
-- Alertas em tempo real para prestadores sobre novas solicitações
-- Atualizações de status para clientes
-
----
-
-## 🛠️ Tecnologias Necessárias
-
-- **Frontend**: React + Tailwind CSS (design responsivo)
-- **Backend**: Lovable Cloud com Supabase (banco de dados, autenticação)
-- **Pagamentos**: Stripe (na Fase 2)
-- **Mapas/Localização**: Geolocalização nativa do navegador
+A hero section ficará mais impactante e profissional, com a logo em destaque e toda a informação organizada de forma clara e centralizada, mantendo responsividade perfeita em todos os tamanhos de tela.
 
