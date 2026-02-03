@@ -31,19 +31,34 @@ export default function Index() {
           <motion.img 
             src={logo} 
             alt="Mi Rebok" 
-            className="w-40 h-40 sm:w-56 sm:h-56 mx-auto mb-6 sm:mb-8 object-contain"
+            className="w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-4 sm:mb-6 object-contain"
             initial={{ opacity: 0, scale: 0.8, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           />
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 px-2">
+          <motion.h1 
+            className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4 px-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+          >
             Guincho e Assistência{' '}
             <span className="text-primary">24 Horas</span>
-          </h1>
-          <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
+          </motion.h1>
+          <motion.p 
+            className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
+          >
             Conectamos você aos melhores prestadores da sua região.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+          </motion.p>
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
+          >
             <Link to="/cadastro/cliente" className="w-full sm:w-auto">
               <Button size="lg" className="gradient-primary text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl w-full">
                 Preciso de Ajuda
@@ -54,7 +69,7 @@ export default function Index() {
                 Sou Prestador
               </Button>
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
