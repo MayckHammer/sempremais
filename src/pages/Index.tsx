@@ -24,25 +24,29 @@ export default function Index() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-20 px-4 overflow-hidden">
+      <section className="relative py-16 sm:py-24 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <img src={logo} alt="Mi Rebok" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8 rounded-2xl sm:rounded-3xl object-contain" />
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 px-2">
+          <img 
+            src={logo} 
+            alt="Mi Rebok" 
+            className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto mb-8 sm:mb-10 object-contain drop-shadow-2xl" 
+          />
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4 sm:mb-6 px-2 leading-tight">
             Guincho e Assistência{' '}
             <span className="text-primary">24 Horas</span>
           </h1>
-          <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto px-4">
             Conectamos você aos melhores prestadores da sua região.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
             <Link to="/cadastro/cliente" className="w-full sm:w-auto">
-              <Button size="lg" className="gradient-primary text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl w-full">
+              <Button size="lg" className="gradient-primary text-lg sm:text-xl px-8 sm:px-10 py-6 sm:py-7 rounded-xl w-full font-semibold shadow-lg shadow-primary/25">
                 Preciso de Ajuda
               </Button>
             </Link>
             <Link to="/cadastro/prestador" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full">
+              <Button size="lg" variant="outline" className="text-lg sm:text-xl px-8 sm:px-10 py-6 sm:py-7 rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full font-semibold">
                 Sou Prestador
               </Button>
             </Link>
