@@ -52,7 +52,7 @@ export function AuthForm({ type, role }: AuthFormProps) {
       <Card className="w-full max-w-md border-border bg-card">
         <CardHeader className="text-center pb-4 sm:pb-6">
           <Link to="/" className="flex justify-center mb-3 sm:mb-4">
-            <img src={logo} alt="Mi Rebok" className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl object-contain" />
+            <img src={logo} alt="Mi Rebok" className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl sm:rounded-2xl object-contain" />
           </Link>
           <CardTitle className="text-xl sm:text-2xl text-foreground">
             {type === 'login' ? 'Entrar' : 'Criar Conta'}
