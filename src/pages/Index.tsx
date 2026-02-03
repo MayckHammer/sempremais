@@ -148,16 +148,42 @@ export default function Index() {
       {/* Features Section */}
       <section className="py-10 sm:py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">Por que Mi Rebok?</h2>
+          <motion.h2 
+            className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Por que Mi Rebok?
+          </motion.h2>
           <div className="grid grid-cols-3 gap-4 sm:gap-8">
-            {features.map((feature) => (
-              <div key={feature.title} className="text-center">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-accent/20 rounded-full flex items-center justify-center">
-                  <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
-                </div>
-                <h3 className="text-sm sm:text-xl font-semibold text-foreground mb-1 sm:mb-2">{feature.title}</h3>
-                <p className="text-[10px] sm:text-base text-muted-foreground hidden sm:block">{feature.description}</p>
-              </div>
+            {features.map((feature, index) => (
+              <motion.div 
+                key={feature.title} 
+                className="text-center group"
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.15,
+                  ease: "easeOut"
+                }}
+              >
+                <motion.div 
+                  className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-accent/20 rounded-full flex items-center justify-center"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    backgroundColor: "hsl(var(--accent) / 0.35)",
+                    transition: { duration: 0.3 }
+                  }}
+                >
+                  <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-accent group-hover:scale-110 transition-transform duration-300" />
+                </motion.div>
+                <h3 className="text-sm sm:text-xl font-semibold text-foreground mb-1 sm:mb-2 group-hover:text-accent transition-colors duration-300">{feature.title}</h3>
+                <p className="text-[10px] sm:text-base text-muted-foreground hidden sm:block group-hover:text-foreground/80 transition-colors duration-300">{feature.description}</p>
+              </motion.div>
             ))}
           </div>
         </div>
