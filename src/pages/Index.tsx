@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { Truck, Key, Circle, RotateCcw, Package, Shield, Clock, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
 
 export default function Index() {
@@ -27,7 +28,14 @@ export default function Index() {
       <section className="relative py-12 sm:py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <img src={logo} alt="Mi Rebok" className="w-40 h-40 sm:w-56 sm:h-56 mx-auto mb-6 sm:mb-8 object-contain" />
+          <motion.img 
+            src={logo} 
+            alt="Mi Rebok" 
+            className="w-40 h-40 sm:w-56 sm:h-56 mx-auto mb-6 sm:mb-8 object-contain"
+            initial={{ opacity: 0, scale: 0.8, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          />
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6 px-2">
             Guincho e Assistência{' '}
             <span className="text-primary">24 Horas</span>
