@@ -77,11 +77,11 @@ export default function Index() {
       <section className="py-10 sm:py-16 px-4 bg-card/50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">Nossos Serviços</h2>
-          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 lg:grid lg:grid-cols-5">
             {services.map((service) => (
               <div
                 key={service.title}
-                className="gradient-card p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-border text-center hover:border-primary/50 transition-all active:scale-95 sm:hover:-translate-y-1"
+                className="w-[calc(33.333%-0.5rem)] sm:w-auto gradient-card p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-border text-center hover:border-primary/50 transition-all active:scale-95 sm:hover:-translate-y-1"
               >
                 <div className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-primary/20 rounded-xl sm:rounded-2xl flex items-center justify-center">
                   <service.icon className="w-5 h-5 sm:w-8 sm:h-8 text-primary" />
