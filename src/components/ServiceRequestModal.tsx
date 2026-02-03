@@ -60,28 +60,28 @@ export function ServiceRequestModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-card border-border max-w-lg">
+      <DialogContent className="bg-card border-border max-w-lg mx-3 sm:mx-auto max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl text-foreground">
+          <DialogTitle className="text-lg sm:text-xl text-foreground">
             Solicitar {serviceLabels[serviceType] || serviceType}
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="clientName">Seu Nome</Label>
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="clientName" className="text-sm">Seu Nome</Label>
             <Input
               id="clientName"
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
               placeholder="Digite seu nome completo"
               required
-              className="bg-muted border-border"
+              className="bg-muted border-border h-10 sm:h-11 text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="clientPhone">Telefone/WhatsApp</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="clientPhone" className="text-sm">Telefone/WhatsApp</Label>
             <Input
               id="clientPhone"
               type="tel"
@@ -89,45 +89,45 @@ export function ServiceRequestModal({
               onChange={(e) => setClientPhone(e.target.value)}
               placeholder="(11) 99999-9999"
               required
-              className="bg-muted border-border"
+              className="bg-muted border-border h-10 sm:h-11 text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="vehicleInfo">Informações do Veículo</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="vehicleInfo" className="text-sm">Informações do Veículo</Label>
             <Input
               id="vehicleInfo"
               value={vehicleInfo}
               onChange={(e) => setVehicleInfo(e.target.value)}
               placeholder="Ex: Honda Civic 2020 - Prata"
-              className="bg-muted border-border"
+              className="bg-muted border-border h-10 sm:h-11 text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Descrição do Problema</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="description" className="text-sm">Descrição do Problema</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Descreva o problema ou necessidade..."
+              placeholder="Descreva o problema..."
               required
-              className="bg-muted border-border resize-none"
+              className="bg-muted border-border resize-none text-sm min-h-[70px] sm:min-h-[80px]"
               rows={3}
             />
           </div>
 
-          <div className="bg-muted/50 rounded-xl p-4">
-            <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-primary" />
-              <div>
-                <p className="text-xs text-muted-foreground">Local do atendimento</p>
-                <p className="text-sm font-medium text-foreground">{location.address}</p>
+          <div className="bg-muted/50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Local do atendimento</p>
+                <p className="text-xs sm:text-sm font-medium text-foreground truncate">{location.address}</p>
               </div>
             </div>
           </div>
 
-          <Button type="submit" className="w-full gradient-primary" disabled={loading}>
+          <Button type="submit" className="w-full gradient-primary h-10 sm:h-11 text-sm" disabled={loading}>
             {loading ? 'Enviando...' : 'Enviar Solicitação'}
           </Button>
         </form>

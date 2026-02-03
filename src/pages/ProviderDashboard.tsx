@@ -177,14 +177,14 @@ export default function ProviderDashboard() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
           <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-primary/20 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-primary" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 bg-primary/20 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-4">Aguardando Aprovação</h1>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              Seu cadastro como prestador está em análise. Você será notificado assim que for aprovado.
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-3 sm:mb-4">Aguardando Aprovação</h1>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto px-4">
+              Seu cadastro está em análise. Você será notificado quando for aprovado.
             </p>
           </div>
         </div>
@@ -196,35 +196,35 @@ export default function ProviderDashboard() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Provider Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           <Card className="bg-card border-border">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Total de Serviços</p>
-              <p className="text-2xl font-bold text-foreground">{providerData?.total_jobs || 0}</p>
+            <CardContent className="p-3 sm:p-4">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Total Serviços</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{providerData?.total_jobs || 0}</p>
             </CardContent>
           </Card>
           <Card className="bg-card border-border">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Taxa de Aceitação</p>
-              <p className="text-2xl font-bold text-accent">{acceptRate}%</p>
+            <CardContent className="p-3 sm:p-4">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Aceitação</p>
+              <p className="text-xl sm:text-2xl font-bold text-accent">{acceptRate}%</p>
             </CardContent>
           </Card>
           <Card className="bg-card border-border">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Avaliação Média</p>
-              <p className="text-2xl font-bold text-primary flex items-center gap-1">
-                <Star className="w-5 h-5 fill-primary" />
+            <CardContent className="p-3 sm:p-4">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Avaliação</p>
+              <p className="text-xl sm:text-2xl font-bold text-primary flex items-center gap-0.5 sm:gap-1">
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-primary" />
                 {Number(providerData?.average_rating || 0).toFixed(1)}
               </p>
             </CardContent>
           </Card>
           <Card className="bg-card border-border">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Ranking</p>
-              <p className="text-2xl font-bold text-purple-400 flex items-center gap-1">
-                <Trophy className="w-5 h-5" />
+            <CardContent className="p-3 sm:p-4">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Ranking</p>
+              <p className="text-xl sm:text-2xl font-bold text-purple-400 flex items-center gap-0.5 sm:gap-1">
+                <Trophy className="w-4 h-4 sm:w-5 sm:h-5" />
                 #{providerData && providerData.total_jobs > 5 ? '3' : '-'}
               </p>
             </CardContent>
@@ -232,9 +232,9 @@ export default function ProviderDashboard() {
         </div>
 
         {/* Available Requests */}
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-4 text-foreground">Solicitações Disponíveis</h2>
-          <div className="space-y-3">
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Solicitações Disponíveis</h2>
+          <div className="space-y-2 sm:space-y-3">
             {availableRequests.length > 0 ? (
               availableRequests.map((request) => (
                 <RequestCard
@@ -254,18 +254,18 @@ export default function ProviderDashboard() {
                 />
               ))
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Inbox className="w-12 h-12 mx-auto mb-3 text-muted" />
-                <p>Nenhuma solicitação disponível no momento</p>
+              <div className="text-center py-6 sm:py-8 text-muted-foreground">
+                <Inbox className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 text-muted" />
+                <p className="text-sm">Nenhuma solicitação disponível</p>
               </div>
             )}
           </div>
         </div>
 
         {/* My Jobs */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4 text-foreground">Meus Atendimentos</h2>
-          <div className="space-y-3">
+        <div className="pb-6">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-foreground">Meus Atendimentos</h2>
+          <div className="space-y-2 sm:space-y-3">
             {myJobs.length > 0 ? (
               myJobs.map((job) => (
                 <RequestCard
@@ -285,8 +285,8 @@ export default function ProviderDashboard() {
                 />
               ))
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>Nenhum atendimento em andamento</p>
+              <div className="text-center py-6 sm:py-8 text-muted-foreground">
+                <p className="text-sm">Nenhum atendimento em andamento</p>
               </div>
             )}
           </div>

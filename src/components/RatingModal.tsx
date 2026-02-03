@@ -30,26 +30,26 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-card border-border max-w-md">
+      <DialogContent className="bg-card border-border max-w-sm mx-4 sm:mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl text-foreground text-center">
+          <DialogTitle className="text-lg sm:text-xl text-foreground text-center">
             Avalie o Atendimento
           </DialogTitle>
         </DialogHeader>
         
-        <p className="text-center text-muted-foreground mb-4">{providerName}</p>
+        <p className="text-center text-muted-foreground text-sm mb-3 sm:mb-4">{providerName}</p>
         
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-6">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoveredRating(star)}
               onMouseLeave={() => setHoveredRating(0)}
-              className="transition-colors"
+              className="transition-colors p-1"
             >
               <Star
-                className={`w-10 h-10 ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 ${
                   star <= (hoveredRating || rating)
                     ? 'text-yellow-400 fill-yellow-400'
                     : 'text-muted-foreground'
@@ -61,7 +61,7 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
 
         <Button
           onClick={handleSubmit}
-          className="w-full gradient-primary"
+          className="w-full gradient-primary h-10 sm:h-11 text-sm"
           disabled={rating === 0 || loading}
         >
           {loading ? 'Enviando...' : 'Confirmar Avaliação'}
