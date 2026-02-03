@@ -70,7 +70,7 @@ export function Header() {
             <img 
               src={logo} 
               alt="Mi Rebok" 
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-contain -my-2"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl object-contain -my-5 sm:-my-6"
             />
             <div>
               <h1 className="text-base sm:text-xl font-bold text-primary">Mi Rebok</h1>
