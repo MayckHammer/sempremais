@@ -1,4 +1,4 @@
-import logo from '@/assets/logo.png';
+import logoWatermark from '@/assets/logo-watermark.png';
 
 export function Footer() {
   return (
@@ -6,9 +6,9 @@ export function Footer() {
       {/* Logo como Marca d'Água no Canto Direito */}
       <div className="absolute inset-y-0 right-4 sm:right-8 flex items-center pointer-events-none">
         <img 
-          src={logo} 
+          src={logoWatermark} 
           alt="" 
-          className="w-24 h-24 sm:w-36 sm:h-36 object-contain opacity-10"
+          className="w-24 h-24 sm:w-36 sm:h-36 object-contain opacity-15"
         />
       </div>
       
