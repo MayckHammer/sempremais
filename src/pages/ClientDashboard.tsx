@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { ServiceCard } from '@/components/ServiceCard';
 import { ProviderCard } from '@/components/ProviderCard';
 import { RequestCard } from '@/components/RequestCard';
@@ -338,6 +339,8 @@ export default function ClientDashboard() {
         providerName={ratingRequest?.providers?.profiles?.full_name || 'Prestador'}
         onSubmit={handleSubmitRating}
       />
+
+      <Footer />
     </div>
   );
 }

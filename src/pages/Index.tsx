@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { Truck, Key, Circle, RotateCcw, Package, Shield, Clock, Star } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
@@ -211,21 +212,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative py-6 sm:py-8 px-4 border-t border-border overflow-hidden">
-        {/* Logo como Marca d'Água */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img 
-            src={logo} 
-            alt="" 
-            className="w-32 h-32 sm:w-48 sm:h-48 object-contain opacity-5"
-          />
-        </div>
-        
-        <div className="max-w-6xl mx-auto text-center text-muted-foreground relative z-10">
-          <p className="text-xs sm:text-sm">© 2024 Mi Rebok - Guincho e Assistência 24h</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

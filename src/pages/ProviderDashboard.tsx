@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { RequestCard } from '@/components/RequestCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
@@ -292,6 +293,8 @@ export default function ProviderDashboard() {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
