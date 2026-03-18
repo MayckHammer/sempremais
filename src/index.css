@@ -2,94 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 97%;
+    --foreground: 220 20% 20%;
 
-    --card: 222 47% 14%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
 
-    --popover: 222 47% 14%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
 
-    --primary: 24 95% 53%;
+    --primary: 207 78% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 27%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 5% 46%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 215 25% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 142 76% 36%;
+    --accent: 207 78% 38%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 24 95% 53%;
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 207 78% 38%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 24 95% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 215 25% 20%;
-    --sidebar-ring: 24 95% 53%;
+    --sidebar-background: 207 78% 38%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 207 78% 38%;
+    --sidebar-accent: 207 78% 32%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 207 78% 32%;
+    --sidebar-ring: 0 0% 100%;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 220 20% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 222 47% 14%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 20% 14%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 222 47% 14%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 20% 14%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 24 95% 53%;
+    --primary: 207 78% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 27%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 5% 40%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 215 25% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 60%;
 
-    --accent: 142 76% 36%;
+    --accent: 207 78% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 24 95% 53%;
+    --border: 220 15% 22%;
+    --input: 220 15% 22%;
+    --ring: 207 78% 45%;
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 24 95% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 215 25% 20%;
-    --sidebar-ring: 24 95% 53%;
+    --sidebar-background: 207 78% 30%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 207 78% 45%;
+    --sidebar-accent: 207 78% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 207 78% 25%;
+    --sidebar-ring: 0 0% 100%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
   }
 
   body {
@@ -99,11 +103,22 @@
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(24 95% 45%));
+    background: linear-gradient(135deg, hsl(207 78% 38%), hsl(207 78% 28%));
   }
 
   .gradient-card {
-    background: linear-gradient(135deg, hsl(var(--card)), hsl(222 47% 12%));
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(220 14% 95%));
+  }
+
+  .font-display {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .s-curve-bg {
+    background: 
+      radial-gradient(ellipse 80% 120% at 0% 50%, hsl(207 78% 38%) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 100% at 100% 40%, hsl(220 5% 46%) 0%, transparent 50%),
+      linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 14% 96%) 100%);
   }
 
   .pulse-ring {
@@ -120,8 +135,8 @@
   }
 
   @keyframes status-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 hsl(207 78% 38% / 0.4); }
+    50% { box-shadow: 0 0 0 8px hsl(207 78% 38% / 0); }
   }
 
   .slide-up {
