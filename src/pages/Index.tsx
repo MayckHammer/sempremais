@@ -74,7 +74,7 @@ export default function Index() {
               </Link>
               {!user && (
                 <Link to="/cadastro/prestador">
-                  <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 rounded-xl w-full font-display font-bold">
+                  <Button size="lg" variant="outline" className="border-white/40 text-primary hover:bg-white/10 rounded-xl w-full font-display font-bold">
                     Sou Prestador
                   </Button>
                 </Link>
