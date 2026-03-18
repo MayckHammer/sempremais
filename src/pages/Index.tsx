@@ -2,213 +2,195 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Truck, Key, Circle, RotateCcw, Package, Shield, Clock, Star } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
-import logo from '@/assets/logo.png';
+import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, Shield, Clock, Star, Phone } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Index() {
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const logoY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const { user } = useAuth();
+
   const services = [
-    { icon: Truck, title: 'Reboque', description: 'Transporte seguro de veículos' },
-    { icon: Key, title: 'Chaveiro', description: 'Abertura 24h' },
-    { icon: Circle, title: 'Borracheiro', description: 'Troca de pneus' },
-    { icon: RotateCcw, title: 'Destombamento', description: 'Resgate especializado' },
-    { icon: Package, title: 'Frete', description: 'Pequenos e grandes' },
+    { icon: Truck, title: 'Reboque', color: 'bg-primary/15 text-primary' },
+    { icon: Key, title: 'Chaveiro', color: 'bg-secondary/15 text-secondary' },
+    { icon: Circle, title: 'Borracheiro', color: 'bg-primary/15 text-primary' },
+    { icon: RotateCcw, title: 'Destombamento', color: 'bg-secondary/15 text-secondary' },
+    { icon: Package, title: 'Frete', color: 'bg-primary/15 text-primary' },
+    { icon: Handshake, title: 'Permuta', color: 'bg-secondary/15 text-secondary' },
   ];
 
-  const features = [
-    { icon: Clock, title: '24 Horas', description: 'Atendimento dia e noite' },
-    { icon: Shield, title: 'Segurança', description: 'Prestadores verificados' },
-    { icon: Star, title: 'Qualidade', description: 'Avaliações reais' },
+  const highlights = [
+    { icon: Clock, label: '24 Horas' },
+    { icon: Shield, label: 'Segurança' },
+    { icon: Star, label: 'Qualidade' },
+    { icon: Handshake, label: 'Permuta' },
+    { icon: MapPin, label: 'Localização' },
+    { icon: Phone, label: 'Suporte' },
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      {/* Hero Section with Parallax */}
-      <section ref={heroRef} className="relative py-12 sm:py-20 px-4 overflow-hidden">
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5"
-          style={{ y: backgroundY }}
-        />
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div 
-            className="absolute -top-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"
-            style={{ y: backgroundY }}
-          />
-          <motion.div 
-            className="absolute -bottom-20 -right-20 w-80 h-80 bg-accent/5 rounded-full blur-3xl"
-            style={{ y: backgroundY }}
-          />
+
+      {/* Hero Section - S-Curve inspired */}
+      <section className="relative overflow-hidden">
+        {/* Blue curve background */}
+        <div className="absolute inset-0">
+          <svg viewBox="0 0 400 500" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
+            <path d="M0,0 L0,500 C80,450 120,350 100,250 C80,150 200,100 400,80 L400,0 Z" fill="hsl(207 78% 38%)" />
+            <path d="M400,0 L400,500 C350,480 300,400 320,300 C340,200 250,150 200,120 L400,0 Z" fill="hsl(220 5% 46%)" opacity="0.9" />
+          </svg>
         </div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.img 
-            src={logo} 
-            alt="Mi Rebok" 
-            className="w-56 h-56 sm:w-80 sm:h-80 mx-auto mb-4 sm:mb-6 object-contain"
-            style={{ y: logoY }}
-            initial={{ opacity: 0, scale: 0.8, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          />
-          <motion.h1 
-            className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 sm:mb-4 px-2"
-            style={{ y: textY }}
-            initial={{ opacity: 0, y: 20 }}
+
+        <div className="relative z-10 px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
+          <motion.h1
+            className="font-display text-4xl sm:text-6xl md:text-7xl font-black text-white mb-2 tracking-tight"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.6 }}
           >
-            Guincho e Assistência{' '}
-            <span className="text-primary">24 Horas</span>
+            SEMPRE
           </motion.h1>
-          <motion.p 
-            className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4"
-            style={{ y: textY }}
+          <motion.p
+            className="text-white/90 text-sm sm:text-lg font-display font-semibold tracking-[0.2em] uppercase mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Conectamos você aos melhores prestadores da sua região.
+            Assistências e Benefícios
           </motion.p>
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4"
-            style={{ y: textY }}
-            initial={{ opacity: 0, y: 20 }}
+
+          {/* Featured card */}
+          <motion.div
+            className="bg-secondary/80 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <Link to="/cadastro/cliente" className="w-full sm:w-auto">
-              <Button size="lg" className="gradient-primary text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl w-full">
-                Preciso de Ajuda
-              </Button>
-            </Link>
-            <Link to="/cadastro/prestador" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full">
-                Sou Prestador
-              </Button>
-            </Link>
+            <h2 className="text-white font-display text-lg sm:text-2xl font-bold mb-3">
+              Guincho e Assistência 24h
+            </h2>
+            <p className="text-white/80 text-sm sm:text-base mb-6">
+              Conectamos você aos melhores prestadores da sua região com agilidade e segurança.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to={user ? (user.role === 'client' ? '/cliente' : '/prestador') : '/cadastro/cliente'}>
+                <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-xl w-full font-display font-bold">
+                  {user ? 'Minha Área' : 'Preciso de Ajuda'}
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+              {!user && (
+                <Link to="/cadastro/prestador">
+                  <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 rounded-xl w-full font-display font-bold">
+                    Sou Prestador
+                  </Button>
+                </Link>
+              )}
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Services Section */}
-      {/* Services Section */}
-      <section className="py-10 sm:py-16 px-4 bg-card/50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">Nossos Serviços</h2>
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 lg:grid lg:grid-cols-5">
-            {services.map((service, index) => (
+      {/* Destaques - Horizontal scroll circles */}
+      <section className="py-8 sm:py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-display text-lg sm:text-2xl font-bold text-foreground mb-4 sm:mb-6">Destaques</h2>
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide">
+            {highlights.map((item, index) => (
               <motion.div
-                key={service.title}
-                className="w-[calc(33.333%-0.5rem)] sm:w-auto gradient-card p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-border text-center group cursor-pointer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                key={item.label}
+                className="flex flex-col items-center gap-2 min-w-[72px]"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ 
-                  y: -8,
-                  scale: 1.02,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.95 }}
+                transition={{ delay: index * 0.08 }}
               >
-                <motion.div 
-                  className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-primary/20 rounded-xl sm:rounded-2xl flex items-center justify-center relative overflow-hidden"
-                  whileHover={{ 
-                    backgroundColor: "hsl(var(--primary) / 0.35)",
-                    rotate: [0, -5, 5, 0],
-                    transition: { duration: 0.4 }
-                  }}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  />
-                  <service.icon className="w-5 h-5 sm:w-8 sm:h-8 text-primary relative z-10 group-hover:scale-110 transition-transform duration-300" />
-                </motion.div>
-                <h3 className="font-semibold text-foreground text-xs sm:text-base mb-0.5 sm:mb-1 group-hover:text-primary transition-colors duration-300">{service.title}</h3>
-                <p className="text-[10px] sm:text-sm text-muted-foreground hidden sm:block group-hover:text-foreground/80 transition-colors duration-300">{service.description}</p>
-                <motion.div
-                  className="absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-primary/0 group-hover:border-primary/50 transition-colors duration-300 pointer-events-none"
-                />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center shadow-sm border border-border">
+                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                </div>
+                <span className="text-[10px] sm:text-xs font-medium text-muted-foreground text-center">{item.label}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-10 sm:py-16 px-4">
+      {/* Descubra Parceiros - Map placeholder */}
+      <section className="py-8 sm:py-12 px-4">
         <div className="max-w-4xl mx-auto">
-          <motion.h2 
-            className="text-xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12"
+          <h2 className="font-display text-lg sm:text-2xl font-bold text-foreground mb-1">Descubra Parceiros</h2>
+          <p className="text-sm text-muted-foreground mb-4 sm:mb-6">Venha conferir!</p>
+          <motion.div
+            className="rounded-2xl overflow-hidden border border-border shadow-sm bg-card"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
           >
-            Por que Mi Rebok?
-          </motion.h2>
-          <div className="grid grid-cols-3 gap-4 sm:gap-8">
-            {features.map((feature, index) => (
-              <motion.div 
-                key={feature.title} 
-                className="text-center group"
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            <div className="relative h-48 sm:h-72 bg-muted flex items-center justify-center">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d30000!2d-46.6334!3d-23.5505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbr!4v1"
+                className="absolute inset-0 w-full h-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mapa de parceiros"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Services Grid */}
+      <section className="py-8 sm:py-12 px-4 bg-card">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-display text-lg sm:text-2xl font-bold text-foreground mb-4 sm:mb-6">Nossos Serviços</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
+            {services.map((service, index) => (
+              <motion.div
+                key={service.title}
+                className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-2xl bg-background border border-border hover:shadow-md transition-shadow cursor-pointer"
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: index * 0.15,
-                  ease: "easeOut"
-                }}
+                transition={{ delay: index * 0.08 }}
+                whileHover={{ y: -4 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <motion.div 
-                  className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 bg-accent/20 rounded-full flex items-center justify-center"
-                  whileHover={{ 
-                    scale: 1.1, 
-                    backgroundColor: "hsl(var(--accent) / 0.35)",
-                    transition: { duration: 0.3 }
-                  }}
-                >
-                  <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-accent group-hover:scale-110 transition-transform duration-300" />
-                </motion.div>
-                <h3 className="text-sm sm:text-xl font-semibold text-foreground mb-1 sm:mb-2 group-hover:text-accent transition-colors duration-300">{feature.title}</h3>
-                <p className="text-[10px] sm:text-base text-muted-foreground hidden sm:block group-hover:text-foreground/80 transition-colors duration-300">{feature.description}</p>
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center ${service.color}`}>
+                  <service.icon className="w-6 h-6 sm:w-7 sm:h-7" />
+                </div>
+                <span className="text-[10px] sm:text-xs font-medium text-foreground text-center">{service.title}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-10 sm:py-16 px-4 bg-card/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">Pronto para começar?</h2>
-          <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 px-4">
-            Cadastre-se e tenha acesso aos melhores prestadores.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Link to="/login/cliente" className="w-full sm:w-auto">
-              <Button size="lg" className="gradient-primary rounded-xl w-full h-11 sm:h-12 text-sm sm:text-base">
-                Entrar como Cliente
-              </Button>
-            </Link>
-            <Link to="/login/prestador" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full h-11 sm:h-12 text-sm sm:text-base">
-                Entrar como Prestador
-              </Button>
-            </Link>
-          </div>
+      {/* CTA */}
+      <section className="py-10 sm:py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            className="gradient-primary rounded-3xl p-8 sm:p-12 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-display text-xl sm:text-3xl font-bold text-white mb-3">Pronto para começar?</h2>
+            <p className="text-white/80 text-sm sm:text-base mb-6">
+              Cadastre-se e tenha acesso a assistência 24h e troca de serviços via permuta.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to="/login/cliente">
+                <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-xl font-display font-bold w-full sm:w-auto">
+                  Entrar como Cliente
+                </Button>
+              </Link>
+              <Link to="/login/prestador">
+                <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 rounded-xl font-display font-bold w-full sm:w-auto">
+                  Entrar como Prestador
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
