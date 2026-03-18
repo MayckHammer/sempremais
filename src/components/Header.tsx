@@ -104,7 +104,7 @@ export function Header() {
                     </Button>
                   </Link>
                   <Link to="/login/prestador">
-                    <Button variant="outline" size="sm" className="rounded-xl border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+                    <Button variant="outline" size="sm" className="rounded-xl border-primary-foreground/30 text-primary hover:bg-primary-foreground/10">
                       <Building2 className="w-4 h-4 mr-2" />
                       Prestador
                     </Button>
