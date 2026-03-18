@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, Shield, Clock, Star, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
+import logoSempre from '@/assets/logo-sempre.png';
 
 export default function Index() {
   const { user } = useAuth();
