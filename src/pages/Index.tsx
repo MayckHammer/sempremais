@@ -33,12 +33,21 @@ export default function Index() {
       <Header />
 
       {/* Hero Section - S-Curve inspired */}
-      <section className="relative overflow-hidden">
-        {/* Blue curve background */}
+      <section className="relative overflow-hidden bg-white">
+        {/* S-curve background with white gap */}
         <div className="absolute inset-0">
           <svg viewBox="0 0 400 500" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
-            <path d="M0,0 L0,500 C80,450 120,350 100,250 C80,150 200,100 400,80 L400,0 Z" fill="hsl(207 78% 38%)" />
-            <path d="M400,0 L400,500 C350,480 300,400 320,300 C340,200 250,150 200,120 L400,0 Z" fill="hsl(220 5% 46%)" opacity="0.9" />
+            {/* Blue side (left) */}
+            <path
+              d="M0,0 L280,0 C260,50 200,120 180,180 C155,260 100,300 130,370 C150,420 80,460 0,500 Z"
+              fill="hsl(207 78% 38%)"
+            />
+            {/* Gray side (right) */}
+            <path
+              d="M400,0 L320,0 C300,50 240,120 220,180 C195,260 250,320 230,390 C215,440 300,470 400,500 Z"
+              fill="hsl(220 5% 46%)"
+              opacity="0.9"
+            />
           </svg>
         </div>
 
