@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, Shield, Clock, Star, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import logoSempre from '@/assets/logo-sempre.png';
+import logoSempre from '@/assets/logo.png';
 import SempreBackground from '@/components/SempreBackground';
 
 export default function Index() {
@@ -40,14 +40,14 @@ export default function Index() {
             src={logoSempre}
             alt="Sempre+ Assistências e Benefícios"
             className="mx-auto mb-8 sm:mb-12 w-64 sm:w-80 md:w-96 object-contain"
-            style={{ filter: 'brightness(0) invert(1)' }}
+            style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           />
 
           <motion.div
-            className="bg-white/15 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
+            className="bg-white/20 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
