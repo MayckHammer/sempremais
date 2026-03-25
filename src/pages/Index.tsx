@@ -33,38 +33,21 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section - S-Curve inspired */}
-      <section className="relative overflow-hidden bg-white">
-        {/* S-curve background with white gap */}
-        <div className="absolute inset-0">
-          <svg viewBox="0 0 400 500" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
-            {/* Blue side (left) */}
-            <path
-              d="M0,0 L280,0 C260,50 200,120 180,180 C155,260 100,300 130,370 C150,420 80,460 0,500 Z"
-              fill="hsl(207 78% 38%)"
-            />
-            {/* Gray side (right) */}
-            <path
-              d="M400,0 L320,0 C300,50 240,120 220,180 C195,260 250,320 230,390 C215,440 300,470 400,500 Z"
-              fill="hsl(220 5% 46%)"
-              opacity="0.9"
-            />
-          </svg>
-        </div>
-
-        <div className="relative z-10 px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
+      {/* Hero Section */}
+      <SempreBackground>
+        <div className="px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
           <motion.img
             src={logoSempre}
             alt="Sempre+ Assistências e Benefícios"
             className="mx-auto mb-8 sm:mb-12 w-64 sm:w-80 md:w-96 object-contain"
+            style={{ filter: 'brightness(0) invert(1)' }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           />
 
-          {/* Featured card */}
           <motion.div
-            className="bg-secondary/80 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
+            className="bg-white/15 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -84,7 +67,7 @@ export default function Index() {
               </Link>
               {!user && (
                 <Link to="/cadastro/prestador">
-                  <Button size="lg" variant="outline" className="border-white/40 text-primary hover:bg-white/10 rounded-xl w-full font-display font-bold">
+                  <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 rounded-xl w-full font-display font-bold">
                     Sou Prestador
                   </Button>
                 </Link>
@@ -92,7 +75,7 @@ export default function Index() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </SempreBackground>
 
       {/* Destaques - Horizontal scroll circles */}
       <section className="py-8 sm:py-12 px-4">
