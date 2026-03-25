@@ -6,7 +6,6 @@ import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, 
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import logoSempre from '@/assets/logo-sempre.png';
-import logoSSymbol from '@/assets/logo-s-symbol.png';
 
 export default function Index() {
   const { user } = useAuth();
@@ -35,15 +34,12 @@ export default function Index() {
 
       {/* Hero Section - S-Curve inspired */}
       <section className="relative overflow-hidden">
-        {/* S Symbol background with blue and gray areas */}
+        {/* Blue curve background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-primary" />
-          <img
-            src={logoSSymbol}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-luminosity"
-            style={{ objectPosition: 'center 40%' }}
-          />
+          <svg viewBox="0 0 400 500" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
+            <path d="M0,0 L0,500 C80,450 120,350 100,250 C80,150 200,100 400,80 L400,0 Z" fill="hsl(207 78% 38%)" />
+            <path d="M400,0 L400,500 C350,480 300,400 320,300 C340,200 250,150 200,120 L400,0 Z" fill="hsl(220 5% 46%)" opacity="0.9" />
+          </svg>
         </div>
 
         <div className="relative z-10 px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
@@ -54,7 +50,6 @@ export default function Index() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            style={{ filter: 'brightness(0) invert(1)' }}
           />
 
           {/* Featured card */}
