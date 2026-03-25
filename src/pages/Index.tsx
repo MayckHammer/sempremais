@@ -40,7 +40,7 @@ export default function Index() {
             src={logoSempre}
             alt="Sempre+ Assistências e Benefícios"
             className="mx-auto mb-8 sm:mb-12 w-64 sm:w-80 md:w-96 object-contain"
-            style={{ filter: 'brightness(0) invert(1)' }}
+            style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
