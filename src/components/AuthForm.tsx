@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Footer } from '@/components/Footer';
 import { signUp, signIn } from '@/lib/auth';
 import logoSempre from '@/assets/logo-sempre.png';
+import logoSSymbol from '@/assets/logo-s-symbol.png';
 import { toast } from 'sonner';
 
 interface AuthFormProps {
