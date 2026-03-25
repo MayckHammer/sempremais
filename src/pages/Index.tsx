@@ -6,6 +6,7 @@ import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, 
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import logoSempre from '@/assets/logo-sempre.png';
+import SempreBackground from '@/components/SempreBackground';
 
 export default function Index() {
   const { user } = useAuth();
