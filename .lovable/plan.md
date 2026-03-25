@@ -1,33 +1,28 @@
 
 
-# Implementar SempreBackground com símbolo "S" vetorizado
+# Atualizar SVG do SempreBackground para corresponder à logo real
 
 ## Resumo
 
-Criar o componente `SempreBackground.tsx` com o símbolo "S" da marca vetorizado em SVG como elemento decorativo de fundo, e aplicá-lo na hero section da página inicial substituindo o background atual de curvas SVG.
+O símbolo "S+" enviado mostra curvas muito mais orgânicas e arredondadas do que o SVG atual (que é angular/geométrico). Vou redesenhar os paths SVG no `SempreBackground.tsx` para reproduzir fielmente o formato da logo: cantos arredondados externos, curva "S" fluida entre azul e cinza, e adicionar o símbolo "+" na parte cinza.
 
-## Alterações
+## Alteração
 
-### 1. Criar `src/components/SempreBackground.tsx`
+**Arquivo: `src/components/SempreBackground.tsx`**
 
-Componente TypeScript com:
-- SVG vetorizado do "S" (paths azul `#2B6CB8` e cinza `#5A6472`)
-- Gradiente de fundo azul (`linear-gradient 160deg`)
-- Instância grande do S no canto superior direito (opacity 0.12, rotacionado -10deg)
-- Instância menor no canto inferior esquerdo (opacity 0.07, rotacionado 15deg)
-- Gradiente de fade branco na parte inferior (35% da altura)
-- Aceita `children` como prop para envolver conteúdo
+Redesenhar os dois paths do `SempreSymbolSVG`:
 
-### 2. Atualizar `src/pages/Index.tsx` (hero section, linhas 36-93)
+1. **Path azul (esquerda)**: Cantos superiores-esquerdos e inferiores-esquerdos arredondados, borda direita formando a curva S orgânica (côncava no topo, convexa na base)
+2. **Path cinza (direita)**: Cantos superiores-direitos e inferiores-direitos arredondados, borda esquerda espelhando a curva S com gap branco
+3. **Símbolo "+"**: Adicionar um path branco com o "+" no canto superior direito da parte cinza
 
-- Importar `SempreBackground`
-- Substituir a `<section>` do hero (que tem o SVG de curvas atual) por `<SempreBackground>` envolvendo o conteúdo existente (logo, card com botões)
-- Manter todo o conteúdo interno (logo animada, card "Guincho e Assistência 24h", botões)
-- Remover os paths SVG antigos das curvas em S
+As curvas usarão Bézier cúbicas (`C`) para reproduzir o formato suave e orgânico da imagem de referência, substituindo as atuais quadráticas (`Q`) que produzem um resultado mais rígido.
 
 ## Detalhes Técnicos
 
-- Converter o JSX do Claude para TSX com tipagem (`children: React.ReactNode`)
-- Usar inline styles conforme o componente original para manter fidelidade visual
-- O gradiente de fade na parte inferior garante transição suave para as seções seguintes
+- ViewBox mantido `0 0 500 500`
+- Curvas Bézier cúbicas para suavidade
+- Gap branco de ~40px entre os paths
+- "+" branco via dois retângulos cruzados ou path único
+- Sem alteração no layout/posicionamento das camadas decorativas
 
