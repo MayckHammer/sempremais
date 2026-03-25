@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { signOut } from '@/lib/auth';
 import { LogOut, User, Building2, Menu } from 'lucide-react';
+import logoSempre from '@/assets/logo-sempre.png';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
 
@@ -65,9 +66,8 @@ export function Header() {
     <header className="bg-primary text-primary-foreground sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="font-display text-lg sm:text-xl font-black tracking-tight">SEMPRE</span>
-            <span className="text-[10px] sm:text-xs font-display opacity-80 hidden xs:block">Assistências e Benefícios</span>
+          <Link to="/" className="flex items-center">
+            <img src={logoSempre} alt="Sempre+ Assistências e Benefícios" className="h-8 sm:h-10 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
           </Link>
 
           <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-card border-border">
                 <div className="flex items-center gap-3 mb-6 pt-4">
-                  <span className="font-display font-black text-primary text-lg">SEMPRE</span>
+                  <img src={logoSempre} alt="Sempre+" className="h-8 object-contain" />
                 </div>
                 <MobileMenu />
               </SheetContent>

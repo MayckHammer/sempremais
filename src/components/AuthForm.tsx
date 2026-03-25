@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Footer } from '@/components/Footer';
 import { signUp, signIn } from '@/lib/auth';
+import logoSempre from '@/assets/logo-sempre.png';
 import { toast } from 'sonner';
 
 interface AuthFormProps {
@@ -58,10 +59,7 @@ export function AuthForm({ type, role }: AuthFormProps) {
         </div>
         <div className="relative z-10 text-center pt-10 pb-16 sm:pt-14 sm:pb-20 px-4">
           <Link to="/">
-            <h1 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">SEMPRE</h1>
-            <p className="text-white/80 text-xs sm:text-sm font-display font-semibold tracking-[0.15em] uppercase mt-1">
-              Assistências e Benefícios
-            </p>
+            <img src={logoSempre} alt="Sempre+ Assistências e Benefícios" className="mx-auto h-16 sm:h-20 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
           </Link>
         </div>
       </div>
