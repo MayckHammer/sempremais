@@ -1,64 +1,51 @@
 
 
-# Adicionar Logo como Marca d'Água no Rodapé
+# Substituir Logo em Toda a Plataforma
 
 ## Resumo
 
-Adicionar a logo Mi Rebok como marca d'água no rodapé da página, criando um visual mais profissional e reforçando a identidade da marca.
+Substituir o texto "SEMPRE" e a logo antiga pela nova logo oficial (PDF convertido para imagem) em todos os locais da plataforma: Header, Footer, Hero da página inicial, telas de autenticação e menu mobile.
 
 ---
 
 ## Alterações
 
-### 1. Modificar o Footer em `src/pages/Index.tsx`
+### 1. Copiar a nova logo para o projeto
 
-Atualizar a seção do rodapé (linhas 214-219) para incluir a logo como marca d'água:
+- Copiar `parsed-documents://...page_1.jpg` para `src/assets/logo-sempre.png` (substituindo a logo anterior)
+- A logo tem fundo branco - será usada diretamente nos locais com fundo claro e com filtro de inversão/brilho nos fundos escuros
 
-**De:**
-```jsx
-<footer className="py-6 sm:py-8 px-4 border-t border-border">
-  <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-    <p className="text-xs sm:text-sm">© 2024 Mi Rebok - Guincho e Assistência 24h</p>
-  </div>
-</footer>
-```
+### 2. Header (`src/components/Header.tsx`)
 
-**Para:**
-```jsx
-<footer className="relative py-6 sm:py-8 px-4 border-t border-border overflow-hidden">
-  {/* Logo como Marca d'Água */}
-  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <img 
-      src={logo} 
-      alt="" 
-      className="w-32 h-32 sm:w-48 sm:h-48 object-contain opacity-5"
-    />
-  </div>
-  
-  <div className="max-w-6xl mx-auto text-center text-muted-foreground relative z-10">
-    <p className="text-xs sm:text-sm">© 2024 Mi Rebok - Guincho e Assistência 24h</p>
-  </div>
-</footer>
-```
+- Substituir o texto "SEMPRE" + "Assistências e Benefícios" por `<img>` da logo
+- Aplicar tamanho responsivo (~h-8 mobile, h-10 desktop)
+- Aplicar filtro CSS `brightness(0) invert(1)` para tornar branca sobre fundo azul
+- Fazer o mesmo no menu mobile (linha 125)
+
+### 3. Footer (`src/components/Footer.tsx`)
+
+- Substituir o texto "SEMPRE" por `<img>` da logo
+- Aplicar filtro para versão branca sobre fundo azul
+- Manter o texto de copyright abaixo
+
+### 4. Hero - Página Inicial (`src/pages/Index.tsx`)
+
+- A logo já está sendo usada como imagem (linha 46-51) - será atualizada automaticamente ao substituir o arquivo
+
+### 5. Telas de Auth (`src/components/AuthForm.tsx`)
+
+- Substituir o `<h1>SEMPRE</h1>` e `<p>Assistências e Benefícios</p>` por `<img>` da logo
+- Aplicar filtro para versão branca sobre o fundo azul das curvas SVG
 
 ---
 
 ## Detalhes Técnicos
 
-| Propriedade | Valor | Descrição |
-|-------------|-------|-----------|
-| Posicionamento | `absolute inset-0` | Centraliza a logo no fundo do footer |
-| Opacidade | `opacity-5` | 5% de opacidade para efeito sutil de marca d'água |
-| Tamanho | `w-32 h-32` (mobile) / `w-48 h-48` (desktop) | Dimensões responsivas |
-| Interação | `pointer-events-none` | A marca d'água não interfere em cliques |
-| Z-index | Texto com `z-10` | Garante que o copyright fique acima da marca d'água |
-
----
-
-## Resultado Esperado
-
-- Logo aparecerá como marca d'água sutil e centralizada no rodapé
-- O texto de copyright permanecerá legível sobre a marca d'água
-- Visual mais profissional e reforço da identidade da marca
-- A logo já importada no arquivo será reutilizada (versão com texto branco)
+| Local | Fundo | Tratamento da Logo |
+|-------|-------|-------------------|
+| Header | Azul (primary) | `filter: brightness(0) invert(1)` |
+| Footer | Azul (primary) | `filter: brightness(0) invert(1)` |
+| Hero | Curvas azul/cinza | Logo original (já tem cores compatíveis) |
+| AuthForm | Curvas azul/cinza | `filter: brightness(0) invert(1)` |
+| Menu Mobile | Fundo card (claro) | Logo original sem filtro |
 
