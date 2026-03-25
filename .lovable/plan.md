@@ -1,51 +1,31 @@
 
 
-# Substituir Logo em Toda a Plataforma
+# Redesign do Background Hero com Curva em "S" Branca
 
-## Resumo
+## O que será feito
 
-Substituir o texto "SEMPRE" e a logo antiga pela nova logo oficial (PDF convertido para imagem) em todos os locais da plataforma: Header, Footer, Hero da página inicial, telas de autenticação e menu mobile.
+Redesenhar o SVG do hero para criar uma faixa branca em forma de "S" que serpenteia entre a área azul (esquerda) e a área cinza (direita), seguindo o mesmo conceito visual do "S" da logo. O desenho amarelo do usuário mostra claramente o caminho: a curva branca entra pela esquerda no topo, curva para a direita no meio, e volta para a esquerda embaixo — criando a separação orgânica entre azul e cinza.
 
----
+## Alteração
 
-## Alterações
+**Arquivo: `src/pages/Index.tsx`** (linhas 38-42)
 
-### 1. Copiar a nova logo para o projeto
+Substituir os 2 paths atuais por 3 camadas:
+1. **Fundo azul** (lado esquerdo) — path que cobre a metade esquerda com curva S
+2. **Fundo cinza** (lado direito) — path que cobre a metade direita com curva S oposta
+3. **Espaço branco** entre eles — criado naturalmente pelo gap entre os dois paths, mostrando o fundo branco da página
 
-- Copiar `parsed-documents://...page_1.jpg` para `src/assets/logo-sempre.png` (substituindo a logo anterior)
-- A logo tem fundo branco - será usada diretamente nos locais com fundo claro e com filtro de inversão/brilho nos fundos escuros
+O SVG será redesenhado com curvas Bézier que formam um "S" fluido, onde:
+- No topo, o azul domina ~70% da largura
+- No meio, as cores se cruzam com a curva S branca passando pelo centro
+- Na base, o cinza domina mais à direita e o azul à esquerda
 
-### 2. Header (`src/components/Header.tsx`)
-
-- Substituir o texto "SEMPRE" + "Assistências e Benefícios" por `<img>` da logo
-- Aplicar tamanho responsivo (~h-8 mobile, h-10 desktop)
-- Aplicar filtro CSS `brightness(0) invert(1)` para tornar branca sobre fundo azul
-- Fazer o mesmo no menu mobile (linha 125)
-
-### 3. Footer (`src/components/Footer.tsx`)
-
-- Substituir o texto "SEMPRE" por `<img>` da logo
-- Aplicar filtro para versão branca sobre fundo azul
-- Manter o texto de copyright abaixo
-
-### 4. Hero - Página Inicial (`src/pages/Index.tsx`)
-
-- A logo já está sendo usada como imagem (linha 46-51) - será atualizada automaticamente ao substituir o arquivo
-
-### 5. Telas de Auth (`src/components/AuthForm.tsx`)
-
-- Substituir o `<h1>SEMPRE</h1>` e `<p>Assistências e Benefícios</p>` por `<img>` da logo
-- Aplicar filtro para versão branca sobre o fundo azul das curvas SVG
-
----
+A curva branca terá uma largura visível (~30-40px no viewBox) para ser percebida como elemento de design, não apenas uma linha divisória.
 
 ## Detalhes Técnicos
 
-| Local | Fundo | Tratamento da Logo |
-|-------|-------|-------------------|
-| Header | Azul (primary) | `filter: brightness(0) invert(1)` |
-| Footer | Azul (primary) | `filter: brightness(0) invert(1)` |
-| Hero | Curvas azul/cinza | Logo original (já tem cores compatíveis) |
-| AuthForm | Curvas azul/cinza | `filter: brightness(0) invert(1)` |
-| Menu Mobile | Fundo card (claro) | Logo original sem filtro |
+- ViewBox mantido em `0 0 400 500`
+- Curvas Bézier cúbicas (`C`) para suavidade
+- Sem alteração no conteúdo (logo, card, botões)
+- O fundo da `<section>` será `bg-white` para que o espaço entre os paths apareça branco
 
