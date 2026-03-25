@@ -1,31 +1,33 @@
 
 
-# Redesign do Background Hero com Curva em "S" Branca
+# Implementar SempreBackground com símbolo "S" vetorizado
 
-## O que será feito
+## Resumo
 
-Redesenhar o SVG do hero para criar uma faixa branca em forma de "S" que serpenteia entre a área azul (esquerda) e a área cinza (direita), seguindo o mesmo conceito visual do "S" da logo. O desenho amarelo do usuário mostra claramente o caminho: a curva branca entra pela esquerda no topo, curva para a direita no meio, e volta para a esquerda embaixo — criando a separação orgânica entre azul e cinza.
+Criar o componente `SempreBackground.tsx` com o símbolo "S" da marca vetorizado em SVG como elemento decorativo de fundo, e aplicá-lo na hero section da página inicial substituindo o background atual de curvas SVG.
 
-## Alteração
+## Alterações
 
-**Arquivo: `src/pages/Index.tsx`** (linhas 38-42)
+### 1. Criar `src/components/SempreBackground.tsx`
 
-Substituir os 2 paths atuais por 3 camadas:
-1. **Fundo azul** (lado esquerdo) — path que cobre a metade esquerda com curva S
-2. **Fundo cinza** (lado direito) — path que cobre a metade direita com curva S oposta
-3. **Espaço branco** entre eles — criado naturalmente pelo gap entre os dois paths, mostrando o fundo branco da página
+Componente TypeScript com:
+- SVG vetorizado do "S" (paths azul `#2B6CB8` e cinza `#5A6472`)
+- Gradiente de fundo azul (`linear-gradient 160deg`)
+- Instância grande do S no canto superior direito (opacity 0.12, rotacionado -10deg)
+- Instância menor no canto inferior esquerdo (opacity 0.07, rotacionado 15deg)
+- Gradiente de fade branco na parte inferior (35% da altura)
+- Aceita `children` como prop para envolver conteúdo
 
-O SVG será redesenhado com curvas Bézier que formam um "S" fluido, onde:
-- No topo, o azul domina ~70% da largura
-- No meio, as cores se cruzam com a curva S branca passando pelo centro
-- Na base, o cinza domina mais à direita e o azul à esquerda
+### 2. Atualizar `src/pages/Index.tsx` (hero section, linhas 36-93)
 
-A curva branca terá uma largura visível (~30-40px no viewBox) para ser percebida como elemento de design, não apenas uma linha divisória.
+- Importar `SempreBackground`
+- Substituir a `<section>` do hero (que tem o SVG de curvas atual) por `<SempreBackground>` envolvendo o conteúdo existente (logo, card com botões)
+- Manter todo o conteúdo interno (logo animada, card "Guincho e Assistência 24h", botões)
+- Remover os paths SVG antigos das curvas em S
 
 ## Detalhes Técnicos
 
-- ViewBox mantido em `0 0 400 500`
-- Curvas Bézier cúbicas (`C`) para suavidade
-- Sem alteração no conteúdo (logo, card, botões)
-- O fundo da `<section>` será `bg-white` para que o espaço entre os paths apareça branco
+- Converter o JSX do Claude para TSX com tipagem (`children: React.ReactNode`)
+- Usar inline styles conforme o componente original para manter fidelidade visual
+- O gradiente de fade na parte inferior garante transição suave para as seções seguintes
 
