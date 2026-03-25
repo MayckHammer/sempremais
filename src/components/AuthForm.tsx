@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Footer } from '@/components/Footer';
 import { signUp, signIn } from '@/lib/auth';
 import logoSempre from '@/assets/logo-sempre.png';
+import logoSSymbol from '@/assets/logo-s-symbol.png';
 import { toast } from 'sonner';
 
 interface AuthFormProps {
@@ -52,10 +53,13 @@ export function AuthForm({ type, role }: AuthFormProps) {
       {/* S-Curve Hero */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <svg viewBox="0 0 400 300" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
-            <path d="M0,0 L0,300 C80,260 120,200 100,140 C80,80 200,50 400,40 L400,0 Z" fill="hsl(207 78% 38%)" />
-            <path d="M400,0 L400,300 C350,280 300,230 320,170 C340,110 250,80 200,60 L400,0 Z" fill="hsl(220 5% 46%)" opacity="0.9" />
-          </svg>
+          <div className="absolute inset-0 bg-primary" />
+          <img
+            src={logoSSymbol}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-luminosity"
+            style={{ objectPosition: 'center 30%' }}
+          />
         </div>
         <div className="relative z-10 text-center pt-10 pb-16 sm:pt-14 sm:pb-20 px-4">
           <Link to="/">
