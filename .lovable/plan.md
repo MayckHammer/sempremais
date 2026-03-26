@@ -1,34 +1,55 @@
 
 
-# Substituir Logo por Versão Sem Símbolo (Somente Texto)
+# Efeito Lava Lamp no Background do Hero
 
-## Resumo
+## Conceito
 
-O usuário enviou a logo com fundo transparente (`sempre_logo_sem_fundo-2.png`). Ele quer que somente a parte de **texto** da logo ("SEMPRE+ Assistências e Benefícios") apareça centralizada na página hero — **sem o símbolo S** à esquerda.
+Substituir o SVG estático das curvas azul/cinza por **blobs animados** que se movem organicamente como uma lâmpada de lava. Três bolhas grandes (azul, cinza, branca) flutuam lentamente pelo fundo, deformando-se e se sobrepondo com `mix-blend-mode` e `blur` para criar o efeito viscoso característico.
 
-## Problema
+## Implementação
 
-A logo enviada contém tanto o símbolo S quanto o texto. Para separar, precisamos recortar a imagem programaticamente ou usar a logo completa e o usuário pode fornecer uma versão só com texto.
+### `src/pages/Index.tsx` — Substituir o SVG por blobs animados
 
-## Abordagem
+Trocar o bloco `<svg>` (linhas 44-54) por 4-5 `<motion.div>` absolutamente posicionados:
 
-1. **Copiar a nova logo** (com fundo transparente) para `src/assets/logo-sempre.png`, substituindo a anterior
-2. **No Hero (`src/pages/Index.tsx`)**: usar a logo centralizada — como a imagem tem fundo transparente, ficará melhor sobre o background SVG
-3. **Recortar o símbolo**: usar CSS `object-position` e `object-fit` com `clip-path` ou criar a versão texto via código — porém o mais limpo é recortar via script
+- **Blob azul** (`hsl(207 78% 38%)`): grande, ocupa ~60% da tela, animação de 20s movendo-se do canto inferior-esquerdo para cima-direita e voltando
+- **Blob cinza** (`hsl(220 5% 46%)`): médio, ~45% da tela, animação de 25s em trajetória oposta
+- **Blob branco** (`hsl(0 0% 100% / 0.7)`): médio, ~35%, serpenteia pelo centro criando a separação "S"
+- **Blob azul claro** (glow): pequeno, ~25%, animação mais rápida (15s) para dar vida
 
-Como o símbolo ocupa aproximadamente os primeiros 25-30% da largura da imagem, podemos usar `clip-path: inset(0 0 0 28%)` para esconder o símbolo e mostrar só o texto.
+Cada blob terá:
+- `border-radius: 50%` com `filter: blur(40px)` para bordas suaves
+- Framer Motion `animate` com keyframes de `x`, `y`, `scale` e `borderRadius` variando entre formas orgânicas
+- `transition: { duration: 18-25s, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }`
 
-## Alterações
+### `src/index.css` — Adicionar classe utilitária
 
-### 1. Copiar nova logo transparente
-- Copiar `user-uploads://sempre_logo_sem_fundo-2.png` → `src/assets/logo-sempre.png`
+Adicionar `.lava-blob` com propriedades base para os blobs (blur, border-radius, position absolute).
 
-### 2. `src/pages/Index.tsx` — Hero
-- Na `<motion.img>` da logo (linha 63-70), adicionar `style={{ clipPath: 'inset(0 0 0 28%)' }}` para cortar o símbolo S e exibir apenas o texto "SEMPRE+ Assistências e Benefícios"
-- Manter centralização e animações existentes
+## Exemplo de um blob
 
-### 3. Header e Footer
-- Atualizar para usar a nova logo transparente (já importam de `logo-sempre.png`)
-- No Header (fundo azul): manter `filter: brightness(0) invert(1)` — agora com transparência ficará mais limpo
-- No Footer: mesmo tratamento
+```tsx
+<motion.div
+  className="absolute w-[60vw] h-[60vw] rounded-full opacity-90"
+  style={{ background: 'hsl(207 78% 38%)', filter: 'blur(60px)' }}
+  animate={{
+    x: ['-10%', '20%', '-5%'],
+    y: ['-10%', '30%', '10%'],
+    scale: [1, 1.2, 0.9, 1],
+    borderRadius: ['40%', '60%', '50%']
+  }}
+  transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+/>
+```
+
+## Resultado Visual
+
+As três cores da marca (azul, branco, cinza) flutuam organicamente pelo hero como bolhas de lava, mantendo a identidade visual mas com movimento hipnótico e premium.
+
+## Arquivos Alterados
+
+| Arquivo | Mudança |
+|---------|---------|
+| `src/pages/Index.tsx` | Substituir SVG estático por blobs animados com Framer Motion |
+| `src/index.css` | Classe utilitária `.lava-blob` |
 
