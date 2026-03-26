@@ -63,7 +63,8 @@ export default function Index() {
             <motion.img
               src={logoSempre}
               alt="Sempre+ Assistências e Benefícios"
-              className="mx-auto mb-8 sm:mb-12 w-64 sm:w-80 md:w-96 object-contain drop-shadow-2xl"
+              className="mx-auto mb-8 sm:mb-12 w-[28rem] sm:w-[36rem] md:w-[44rem] object-contain drop-shadow-2xl"
+              style={{ clipPath: 'inset(0 0 0 28%)' }}
               initial={{ opacity: 0, y: 40, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
