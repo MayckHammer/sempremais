@@ -39,6 +39,7 @@ function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
     <div>
       <Carousel
         setApi={setApi}
+        plugins={[autoplayPlugin.current]}
         opts={{ align: 'start', loop: true }}
         className="w-full"
       >
