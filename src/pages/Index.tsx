@@ -60,12 +60,21 @@ export default function Index() {
         </div>
 
         <div className="relative z-10 px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
-          <motion.div style={{ y: logoY }}>
+          <motion.div style={{ y: logoY }} className="relative">
+            {/* Glow backdrop behind logo */}
+            <motion.div
+              className="absolute inset-0 mx-auto w-72 sm:w-96 md:w-[28rem] h-20 sm:h-28 top-1/2 -translate-y-1/2 rounded-full blur-3xl opacity-40"
+              style={{ background: 'radial-gradient(ellipse, hsl(207 78% 55% / 0.6), hsl(207 78% 38% / 0.3), transparent)' }}
+              animate={{ opacity: [0.3, 0.5, 0.3], scale: [0.95, 1.05, 0.95] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
             <motion.img
-              src={logoSempre}
+              src={logoSempreText}
               alt="Sempre+ Assistências e Benefícios"
-              className="mx-auto mb-8 sm:mb-12 w-[28rem] sm:w-[36rem] md:w-[44rem] object-contain drop-shadow-2xl"
-              style={{ clipPath: 'inset(0 0 0 28%)' }}
+              className="relative mx-auto mb-8 sm:mb-12 w-56 sm:w-72 md:w-96 object-contain"
+              style={{
+                filter: 'drop-shadow(0 4px 20px hsla(207, 78%, 30%, 0.35)) drop-shadow(0 1px 3px hsla(0, 0%, 0%, 0.15))',
+              }}
               initial={{ opacity: 0, y: 40, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
