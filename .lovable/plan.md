@@ -1,35 +1,28 @@
 
 
-# Carousel nos Destaques (Mobile)
-
-## Problema
-Na tela mobile (390px), os 6 ícones de destaques ficam numa linha horizontal com `overflow-x-auto`, mas sem indicação visual de que há mais itens — o usuário não percebe que pode rolar.
-
-## Solução
-Usar o componente `Carousel` (Embla) já existente no projeto (`src/components/ui/carousel.tsx`) para exibir os destaques em um carrossel com navegação por swipe no mobile. No desktop, manter todos visíveis.
+# Auto-play no Carrossel de Destaques
 
 ## Alterações em `src/pages/Index.tsx`
 
-1. **Importar** `Carousel, CarouselContent, CarouselItem` de `@/components/ui/carousel`
-2. **Substituir** o `<div className="flex gap-5 overflow-x-auto ...">` pelo componente Carousel
-3. Cada `CarouselItem` mostra **3 ícones** lado a lado (2 slides de 3), usando `basis-1/3` nos items internos
-4. Configurar `opts={{ align: 'start', loop: true }}` para swipe contínuo
-5. Adicionar **dots indicadores** abaixo (pequenos círculos mostrando slide ativo) para sinalizar que há mais conteúdo
-6. No desktop (`sm:`), mostrar todos os 6 de uma vez sem carrossel — usar classe condicional ou mostrar o carrossel com todos visíveis
+### `HighlightsCarousel` — adicionar auto-play com Embla plugin
 
-### Estrutura resultante (mobile)
+1. **Instalar plugin**: Adicionar `embla-carousel-autoplay` ao `package.json`
+2. **Importar e configurar** o plugin no componente `HighlightsCarousel`:
+   - `Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true })`
+   - `stopOnMouseEnter: true` — pausa ao passar o cursor (desktop)
+   - `stopOnInteraction: false` — retoma após swipe (touch)
+3. **Passar o plugin** via prop `plugins={[autoplayPlugin]}` no `<Carousel>`
+
+O swipe touch já funciona nativamente no Embla — não precisa de configuração extra.
+
 ```text
-<Carousel opts={{ align: 'start', loop: true }}>
-  <CarouselContent>
-    <CarouselItem className="basis-1/3"> → ícone 1 </CarouselItem>
-    <CarouselItem className="basis-1/3"> → ícone 2 </CarouselItem>
-    ...6 items, 3 visíveis por vez
-  </CarouselContent>
-  <!-- Dots indicadores -->
-</Carousel>
+Carousel
+  plugins={[Autoplay({ delay: 3000, stopOnMouseEnter: true })]}
+  opts={{ align: 'start', loop: true }}
 ```
 
 | Arquivo | Mudança |
 |---------|---------|
-| `src/pages/Index.tsx` | Trocar flex scroll por Carousel com dots |
+| `package.json` | Adicionar `embla-carousel-autoplay` |
+| `src/pages/Index.tsx` | Importar Autoplay plugin e passar ao Carousel |
 
