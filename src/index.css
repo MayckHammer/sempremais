@@ -382,10 +382,19 @@
 
   /* Hide UnicornStudio watermark */
   .unicorn-container [class*="watermark"],
+  .unicorn-container [class*="Watermark"],
+  .unicorn-container [class*="badge"],
   .unicorn-container a[href*="unicorn.studio"],
-  .unicorn-container > div > div > div:last-child a {
+  .unicorn-container > div > div > div:last-child,
+  .unicorn-container > div > div:last-child > div:last-child,
+  .unicorn-container div[style*="bottom"] a,
+  .unicorn-container div[style*="position: fixed"],
+  .unicorn-container div[style*="position: absolute"][style*="bottom"] {
     display: none !important;
     opacity: 0 !important;
     pointer-events: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
   }
 }
