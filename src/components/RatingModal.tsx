@@ -17,7 +17,6 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
 
   const handleSubmit = async () => {
     if (rating === 0) return;
-    
     setLoading(true);
     try {
       await onSubmit(rating);
@@ -30,14 +29,14 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-card border-border max-w-sm mx-4 sm:mx-auto">
+      <DialogContent className="glass-strong border-border max-w-sm mx-4 sm:mx-auto rounded-2xl shadow-elevated">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl text-foreground text-center">
+          <DialogTitle className="text-lg sm:text-xl text-foreground text-center font-display font-extrabold tracking-tight">
             Avalie o Atendimento
           </DialogTitle>
         </DialogHeader>
         
-        <p className="text-center text-muted-foreground text-sm mb-3 sm:mb-4">{providerName}</p>
+        <p className="text-center text-muted-foreground text-sm mb-3 sm:mb-4 font-body">{providerName}</p>
         
         <div className="flex justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-6">
           {[1, 2, 3, 4, 5].map((star) => (
@@ -46,12 +45,12 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoveredRating(star)}
               onMouseLeave={() => setHoveredRating(0)}
-              className="transition-colors p-1"
+              className="transition-all duration-200 p-1 hover:scale-110"
             >
               <Star
-                className={`w-8 h-8 sm:w-10 sm:h-10 ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 transition-colors ${
                   star <= (hoveredRating || rating)
-                    ? 'text-yellow-400 fill-yellow-400'
+                    ? 'text-gold fill-gold'
                     : 'text-muted-foreground'
                 }`}
               />
@@ -61,7 +60,7 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
 
         <Button
           onClick={handleSubmit}
-          className="w-full gradient-primary h-10 sm:h-11 text-sm"
+          className="w-full gradient-primary h-10 sm:h-11 text-sm font-display font-bold btn-glow rounded-xl shadow-premium"
           disabled={rating === 0 || loading}
         >
           {loading ? 'Enviando...' : 'Confirmar Avaliação'}
