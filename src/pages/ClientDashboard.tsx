@@ -216,9 +216,9 @@ export default function ClientDashboard() {
                 <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loadingLocation ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline ml-2">Atualizar</span>
               </Button>
+            </div>
           </div>
           </GlassContainer>
-          </div>
         </motion.div>
 
         {/* Services Grid */}
