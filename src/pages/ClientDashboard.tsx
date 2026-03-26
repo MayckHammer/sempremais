@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { MapPin, Truck, Key, Circle, RotateCcw, Package, RefreshCw, Clipboard } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GlassContainer } from '@/components/GlassContainer';
 
 interface Provider {
   id: string;
@@ -195,7 +196,8 @@ export default function ClientDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="glass-strong rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-premium">
+          <GlassContainer cornerRadius={16} blurAmount={0.1} saturation={120} displacementScale={48}>
+          <div className="rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-premium bg-card/30 border border-border/50">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-primary/20 to-glow/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -214,7 +216,8 @@ export default function ClientDashboard() {
                 <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loadingLocation ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline ml-2">Atualizar</span>
               </Button>
-            </div>
+          </div>
+          </GlassContainer>
           </div>
         </motion.div>
 
