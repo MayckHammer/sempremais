@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { RequestCard } from '@/components/RequestCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Inbox, CheckCircle, Star, Trophy } from 'lucide-react';
@@ -33,16 +34,30 @@ interface ProviderData {
 }
 
 export default function ProviderDashboard() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [availableRequests, setAvailableRequests] = useState<ServiceRequest[]>([]);
   const [myJobs, setMyJobs] = useState<ServiceRequest[]>([]);
 
   useEffect(() => {
-    if (!authLoading && !user) navigate('/login/prestador');
-    else if (!authLoading && user && user.role !== 'provider') navigate('/cliente');
-  }, [user, authLoading, navigate]);
+    if (authLoading) return;
+
+    if (!user) {
+      navigate('/login/prestador');
+      return;
+    }
+
+    if (!user.roles.includes('provider')) {
+      navigate(user.roles.includes('client') ? '/cliente' : '/');
+      return;
+    }
+
+    if (user.role !== 'provider') {
+      setPreferredUserRole('provider');
+      void refreshUser();
+    }
+  }, [user, authLoading, navigate, refreshUser]);
 
   useEffect(() => {
     if (user) {

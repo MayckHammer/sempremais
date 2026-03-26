@@ -2,12 +2,60 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type UserRole = 'admin' | 'client' | 'provider';
 
+const ACTIVE_ROLE_STORAGE_KEY = 'sempre-active-role';
+const VALID_ROLES: UserRole[] = ['admin', 'client', 'provider'];
+
 export interface AuthUser {
   id: string;
   email: string;
   role: UserRole;
+  roles: UserRole[];
   fullName: string;
   phone?: string;
+}
+
+function isUserRole(value: string | null | undefined): value is UserRole {
+  return !!value && VALID_ROLES.includes(value as UserRole);
+}
+
+function getRoleFromPath(): UserRole | null {
+  if (typeof window === 'undefined') return null;
+
+  if (window.location.pathname.includes('/prestador')) return 'provider';
+  if (window.location.pathname.includes('/cliente')) return 'client';
+
+  return null;
+}
+
+export function setPreferredUserRole(role: UserRole) {
+  if (typeof window === 'undefined') return;
+  window.sessionStorage.setItem(ACTIVE_ROLE_STORAGE_KEY, role);
+}
+
+export function clearPreferredUserRole() {
+  if (typeof window === 'undefined') return;
+  window.sessionStorage.removeItem(ACTIVE_ROLE_STORAGE_KEY);
+}
+
+export function getPreferredUserRole(): UserRole | null {
+  if (typeof window === 'undefined') return null;
+
+  const storedRole = window.sessionStorage.getItem(ACTIVE_ROLE_STORAGE_KEY);
+  return isUserRole(storedRole) ? storedRole : null;
+}
+
+function resolveActiveRole(roles: UserRole[]): UserRole {
+  const routeRole = getRoleFromPath();
+  if (routeRole && roles.includes(routeRole)) return routeRole;
+
+  const preferredRole = getPreferredUserRole();
+  if (preferredRole && roles.includes(preferredRole)) return preferredRole;
+
+  if (roles.includes('client')) return 'client';
+  if (roles.includes('provider')) return 'provider';
+  if (roles.includes('admin')) return 'admin';
+
+  return 'client';
 }
 
 export async function signUp(
@@ -34,34 +82,51 @@ export async function signUp(
   return data;
 }
 
-export async function signIn(email: string, password: string) {
+export async function signIn(email: string, password: string, preferredRole?: UserRole) {
+  if (preferredRole) {
+    setPreferredUserRole(preferredRole);
+  }
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error) throw error;
+  if (error) {
+    if (preferredRole) {
+      clearPreferredUserRole();
+    }
+    throw error;
+  }
+
   return data;
 }
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
+  clearPreferredUserRole();
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user) return null;
 
-  // Get user role
-  const { data: roleData } = await supabase
+  const { data: rolesData } = await supabase
     .from('user_roles')
     .select('role')
-    .eq('user_id', user.id)
-    .single();
+    .eq('user_id', user.id);
 
-  // Get profile
+  const roles = Array.from(
+    new Set((rolesData ?? []).map(({ role }) => role).filter(isUserRole))
+  );
+
+  const resolvedRole = resolveActiveRole(roles);
+  setPreferredUserRole(resolvedRole);
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('full_name, phone')
@@ -71,7 +136,8 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   return {
     id: user.id,
     email: user.email || '',
-    role: (roleData?.role as UserRole) || 'client',
+    role: resolvedRole,
+    roles: roles.length > 0 ? roles : ['client'],
     fullName: profile?.full_name || '',
     phone: profile?.phone || undefined,
   };
@@ -81,8 +147,8 @@ export async function getUserRole(userId: string): Promise<UserRole | null> {
   const { data } = await supabase
     .from('user_roles')
     .select('role')
-    .eq('user_id', userId)
-    .single();
+    .eq('user_id', userId);
 
-  return (data?.role as UserRole) || null;
+  const roles = (data ?? []).map(({ role }) => role).filter(isUserRole);
+  return roles[0] || null;
 }

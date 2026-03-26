@@ -5,12 +5,16 @@ import { signOut } from '@/lib/auth';
 import { LogOut, User, Building2, Menu } from 'lucide-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export function Header() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const availableRoles = useMemo(() => user?.roles ?? (user ? [user.role] : []), [user]);
+  const hasClientAccess = availableRoles.includes('client');
+  const hasProviderAccess = availableRoles.includes('provider');
 
   const handleSignOut = async () => {
     await signOut();
@@ -22,15 +26,15 @@ export function Header() {
     <div className="flex flex-col gap-2 p-4">
       {user ? (
         <>
-          {user.role === 'client' && (
+          {hasClientAccess && (
             <Link to="/cliente" onClick={() => setOpen(false)}>
               <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
                 <User className="w-5 h-5 mr-3 text-primary" />
-                Minha Área
+                Área do Cliente
               </Button>
             </Link>
           )}
-          {user.role === 'provider' && (
+          {hasProviderAccess && (
             <Link to="/prestador" onClick={() => setOpen(false)}>
               <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
                 <Building2 className="w-5 h-5 mr-3 text-primary" />
@@ -76,23 +80,22 @@ export function Header() {
           </Link>
 
           <div className="flex items-center gap-2">
-            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-1.5">
               {user ? (
                 <>
-                  {user.role === 'client' && (
+                  {hasClientAccess && (
                     <Link to="/cliente">
                       <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10 font-display font-semibold">
                         <User className="w-4 h-4 mr-2" />
-                        Minha Área
+                        Cliente
                       </Button>
                     </Link>
                   )}
-                  {user.role === 'provider' && (
+                  {hasProviderAccess && (
                     <Link to="/prestador">
                       <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10 font-display font-semibold">
                         <Building2 className="w-4 h-4 mr-2" />
-                        Painel
+                        Prestador
                       </Button>
                     </Link>
                   )}
@@ -118,7 +121,6 @@ export function Header() {
               )}
             </div>
 
-            {/* Mobile Menu */}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild className="md:hidden">
                 <Button variant="ghost" size="icon" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10">

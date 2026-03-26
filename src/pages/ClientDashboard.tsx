@@ -9,6 +9,7 @@ import { ServiceRequestModal } from '@/components/ServiceRequestModal';
 import { RatingModal } from '@/components/RatingModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { MapPin, Truck, Key, Circle, RotateCcw, Package, RefreshCw, Clipboard } from 'lucide-react';
@@ -41,7 +42,7 @@ interface ServiceRequest {
 }
 
 export default function ClientDashboard() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [location, setLocation] = useState({ address: 'Detectando localização...', lat: -23.5505, lng: -46.6333 });
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -53,10 +54,23 @@ export default function ClientDashboard() {
   const [loadingLocation, setLoadingLocation] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+
+    if (!user) {
       navigate('/login/cliente');
+      return;
     }
-  }, [user, authLoading, navigate]);
+
+    if (!user.roles.includes('client')) {
+      navigate(user.roles.includes('provider') ? '/prestador' : '/');
+      return;
+    }
+
+    if (user.role !== 'client') {
+      setPreferredUserRole('client');
+      void refreshUser();
+    }
+  }, [user, authLoading, navigate, refreshUser]);
 
   useEffect(() => {
     if (user) {
