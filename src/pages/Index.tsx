@@ -8,6 +8,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import Autoplay from 'embla-carousel-autoplay';
 import UnicornScene from 'unicornstudio-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import logoSempreText from '@/assets/logo-sempre-text.png';
