@@ -1,5 +1,6 @@
 import { Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { GlassContainer } from '@/components/GlassContainer';
 
 interface ProviderCardProps {
   name: string;
@@ -32,7 +33,8 @@ export function ProviderCard({
   isAvailable,
 }: ProviderCardProps) {
   return (
-    <div className="gradient-card backdrop-blur rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-border hover:border-primary/20 hover:shadow-elevated transition-all duration-300 accent-bar">
+    <GlassContainer cornerRadius={16} blurAmount={0.1} saturation={120} displacementScale={48}>
+    <div className="rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-border/50 hover:border-primary/20 hover:shadow-elevated transition-all duration-300 accent-bar bg-card/30">
       <div className="flex items-start sm:items-center gap-3 sm:gap-4 pl-2">
         <div className="relative flex-shrink-0">
           <div className="w-11 h-11 sm:w-14 sm:h-14 bg-gradient-to-br from-primary to-primary/70 rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-xl font-display font-extrabold text-primary-foreground shadow-premium">
@@ -90,5 +92,6 @@ export function ProviderCard({
         </div>
       </div>
     </div>
+    </GlassContainer>
   );
 }

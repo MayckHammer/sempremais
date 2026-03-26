@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Inbox, CheckCircle, Star, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GlassContainer } from '@/components/GlassContainer';
 
 interface ServiceRequest {
   id: string;
@@ -163,7 +164,8 @@ export default function ProviderDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Card className="bg-card border-border shadow-premium accent-bar hover:shadow-elevated transition-all duration-300">
+              <GlassContainer cornerRadius={16} blurAmount={0.1} saturation={120} displacementScale={48}>
+              <Card className="bg-card/30 border-border/50 shadow-premium accent-bar hover:shadow-elevated transition-all duration-300">
                 <CardContent className="p-3 sm:p-4 pl-5">
                   <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1 font-body">{stat.label}</p>
                   <p className={`text-xl sm:text-2xl font-display font-extrabold ${stat.colorClass} flex items-center gap-0.5 sm:gap-1`}>
@@ -172,6 +174,7 @@ export default function ProviderDashboard() {
                   </p>
                 </CardContent>
               </Card>
+              </GlassContainer>
             </motion.div>
           ))}
         </div>
