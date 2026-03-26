@@ -43,7 +43,7 @@ export default function Index() {
         <div className="absolute inset-0 overflow-hidden bg-white">
           {/* Blob azul principal */}
           <motion.div
-            className="absolute w-[70vw] h-[70vw] sm:w-[50vw] sm:h-[50vw] rounded-full opacity-90"
+            className="absolute w-[70vw] h-[70vw] sm:w-[50vw] sm:h-[50vw] rounded-full opacity-50"
             style={{ background: 'hsl(207 78% 38%)', filter: 'blur(60px)' }}
             animate={{
               x: ['-20%', '15%', '-10%', '20%', '-20%'],
@@ -55,7 +55,7 @@ export default function Index() {
           />
           {/* Blob cinza */}
           <motion.div
-            className="absolute w-[55vw] h-[55vw] sm:w-[40vw] sm:h-[40vw] rounded-full opacity-80 right-0 top-0"
+            className="absolute w-[55vw] h-[55vw] sm:w-[40vw] sm:h-[40vw] rounded-full opacity-40 right-0 top-0"
             style={{ background: 'hsl(220 5% 46%)', filter: 'blur(50px)' }}
             animate={{
               x: ['10%', '-20%', '5%', '-15%', '10%'],
@@ -67,8 +67,8 @@ export default function Index() {
           />
           {/* Blob branco */}
           <motion.div
-            className="absolute w-[45vw] h-[45vw] sm:w-[35vw] sm:h-[35vw] rounded-full opacity-70 left-1/4 top-1/3"
-            style={{ background: 'hsl(0 0% 100% / 0.7)', filter: 'blur(50px)' }}
+            className="absolute w-[45vw] h-[45vw] sm:w-[35vw] sm:h-[35vw] rounded-full opacity-35 left-1/4 top-1/3"
+            style={{ background: 'hsl(0 0% 100% / 0.5)', filter: 'blur(50px)' }}
             animate={{
               x: ['0%', '30%', '-15%', '20%', '0%'],
               y: ['0%', '-20%', '15%', '30%', '0%'],
@@ -79,7 +79,7 @@ export default function Index() {
           />
           {/* Blob azul claro (glow) */}
           <motion.div
-            className="absolute w-[30vw] h-[30vw] sm:w-[25vw] sm:h-[25vw] rounded-full opacity-60 left-1/2 top-1/2"
+            className="absolute w-[30vw] h-[30vw] sm:w-[25vw] sm:h-[25vw] rounded-full opacity-30 left-1/2 top-1/2"
             style={{ background: 'hsl(207 90% 55%)', filter: 'blur(45px)' }}
             animate={{
               x: ['-50%', '10%', '-30%', '20%', '-50%'],
