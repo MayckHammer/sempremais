@@ -16,6 +16,7 @@ import logoSempreText from '@/assets/logo-sempre-text.png';
 type HighlightItem = { icon: React.ElementType; label: string };
 
 function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
+  const autoplayPlugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true }));
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
