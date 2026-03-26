@@ -2,14 +2,78 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
 import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, Shield, Clock, Star, Phone } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRef } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import UnicornScene from 'unicornstudio-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import logoSempreText from '@/assets/logo-sempre-text.png';
+
+type HighlightItem = { icon: React.ElementType; label: string };
+
+function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!api) return;
+    setCurrent(api.selectedScrollSnap());
+    setCount(api.scrollSnapList().length);
+  }, [api]);
+
+  useEffect(() => {
+    if (!api) return;
+    onSelect();
+    api.on('select', onSelect);
+    api.on('reInit', onSelect);
+    return () => { api.off('select', onSelect); };
+  }, [api, onSelect]);
+
+  return (
+    <div>
+      <Carousel
+        setApi={setApi}
+        opts={{ align: 'start', loop: true }}
+        className="w-full"
+      >
+        <CarouselContent className="-ml-2">
+          {highlights.map((item, index) => (
+            <CarouselItem key={item.label} className="basis-1/3 sm:basis-1/6 pl-2">
+              <motion.div
+                className="flex flex-col items-center gap-2.5"
+                initial={{ opacity: 0, scale: 0.7, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-card flex items-center justify-center shadow-premium border-gradient conic-border">
+                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                </div>
+                <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground text-center tracking-wide uppercase">{item.label}</span>
+              </motion.div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+      {count > 1 && (
+        <div className="flex justify-center gap-1.5 mt-4">
+          {Array.from({ length: count }).map((_, i) => (
+            <button
+              key={i}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current ? 'bg-primary w-4' : 'bg-muted-foreground/30'}`}
+              onClick={() => api?.scrollTo(i)}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Index() {
   const { user } = useAuth();
@@ -126,23 +190,7 @@ export default function Index() {
       <section className="py-10 sm:py-14 px-4 gradient-mesh relative noise-overlay">
         <div className="max-w-4xl mx-auto relative z-10">
           <h2 className="font-display text-lg sm:text-2xl font-extrabold text-foreground mb-6 sm:mb-8 tracking-tight">Destaques</h2>
-          <div className="flex gap-5 sm:gap-8 overflow-x-auto pb-4 scrollbar-hide">
-            {highlights.map((item, index) => (
-              <motion.div
-                key={item.label}
-                className="flex flex-col items-center gap-2.5 min-w-[72px]"
-                initial={{ opacity: 0, scale: 0.7, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-card flex items-center justify-center shadow-premium border-gradient conic-border">
-                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground text-center tracking-wide uppercase">{item.label}</span>
-              </motion.div>
-            ))}
-          </div>
+          <HighlightsCarousel highlights={highlights} />
         </div>
       </section>
 
