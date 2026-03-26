@@ -1,7 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Truck, Key, Circle, RotateCcw, Package, MapPin, Phone, Car, Star } from 'lucide-react';
-import { GlassContainer } from '@/components/GlassContainer';
 
 interface RequestCardProps {
   id: string;
@@ -52,8 +51,7 @@ export function RequestCard({
   const statusInfo = statusConfig[status] || { color: 'bg-muted text-muted-foreground', label: status };
 
   return (
-    <GlassContainer cornerRadius={16} blurAmount={0.1} saturation={120} displacementScale={48}>
-    <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-border/50 accent-bar hover:shadow-premium transition-all duration-300 bg-card/30 ${showActions === 'available' ? 'glow-pulse' : ''}`}>
+    <div className={`gradient-card backdrop-blur rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-border accent-bar hover:shadow-premium transition-all duration-300 ${showActions === 'available' ? 'glow-pulse' : ''}`}>
       <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2 pl-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary/20 to-glow/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
@@ -129,6 +127,5 @@ export function RequestCard({
         </div>
       )}
     </div>
-    </GlassContainer>
   );
 }

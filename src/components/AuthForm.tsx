@@ -7,7 +7,6 @@ import { Footer } from '@/components/Footer';
 import { signUp, signIn } from '@/lib/auth';
 import logoSempre from '@/assets/logo-sempre.png';
 import { toast } from 'sonner';
-import { GlassContainer } from '@/components/GlassContainer';
 
 interface AuthFormProps {
   type: 'login' | 'signup';
@@ -67,8 +66,7 @@ export function AuthForm({ type, role }: AuthFormProps) {
 
       {/* Form Card */}
       <div className="flex-1 flex items-start justify-center px-4 -mt-8 sm:-mt-10 relative z-20">
-        <GlassContainer cornerRadius={24} blurAmount={0.12} saturation={125} displacementScale={56}>
-        <div className="w-full max-w-md bg-card/40 rounded-3xl shadow-elevated border border-border/50 p-6 sm:p-8">
+        <div className="w-full max-w-md bg-card rounded-3xl shadow-elevated border border-border p-6 sm:p-8">
           <div className="text-center mb-5 sm:mb-6">
             <h2 className="font-display text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
               {type === 'login' ? 'Entrar' : 'Criar Conta'}
@@ -163,7 +161,6 @@ export function AuthForm({ type, role }: AuthFormProps) {
             </Link>
           </div>
         </div>
-        </GlassContainer>
       </div>
       <Footer />
     </div>

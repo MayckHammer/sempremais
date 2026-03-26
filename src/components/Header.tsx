@@ -6,7 +6,6 @@ import { LogOut, User, Building2, Menu } from 'lucide-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useMemo, useState } from 'react';
-import { GlassContainer } from '@/components/GlassContainer';
 
 export function Header() {
   const { user } = useAuth();
@@ -68,11 +67,9 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-primary-foreground/10">
-      <GlassContainer cornerRadius={0} blurAmount={0.15} saturation={140} displacementScale={48} overLight>
-        <div className="bg-primary/85 text-primary-foreground">
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
+    <header className="bg-primary/95 backdrop-blur-xl text-primary-foreground sticky top-0 z-40 border-b border-primary-foreground/10">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center group">
             <img
               src={logoSempre}
@@ -139,9 +136,7 @@ export function Header() {
             </Sheet>
           </div>
         </div>
-          </div>
-        </div>
-      </GlassContainer>
+      </div>
     </header>
   );
 }

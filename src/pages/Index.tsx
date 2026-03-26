@@ -12,7 +12,6 @@ import Autoplay from 'embla-carousel-autoplay';
 import UnicornScene from 'unicornstudio-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import logoSempreText from '@/assets/logo-sempre-text.png';
-import { GlassContainer } from '@/components/GlassContainer';
 
 type HighlightItem = { icon: React.ElementType; label: string };
 
@@ -54,11 +53,9 @@ function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
-                <GlassContainer cornerRadius={32} blurAmount={0.08} saturation={115} displacementScale={40}>
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-card/40 flex items-center justify-center shadow-premium border-gradient conic-border">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-card flex items-center justify-center shadow-premium border-gradient conic-border">
                   <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                 </div>
-                </GlassContainer>
                 <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground text-center tracking-wide uppercase">{item.label}</span>
               </motion.div>
             </CarouselItem>
@@ -151,9 +148,8 @@ export default function Index() {
             style={{ y: cardY }}
             className="relative"
           >
-            <GlassContainer cornerRadius={24} blurAmount={0.12} saturation={125} displacementScale={56}>
             <motion.div
-              className="relative bg-secondary/60 rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-elevated mx-auto max-w-lg"
+              className="relative bg-secondary/80 backdrop-blur-md rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-elevated mx-auto max-w-lg"
               initial={{ opacity: 0, y: 30, rotate: -1 }}
               animate={{ opacity: 1, y: 0, rotate: 0 }}
               transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -190,7 +186,6 @@ export default function Index() {
                 )}
               </div>
             </motion.div>
-            </GlassContainer>
           </motion.div>
         </div>
       </section>
@@ -234,11 +229,10 @@ export default function Index() {
           <h2 className="font-display text-lg sm:text-2xl font-extrabold text-foreground mb-5 sm:mb-8 tracking-tight">Nossos Serviços</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {services.map((service, index) => (
-              <GlassContainer cornerRadius={16} blurAmount={0.1} saturation={120} displacementScale={48}>
               <motion.div
                 key={service.title}
-                className="group flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl bg-card/30 border border-border/50 shadow-premium
-                   hover:shadow-elevated hover:border-primary/20 transition-all duration-300 cursor-pointer"
+                className="group flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl bg-card border border-border shadow-premium
+                  hover:shadow-elevated hover:border-primary/20 transition-all duration-300 cursor-pointer"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -256,7 +250,6 @@ export default function Index() {
                   <span className="text-[10px] sm:text-xs text-muted-foreground font-body mt-0.5 block">{service.desc}</span>
                 </div>
               </motion.div>
-              </GlassContainer>
             ))}
           </div>
         </div>
@@ -265,7 +258,6 @@ export default function Index() {
       {/* CTA */}
       <section className="py-12 sm:py-20 px-4">
         <div className="max-w-4xl mx-auto">
-          <GlassContainer cornerRadius={24} blurAmount={0.1} saturation={120} displacementScale={48}>
           <motion.div
             className="gradient-mesh-cta rounded-3xl p-8 sm:p-14 text-center relative overflow-hidden noise-overlay"
             initial={{ opacity: 0, y: 20 }}
@@ -301,7 +293,6 @@ export default function Index() {
               </div>
             </div>
           </motion.div>
-          </GlassContainer>
         </div>
       </section>
 

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
-import { GlassContainer } from '@/components/GlassContainer';
 
 interface RatingModalProps {
   open: boolean;
@@ -30,9 +29,7 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="border-none bg-transparent p-0 max-w-sm mx-4 sm:mx-auto shadow-none">
-        <GlassContainer cornerRadius={24} blurAmount={0.14} saturation={130} displacementScale={56}>
-          <div className="bg-card/40 border border-border/50 rounded-2xl shadow-elevated p-6">
+      <DialogContent className="glass-strong border-border max-w-sm mx-4 sm:mx-auto rounded-2xl shadow-elevated">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl text-foreground text-center font-display font-extrabold tracking-tight">
             Avalie o Atendimento
@@ -68,8 +65,6 @@ export function RatingModal({ open, onClose, providerName, onSubmit }: RatingMod
         >
           {loading ? 'Enviando...' : 'Confirmar Avaliação'}
         </Button>
-          </div>
-        </GlassContainer>
       </DialogContent>
     </Dialog>
   );
