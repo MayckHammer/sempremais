@@ -40,18 +40,55 @@ export default function Index() {
 
       {/* Hero */}
       <section ref={heroRef} className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0">
-          <svg viewBox="0 0 400 500" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
-            <path
-              d="M0,0 L180,0 C200,30 220,70 210,120 C195,185 140,210 160,280 C175,335 200,370 170,420 C150,455 100,475 0,500 Z"
-              fill="hsl(207 78% 38%)"
-            />
-            <path
-              d="M400,0 L250,0 C235,25 225,65 235,120 C250,190 310,220 290,290 C275,345 240,375 265,430 C280,465 340,485 400,500 Z"
-              fill="hsl(220 5% 46%)"
-              opacity="0.88"
-            />
-          </svg>
+        <div className="absolute inset-0 overflow-hidden bg-white">
+          {/* Blob azul principal */}
+          <motion.div
+            className="absolute w-[70vw] h-[70vw] sm:w-[50vw] sm:h-[50vw] rounded-full opacity-90"
+            style={{ background: 'hsl(207 78% 38%)', filter: 'blur(60px)' }}
+            animate={{
+              x: ['-20%', '15%', '-10%', '20%', '-20%'],
+              y: ['-15%', '25%', '40%', '10%', '-15%'],
+              scale: [1, 1.15, 0.95, 1.1, 1],
+              borderRadius: ['40% 60% 70% 30%', '60% 40% 30% 70%', '50% 50% 60% 40%', '30% 70% 40% 60%', '40% 60% 70% 30%'],
+            }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+          />
+          {/* Blob cinza */}
+          <motion.div
+            className="absolute w-[55vw] h-[55vw] sm:w-[40vw] sm:h-[40vw] rounded-full opacity-80 right-0 top-0"
+            style={{ background: 'hsl(220 5% 46%)', filter: 'blur(50px)' }}
+            animate={{
+              x: ['10%', '-20%', '5%', '-15%', '10%'],
+              y: ['10%', '-10%', '35%', '15%', '10%'],
+              scale: [1, 0.9, 1.2, 1.05, 1],
+              borderRadius: ['60% 40% 50% 50%', '40% 60% 40% 60%', '50% 50% 70% 30%', '70% 30% 50% 50%', '60% 40% 50% 50%'],
+            }}
+            transition={{ duration: 25, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+          />
+          {/* Blob branco */}
+          <motion.div
+            className="absolute w-[45vw] h-[45vw] sm:w-[35vw] sm:h-[35vw] rounded-full opacity-70 left-1/4 top-1/3"
+            style={{ background: 'hsl(0 0% 100% / 0.7)', filter: 'blur(50px)' }}
+            animate={{
+              x: ['0%', '30%', '-15%', '20%', '0%'],
+              y: ['0%', '-20%', '15%', '30%', '0%'],
+              scale: [1, 1.1, 0.85, 1.15, 1],
+              borderRadius: ['50% 50% 40% 60%', '30% 70% 60% 40%', '60% 40% 50% 50%', '40% 60% 30% 70%', '50% 50% 40% 60%'],
+            }}
+            transition={{ duration: 18, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+          />
+          {/* Blob azul claro (glow) */}
+          <motion.div
+            className="absolute w-[30vw] h-[30vw] sm:w-[25vw] sm:h-[25vw] rounded-full opacity-60 left-1/2 top-1/2"
+            style={{ background: 'hsl(207 90% 55%)', filter: 'blur(45px)' }}
+            animate={{
+              x: ['-50%', '10%', '-30%', '20%', '-50%'],
+              y: ['-50%', '-20%', '10%', '-40%', '-50%'],
+              scale: [0.9, 1.2, 1, 1.15, 0.9],
+              borderRadius: ['50%', '40% 60% 50% 50%', '60% 40% 40% 60%', '45% 55% 60% 40%', '50%'],
+            }}
+            transition={{ duration: 15, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+          />
           {/* Noise texture */}
           <div className="absolute inset-0 opacity-[0.025]" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
