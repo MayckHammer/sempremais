@@ -8,6 +8,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import Autoplay from 'embla-carousel-autoplay';
 import UnicornScene from 'unicornstudio-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import logoSempreText from '@/assets/logo-sempre-text.png';
@@ -15,6 +16,7 @@ import logoSempreText from '@/assets/logo-sempre-text.png';
 type HighlightItem = { icon: React.ElementType; label: string };
 
 function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
+  const autoplayPlugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true }));
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -37,6 +39,7 @@ function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
     <div>
       <Carousel
         setApi={setApi}
+        plugins={[autoplayPlugin.current]}
         opts={{ align: 'start', loop: true }}
         className="w-full"
       >
