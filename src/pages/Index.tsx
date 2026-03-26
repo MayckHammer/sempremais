@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRef } from 'react';
 import logoSempre from '@/assets/logo-sempre.png';
+import logoSempreText from '@/assets/logo-sempre-text.png';
 
 export default function Index() {
   const { user } = useAuth();
