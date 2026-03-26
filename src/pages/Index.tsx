@@ -5,8 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Truck, Key, Circle, RotateCcw, Package, MapPin, ArrowRight, Handshake, Shield, Clock, Star, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import logoSempre from '@/assets/logo.png';
-import SempreBackground from '@/components/SempreBackground';
+import logoSempre from '@/assets/logo-sempre.png';
 
 export default function Index() {
   const { user } = useAuth();
@@ -33,21 +32,38 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <SempreBackground>
-        <div className="px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
+      {/* Hero Section - S-Curve inspired */}
+      <section className="relative overflow-hidden bg-white">
+        {/* S-curve background with white gap */}
+        <div className="absolute inset-0">
+          <svg viewBox="0 0 400 500" className="absolute w-full h-full" preserveAspectRatio="xMidYMid slice">
+            {/* Blue side (left) */}
+            <path
+              d="M0,0 L280,0 C260,50 200,120 180,180 C155,260 100,300 130,370 C150,420 80,460 0,500 Z"
+              fill="hsl(207 78% 38%)"
+            />
+            {/* Gray side (right) */}
+            <path
+              d="M400,0 L320,0 C300,50 240,120 220,180 C195,260 250,320 230,390 C215,440 300,470 400,500 Z"
+              fill="hsl(220 5% 46%)"
+              opacity="0.9"
+            />
+          </svg>
+        </div>
+
+        <div className="relative z-10 px-4 pt-8 sm:pt-16 pb-12 sm:pb-20 max-w-4xl mx-auto text-center">
           <motion.img
             src={logoSempre}
             alt="Sempre+ Assistências e Benefícios"
             className="mx-auto mb-8 sm:mb-12 w-64 sm:w-80 md:w-96 object-contain"
-            style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           />
 
+          {/* Featured card */}
           <motion.div
-            className="bg-white/20 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
+            className="bg-secondary/80 backdrop-blur-sm rounded-3xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-2xl mx-auto max-w-lg"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -67,7 +83,7 @@ export default function Index() {
               </Link>
               {!user && (
                 <Link to="/cadastro/prestador">
-                  <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 rounded-xl w-full font-display font-bold">
+                  <Button size="lg" variant="outline" className="border-white/40 text-primary hover:bg-white/10 rounded-xl w-full font-display font-bold">
                     Sou Prestador
                   </Button>
                 </Link>
@@ -75,7 +91,7 @@ export default function Index() {
             </div>
           </motion.div>
         </div>
-      </SempreBackground>
+      </section>
 
       {/* Destaques - Horizontal scroll circles */}
       <section className="py-8 sm:py-12 px-4">

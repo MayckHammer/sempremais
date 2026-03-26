@@ -1,39 +1,31 @@
 
 
-# Corrigir Background e Logo do Hero
+# Redesign do Background Hero com Curva em "S" Branca
 
-## Problemas identificados
+## O que será feito
 
-1. **Logo aparece como retângulo branco** — a imagem `logo-sempre.png` com `filter: brightness(0) invert(1)` pode estar sendo renderizada como um bloco branco se o PNG não tiver transparência adequada, ou a imagem pode não estar carregando
-2. **Símbolo S quase invisível no fundo** — opacidade 0.12 e 0.07 são muito baixas, especialmente em mobile (390px) onde o SVG fica pequeno
-3. **Gradiente de fade branco (35%)** cobre boa parte do conteúdo na parte inferior
+Redesenhar o SVG do hero para criar uma faixa branca em forma de "S" que serpenteia entre a área azul (esquerda) e a área cinza (direita), seguindo o mesmo conceito visual do "S" da logo. O desenho amarelo do usuário mostra claramente o caminho: a curva branca entra pela esquerda no topo, curva para a direita no meio, e volta para a esquerda embaixo — criando a separação orgânica entre azul e cinza.
 
-## Alterações
+## Alteração
 
-### 1. Aumentar visibilidade dos símbolos S decorativos (`SempreBackground.tsx`)
+**Arquivo: `src/pages/Index.tsx`** (linhas 38-42)
 
-- Aumentar opacidade da camada principal de `0.12` para `0.18`
-- Aumentar opacidade da camada secundária de `0.07` para `0.12`
-- Ajustar posicionamento para mobile: camada principal mais centralizada (`right: -10%` em vez de `-20%`)
-- Reduzir o fade branco inferior de `35%` para `20%` para não cobrir tanto
+Substituir os 2 paths atuais por 3 camadas:
+1. **Fundo azul** (lado esquerdo) — path que cobre a metade esquerda com curva S
+2. **Fundo cinza** (lado direito) — path que cobre a metade direita com curva S oposta
+3. **Espaço branco** entre eles — criado naturalmente pelo gap entre os dois paths, mostrando o fundo branco da página
 
-### 2. Corrigir exibição da logo (`Index.tsx`)
+O SVG será redesenhado com curvas Bézier que formam um "S" fluido, onde:
+- No topo, o azul domina ~70% da largura
+- No meio, as cores se cruzam com a curva S branca passando pelo centro
+- Na base, o cinza domina mais à direita e o azul à esquerda
 
-- Verificar se o filtro CSS está causando o retângulo branco — se a logo `logo-sempre.png` tem fundo branco (não transparente), o `brightness(0) invert(1)` transforma tudo em branco
-- Solução: usar a logo sem filtro se já tiver cores adequadas, ou usar `logo-watermark.png` / `logo-alt.png` se for uma versão branca da logo
-
-### 3. Ajustar card do hero
-
-- Alterar o card de `bg-white/15` para `bg-white/20` para melhor contraste e legibilidade
+A curva branca terá uma largura visível (~30-40px no viewBox) para ser percebida como elemento de design, não apenas uma linha divisória.
 
 ## Detalhes Técnicos
 
-| Parâmetro | Antes | Depois |
-|-----------|-------|--------|
-| Opacidade S grande | 0.12 | 0.18 |
-| Opacidade S pequeno | 0.07 | 0.12 |
-| Posição S grande (right) | -20% | -10% |
-| Fade branco (height) | 35% | 20% |
-| Card hero bg | white/15 | white/20 |
-| Logo filter | brightness(0) invert(1) | Verificar alternativas nos assets |
+- ViewBox mantido em `0 0 400 500`
+- Curvas Bézier cúbicas (`C`) para suavidade
+- Sem alteração no conteúdo (logo, card, botões)
+- O fundo da `<section>` será `bg-white` para que o espaço entre os paths apareça branco
 
