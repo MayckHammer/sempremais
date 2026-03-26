@@ -379,4 +379,13 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Hide UnicornStudio watermark */
+  .unicorn-container [class*="watermark"],
+  .unicorn-container a[href*="unicorn.studio"],
+  .unicorn-container > div > div > div:last-child a {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 }
