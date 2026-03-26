@@ -19,12 +19,12 @@ export function Header() {
   };
 
   const MobileMenu = () => (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-2 p-4">
       {user ? (
         <>
           {user.role === 'client' && (
             <Link to="/cliente" onClick={() => setOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
                 <User className="w-5 h-5 mr-3 text-primary" />
                 Minha Área
               </Button>
@@ -32,13 +32,13 @@ export function Header() {
           )}
           {user.role === 'provider' && (
             <Link to="/prestador" onClick={() => setOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
                 <Building2 className="w-5 h-5 mr-3 text-primary" />
                 Painel Prestador
               </Button>
             </Link>
           )}
-          <Button variant="ghost" onClick={handleSignOut} className="w-full justify-start">
+          <Button variant="ghost" onClick={handleSignOut} className="w-full justify-start rounded-xl hover:bg-destructive/5">
             <LogOut className="w-5 h-5 mr-3 text-muted-foreground" />
             Sair
           </Button>
@@ -46,13 +46,13 @@ export function Header() {
       ) : (
         <>
           <Link to="/login/cliente" onClick={() => setOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
               <User className="w-5 h-5 mr-3" />
               Entrar como Cliente
             </Button>
           </Link>
           <Link to="/login/prestador" onClick={() => setOpen(false)}>
-            <Button variant="outline" className="w-full justify-start border-primary text-primary">
+            <Button variant="outline" className="w-full justify-start border-primary/20 text-primary rounded-xl">
               <Building2 className="w-5 h-5 mr-3" />
               Entrar como Prestador
             </Button>
@@ -63,21 +63,26 @@ export function Header() {
   );
 
   return (
-    <header className="bg-primary text-primary-foreground sticky top-0 z-40">
+    <header className="bg-primary/95 backdrop-blur-xl text-primary-foreground sticky top-0 z-40 border-b border-primary-foreground/10">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center">
-            <img src={logoSempre} alt="Sempre+ Assistências e Benefícios" className="h-8 sm:h-10 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+          <Link to="/" className="flex items-center group">
+            <img
+              src={logoSempre}
+              alt="Sempre+ Assistências e Benefícios"
+              className="h-8 sm:h-10 object-contain transition-transform duration-300 group-hover:scale-105"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
           </Link>
 
           <div className="flex items-center gap-2">
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1.5">
               {user ? (
                 <>
                   {user.role === 'client' && (
                     <Link to="/cliente">
-                      <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10">
+                      <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10 font-display font-semibold">
                         <User className="w-4 h-4 mr-2" />
                         Minha Área
                       </Button>
@@ -85,7 +90,7 @@ export function Header() {
                   )}
                   {user.role === 'provider' && (
                     <Link to="/prestador">
-                      <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10">
+                      <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10 font-display font-semibold">
                         <Building2 className="w-4 h-4 mr-2" />
                         Painel
                       </Button>
@@ -98,13 +103,13 @@ export function Header() {
               ) : (
                 <>
                   <Link to="/login/cliente">
-                    <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10">
+                    <Button variant="ghost" size="sm" className="rounded-xl text-primary-foreground hover:bg-primary-foreground/10 font-display font-semibold">
                       <User className="w-4 h-4 mr-2" />
                       Cliente
                     </Button>
                   </Link>
                   <Link to="/login/prestador">
-                    <Button variant="outline" size="sm" className="rounded-xl border-primary-foreground/30 text-primary hover:bg-primary-foreground/10">
+                    <Button variant="outline" size="sm" className="rounded-xl border-primary-foreground/25 text-primary-foreground hover:bg-primary-foreground/10 font-display font-semibold">
                       <Building2 className="w-4 h-4 mr-2" />
                       Prestador
                     </Button>
@@ -120,7 +125,7 @@ export function Header() {
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-72 bg-card border-border">
+              <SheetContent side="right" className="w-72 glass-strong border-border">
                 <div className="flex items-center gap-3 mb-6 pt-4">
                   <img src={logoSempre} alt="Sempre+" className="h-8 object-contain" />
                 </div>
