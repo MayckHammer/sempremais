@@ -127,23 +127,7 @@ export default function Index() {
       <section className="py-10 sm:py-14 px-4 gradient-mesh relative noise-overlay">
         <div className="max-w-4xl mx-auto relative z-10">
           <h2 className="font-display text-lg sm:text-2xl font-extrabold text-foreground mb-6 sm:mb-8 tracking-tight">Destaques</h2>
-          <div className="flex gap-5 sm:gap-8 overflow-x-auto pb-4 scrollbar-hide">
-            {highlights.map((item, index) => (
-              <motion.div
-                key={item.label}
-                className="flex flex-col items-center gap-2.5 min-w-[72px]"
-                initial={{ opacity: 0, scale: 0.7, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-card flex items-center justify-center shadow-premium border-gradient conic-border">
-                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground text-center tracking-wide uppercase">{item.label}</span>
-              </motion.div>
-            ))}
-          </div>
+          <HighlightsCarousel highlights={highlights} />
         </div>
       </section>
 
