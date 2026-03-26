@@ -80,6 +80,7 @@ function HighlightsCarousel({ highlights }: { highlights: HighlightItem[] }) {
 
 export default function Index() {
   const { user } = useAuth();
+  const dashboardPath = user?.role === 'provider' ? '/prestador' : '/cliente';
   const isMobile = useIsMobile();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
@@ -170,7 +171,7 @@ export default function Index() {
                 Conectamos você aos melhores prestadores da sua região com agilidade e segurança.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link to={user ? (user.role === 'client' ? '/cliente' : '/prestador') : '/cadastro/cliente'}>
+                <Link to={user ? dashboardPath : '/cadastro/cliente'}>
                   <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-xl w-full font-display font-bold btn-glow shadow-premium">
                     {user ? 'Minha Área' : 'Preciso de Ajuda'}
                     <ArrowRight className="w-4 h-4 ml-1" />

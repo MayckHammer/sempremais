@@ -32,7 +32,7 @@ export function AuthForm({ type, role }: AuthFormProps) {
         toast.success('Conta criada! Verifique seu email para confirmar o cadastro.');
         navigate(`/login/${role === 'client' ? 'cliente' : 'prestador'}`);
       } else {
-        await signIn(email, password);
+        await signIn(email, password, role);
         toast.success('Login realizado com sucesso!');
         navigate(role === 'client' ? '/cliente' : '/prestador');
       }
