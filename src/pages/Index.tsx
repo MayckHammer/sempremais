@@ -43,7 +43,7 @@ export default function Index() {
 
       {/* Hero */}
       <section ref={heroRef} className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden unicorn-container">
           <UnicornScene
             projectId="95VHuHaMwQgzQ7FNBU4u"
             width="100%"
