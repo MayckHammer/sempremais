@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin } from 'lucide-react';
+import { GlassContainer } from '@/components/GlassContainer';
 
 interface ServiceRequestModalProps {
   open: boolean;
@@ -60,7 +61,9 @@ export function ServiceRequestModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-card border-border max-w-lg mx-3 sm:mx-auto max-h-[90vh] overflow-y-auto">
+      <DialogContent className="border-none bg-transparent p-0 max-w-lg mx-3 sm:mx-auto shadow-none max-h-[90vh] overflow-y-auto">
+        <GlassContainer cornerRadius={24} blurAmount={0.14} saturation={130} displacementScale={56}>
+          <div className="bg-card/40 border border-border/50 rounded-2xl p-6">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl text-foreground">
             Solicitar {serviceLabels[serviceType] || serviceType}
@@ -131,6 +134,8 @@ export function ServiceRequestModal({
             {loading ? 'Enviando...' : 'Enviar Solicitação'}
           </Button>
         </form>
+          </div>
+        </GlassContainer>
       </DialogContent>
     </Dialog>
   );
