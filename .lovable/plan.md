@@ -1,41 +1,35 @@
 
 
-# Corrigir ocultação do watermark UnicornStudio
+# Carousel nos Destaques (Mobile)
 
 ## Problema
-
-Os seletores CSS atuais são muito específicos e não estão atingindo o elemento correto do badge "Made with unicorn.studio". O badge aparece como um elemento flutuante na parte inferior da cena.
+Na tela mobile (390px), os 6 ícones de destaques ficam numa linha horizontal com `overflow-x-auto`, mas sem indicação visual de que há mais itens — o usuário não percebe que pode rolar.
 
 ## Solução
+Usar o componente `Carousel` (Embla) já existente no projeto (`src/components/ui/carousel.tsx`) para exibir os destaques em um carrossel com navegação por swipe no mobile. No desktop, manter todos visíveis.
 
-Ampliar os seletores CSS em `src/index.css` para cobrir mais variações do watermark:
+## Alterações em `src/pages/Index.tsx`
 
-- Adicionar seletor para o container inteiro do último filho (não só o `a` dentro dele)
-- Adicionar seletores por atributo `style` (posição fixed/absolute no bottom)
-- Adicionar seletor genérico para qualquer elemento com texto "unicorn" via `div[style*="bottom"]`
+1. **Importar** `Carousel, CarouselContent, CarouselItem` de `@/components/ui/carousel`
+2. **Substituir** o `<div className="flex gap-5 overflow-x-auto ...">` pelo componente Carousel
+3. Cada `CarouselItem` mostra **3 ícones** lado a lado (2 slides de 3), usando `basis-1/3` nos items internos
+4. Configurar `opts={{ align: 'start', loop: true }}` para swipe contínuo
+5. Adicionar **dots indicadores** abaixo (pequenos círculos mostrando slide ativo) para sinalizar que há mais conteúdo
+6. No desktop (`sm:`), mostrar todos os 6 de uma vez sem carrossel — usar classe condicional ou mostrar o carrossel com todos visíveis
 
-### `src/index.css` — Substituir o bloco existente
-
-```css
-.unicorn-container [class*="watermark"],
-.unicorn-container [class*="Watermark"],
-.unicorn-container [class*="badge"],
-.unicorn-container a[href*="unicorn.studio"],
-.unicorn-container > div > div > div:last-child,
-.unicorn-container > div > div:last-child > div:last-child,
-.unicorn-container div[style*="bottom"] a,
-.unicorn-container div[style*="position: fixed"],
-.unicorn-container div[style*="position: absolute"][style*="bottom"] {
-  display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-}
+### Estrutura resultante (mobile)
+```text
+<Carousel opts={{ align: 'start', loop: true }}>
+  <CarouselContent>
+    <CarouselItem className="basis-1/3"> → ícone 1 </CarouselItem>
+    <CarouselItem className="basis-1/3"> → ícone 2 </CarouselItem>
+    ...6 items, 3 visíveis por vez
+  </CarouselContent>
+  <!-- Dots indicadores -->
+</Carousel>
 ```
 
 | Arquivo | Mudança |
 |---------|---------|
-| `src/index.css` | Ampliar seletores CSS para ocultar watermark |
+| `src/pages/Index.tsx` | Trocar flex scroll por Carousel com dots |
 
