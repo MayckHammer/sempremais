@@ -74,7 +74,7 @@ export default function Index() {
           <Link to="/login/cliente" className="block w-full">
             <GlowCard
               glowColor="207 78 38"
-              backgroundColor="rgba(255,255,255,0.15)"
+              backgroundColor="rgba(255,255,255,0.9)"
               borderRadius={16}
               glowRadius={25}
               glowIntensity={0.4}
