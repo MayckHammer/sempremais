@@ -48,7 +48,7 @@ export default function Index() {
         >
           <Link to="/cadastro/cliente" className="block w-full">
             <GlowCard
-              glowColor="207 78 55"
+              glowColor="207 78 38"
               backgroundColor="rgba(255,255,255,0.9)"
               borderRadius={16}
               glowRadius={25}
@@ -56,7 +56,7 @@ export default function Index() {
               coneSpread={20}
               fillOpacity={0.15}
               animated
-              colors={['#1a6fb5', '#3b9fe0', '#d4a853']}
+              colors={['#1a6fb5', '#4da8e8', '#ffffff']}
             >
               <div className="w-full py-4 text-center font-display font-bold text-base text-foreground">
                 Preciso de Assistência
@@ -73,7 +73,7 @@ export default function Index() {
         >
           <Link to="/login/cliente" className="block w-full">
             <GlowCard
-              glowColor="207 78 55"
+              glowColor="207 78 38"
               backgroundColor="rgba(255,255,255,0.15)"
               borderRadius={16}
               glowRadius={25}
@@ -81,7 +81,7 @@ export default function Index() {
               coneSpread={20}
               fillOpacity={0.15}
               animated
-              colors={['#1a6fb5', '#3b9fe0', '#d4a853']}
+              colors={['#1a6fb5', '#4da8e8', '#ffffff']}
             >
               <div className="w-full py-4 text-center font-display font-bold text-base text-foreground">
                 Sou Cliente - Entrar
