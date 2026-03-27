@@ -1,15 +1,10 @@
 
 
-# Efeito Glow Mais Sutil
+# Igualar Background do Botão "Sou Cliente - Entrar"
 
-## Alterações
+## Alteração
 
-**Arquivo: `src/pages/Index.tsx`** — Reduzir os parâmetros de intensidade nos dois GlowCards:
+**Arquivo: `src/pages/Index.tsx`, linha 77**
 
-- `glowIntensity`: 1.5 → 0.6
-- `glowRadius`: 50 → 25
-- `coneSpread`: 30 → 20
-- `fillOpacity`: adicionar com valor 0.15 (padrão atual é 0.5)
-
-Isso reduz o brilho, o alcance e a largura do cone de luz, tornando o efeito elegante mas discreto.
+Alterar o `backgroundColor` do segundo GlowCard de `"rgba(255,255,255,0.15)"` para `"rgba(255,255,255,0.9)"`, igualando ao primeiro botão.
 
