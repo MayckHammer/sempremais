@@ -1,71 +1,66 @@
 
 
-# Rastreamento em Tempo Real com Google Maps
+# Redesign da Tela Inicial — Layout Mobile App
 
 ## Visão Geral
 
-Implementar um sistema de rastreamento onde o cliente vê no mapa:
-1. Sua própria localização
-2. A localização do prestador em tempo real
-3. A rota entre os dois
-4. O tempo estimado de chegada (ETA)
+Substituir a landing page atual por uma tela estilo splash screen de app mobile, usando o background com a curva "S" (azul/cinza/branco) e a logo centralizada no topo, com botões e links de ação.
 
-## Abordagem Técnica
-
-### API Key do Google Maps
-- Será necessária uma **Google Maps API Key** com as APIs: Maps JavaScript, Directions, Geocoding
-- Usar a biblioteca `@react-google-maps/api` para renderizar o mapa no React
-- A key será armazenada como secret pública (`VITE_GOOGLE_MAPS_API_KEY`) no código
-
-### Banco de Dados — Atualização de localização do prestador
-- A tabela `providers` já possui `latitude` e `longitude`
-- Ativar **realtime** na tabela `providers` para que o cliente receba atualizações de posição em tempo real
-- O prestador enviará sua localização periodicamente (a cada 10s) via `navigator.geolocation.watchPosition`
-
-### Componentes Novos
-
-1. **`src/components/TrackingMap.tsx`** — Componente de mapa com:
-   - Marcador do cliente (pin azul)
-   - Marcador do prestador (pin laranja, atualizado em tempo real)
-   - Rota entre os dois (polyline via Directions API)
-   - Card com ETA estimado
-
-2. **`src/components/TrackingPanel.tsx`** — Painel lateral/inferior com:
-   - Nome do prestador
-   - ETA em minutos
-   - Status da viagem
-   - Barra de progresso
-
-### Fluxo
+## Layout Final (mobile-first)
 
 ```text
-Cliente solicita serviço → Prestador aceita
-                            ↓
-              Prestador ativa tracking (watchPosition)
-                            ↓
-              Localização salva no DB a cada 10s
-                            ↓
-              Cliente recebe via Realtime subscription
-                            ↓
-              Mapa atualiza marcador + rota + ETA
+┌─────────────────────────┐
+│  Background: curva "S"  │
+│  (sempre-fundo.webp)    │
+│                         │
+│      SEMPRE+            │
+│  ASSISTÊNCIAS E         │
+│    BENEFÍCIOS           │
+│                         │
+│                         │
+│  ┌───────────────────┐  │
+│  │ Preciso de        │  │
+│  │ Assistência       │  │
+│  └───────────────────┘  │
+│  ┌───────────────────┐  │
+│  │ Sou Cliente -     │  │
+│  │ Entrar            │  │
+│  └───────────────────┘  │
+│                         │
+│   Sou Prestador         │
+│   Quero me Cadastrar    │
+│                         │
+└─────────────────────────┘
 ```
 
-### Alterações por Arquivo
+## Alterações
+
+### 1. Copiar imagem de fundo
+- Copiar `user-uploads://sempre-fundo.webp` para `src/assets/sempre-fundo.webp`
+
+### 2. Reescrever `src/pages/Index.tsx`
+- Remover todo o conteúdo atual (Hero, Destaques, Serviços, CTA, Footer, Header)
+- Criar uma tela fullscreen (`min-h-screen`) mobile-first com:
+  - **Background**: imagem `sempre-fundo.webp` cobrindo a tela inteira (`bg-cover bg-center`)
+  - **Logo**: `logo-sempre-text.png` centralizada no terço superior
+  - **Botão 1**: "Preciso de Assistência" — estilo branco/cinza claro com cantos arredondados, leva para `/cadastro/cliente` (ou dashboard se logado)
+  - **Botão 2**: "Sou Cliente - Entrar" — mesmo estilo, leva para `/login/cliente`
+  - **Link texto 1**: "Sou Prestador" — leva para `/login/prestador`
+  - **Link texto 2**: "Quero me Cadastrar" — leva para `/cadastro/prestador`
+- Se o usuário já estiver logado, redirecionar para o dashboard correspondente
+
+### 3. Estilo dos botões
+- Fundo branco/cinza claro (`bg-white/90`), cantos bem arredondados (`rounded-2xl`)
+- Texto escuro, sem borda ou borda sutil
+- Sombra leve para profundidade
+- Largura fixa ~80% da tela, centralizados
+
+### 4. Links de texto
+- Cor branca ou cinza claro para contraste com o fundo
+- Fonte menor, centralizado, com `underline` ou sem
 
 | Arquivo | Mudança |
 |---------|---------|
-| `package.json` | Adicionar `@react-google-maps/api` |
-| DB Migration | `ALTER PUBLICATION supabase_realtime ADD TABLE providers` |
-| `src/components/TrackingMap.tsx` | **Novo** — Mapa com marcadores, rota e ETA |
-| `src/components/TrackingPanel.tsx` | **Novo** — Painel com info do prestador e ETA |
-| `src/pages/ClientDashboard.tsx` | Mostrar mapa quando solicitação estiver `accepted` |
-| `src/pages/ProviderDashboard.tsx` | Ativar `watchPosition` e enviar localização ao DB quando job ativo |
-
-### Pré-requisito do Usuário
-
-Você precisará de uma **Google Maps API Key** com as seguintes APIs habilitadas no Google Cloud Console:
-- Maps JavaScript API
-- Directions API
-
-Posso guiá-lo na criação dessa chave passo a passo.
+| `src/assets/sempre-fundo.webp` | **Novo** — background copiado |
+| `src/pages/Index.tsx` | Reescrita completa — tela splash mobile |
 
