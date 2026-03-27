@@ -52,7 +52,7 @@ export default function Index() {
               backgroundColor="rgba(255,255,255,0.9)"
               borderRadius={16}
               glowRadius={25}
-              glowIntensity={0.6}
+              glowIntensity={0.4}
               coneSpread={20}
               fillOpacity={0.15}
               animated
@@ -77,7 +77,7 @@ export default function Index() {
               backgroundColor="rgba(255,255,255,0.15)"
               borderRadius={16}
               glowRadius={25}
-              glowIntensity={0.6}
+              glowIntensity={0.4}
               coneSpread={20}
               fillOpacity={0.15}
               animated
