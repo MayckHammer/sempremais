@@ -42,13 +42,13 @@ export default function Index() {
         <div className="flex flex-col items-center gap-2 mt-2">
           <Link
             to="/login/prestador"
-            className="text-white/90 text-sm font-medium hover:text-white transition-colors"
+            className="text-primary text-sm font-medium hover:text-primary/80 transition-colors"
           >
             Sou Prestador
           </Link>
           <Link
             to="/cadastro/prestador"
-            className="text-white/70 text-sm font-medium hover:text-white transition-colors"
+            className="text-primary/80 text-sm font-medium hover:text-primary transition-colors"
           >
             Quero me Cadastrar
           </Link>
