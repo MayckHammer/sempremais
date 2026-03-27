@@ -145,7 +145,7 @@ export default function GlowCard({
       animateValue({ ease: easeInCubic, delay: 2500, duration: 1500, start: 100, end: 0,
         onUpdate: v => card.style.setProperty('--edge-proximity', String(v)),
         onEnd: () => {
-          if (!cancelled) setTimeout(runSweep, 500);
+          if (!cancelled) runSweep();
         },
       });
     }
