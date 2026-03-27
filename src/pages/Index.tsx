@@ -16,14 +16,17 @@ export default function Index() {
       className="min-h-screen flex flex-col items-center justify-between bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${sempreFundo})` }}
     >
-      {/* Logo area — upper third */}
-      <div className="flex-1 flex items-center justify-center pt-16">
+      {/* Logo — top position */}
+      <div className="pt-28 flex items-center justify-center">
         <img
           src={logoSempreText}
           alt="Sempre+ Assistências e Benefícios"
           className="w-64 sm:w-80 object-contain drop-shadow-lg brightness-0 invert"
         />
       </div>
+
+      {/* Spacer */}
+      <div className="flex-1" />
 
       {/* Actions — lower section */}
       <div className="w-full flex flex-col items-center gap-4 pb-16 px-8">
