@@ -21,7 +21,7 @@ export default function Index() {
         <img
           src={logoSempreText}
           alt="Sempre+ Assistências e Benefícios"
-          className="w-64 sm:w-80 object-contain drop-shadow-lg"
+          className="w-64 sm:w-80 object-contain drop-shadow-lg brightness-0 invert"
         />
       </div>
 
