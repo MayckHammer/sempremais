@@ -16,8 +16,8 @@ export default function Index() {
       className="min-h-screen flex flex-col items-center justify-between bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${sempreFundo})` }}
     >
-      {/* Logo area — upper third */}
-      <div className="flex-1 flex items-center justify-center pt-16">
+      {/* Logo — top position */}
+      <div className="pt-28 flex items-center justify-center">
         <img
           src={logoSempreText}
           alt="Sempre+ Assistências e Benefícios"
