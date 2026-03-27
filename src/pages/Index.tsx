@@ -17,7 +17,7 @@ export default function Index() {
       style={{ backgroundImage: `url(${sempreFundo})` }}
     >
       {/* Logo — top position */}
-      <div className="pt-28 flex items-center justify-center">
+      <div className="pt-28 flex items-center justify-center pl-8">
         <img
           src={logoSempreText}
           alt="Sempre+ Assistências e Benefícios"
