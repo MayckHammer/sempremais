@@ -2,6 +2,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import sempreFundo from '@/assets/sempre-fundo.webp';
+import GlowCard from '@/components/GlowCard';
 import logoSempreText from '@/assets/logo-sempre-text.png';
 
 export default function Index() {
