@@ -25,6 +25,9 @@ export default function Index() {
         />
       </div>
 
+      {/* Spacer */}
+      <div className="flex-1" />
+
       {/* Actions — lower section */}
       <div className="w-full flex flex-col items-center gap-4 pb-16 px-8">
         <Link to="/cadastro/cliente" className="w-full max-w-xs">
