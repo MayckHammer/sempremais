@@ -66,7 +66,7 @@ export default function Index() {
         >
           <Link to="/login/cliente" className="block w-full">
             <motion.button
-              className="w-full py-4 rounded-2xl bg-white/20 backdrop-blur-md text-white font-display font-bold text-base shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-white/30 relative overflow-hidden group"
+              className="w-full py-4 rounded-2xl bg-white/20 backdrop-blur-md text-foreground font-display font-bold text-base shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-white/30 relative overflow-hidden group"
               whileHover={{ scale: 1.03, boxShadow: '0 12px 40px rgba(0,0,0,0.18)', backgroundColor: 'rgba(255,255,255,0.3)' }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}
