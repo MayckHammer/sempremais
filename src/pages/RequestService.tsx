@@ -41,6 +41,11 @@ export default function RequestService() {
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
 
   useEffect(() => {
+    // Fetch pricing
+    supabase.from('service_pricing').select('*').then(({ data }) => {
+      if (data) setPricing(data as unknown as PricingRow[]);
+    });
+
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -61,6 +66,15 @@ export default function RequestService() {
       () => setOriginAddress('Não foi possível obter localização')
     );
   }, []);
+
+  useEffect(() => {
+    if (serviceType && pricing.length > 0) {
+      const found = pricing.find(p => p.service_type === serviceType);
+      setSelectedPrice(found ? Number(found.subscriber_price) : null);
+    } else {
+      setSelectedPrice(null);
+    }
+  }, [serviceType, pricing]);
 
   const handleSubmit = async () => {
     if (!serviceType) {
@@ -90,6 +104,8 @@ export default function RequestService() {
         latitude: coords.lat,
         longitude: coords.lng,
         description: `Destino: ${destinationAddress}`,
+        price: selectedPrice ?? 0,
+        is_subscriber: true,
       }).select('id').single();
 
       if (error) throw error;
