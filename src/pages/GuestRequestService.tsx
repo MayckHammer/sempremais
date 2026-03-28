@@ -107,7 +107,7 @@ export default function GuestRequestService() {
       if (!clientId) {
         // Quick signup for guest
         const tempPassword = `guest_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-        const result = await signUp(guestEmail, tempPassword, guestName, guestPhone, 'client' as const);
+        const result = await signUp(guestEmail, tempPassword, 'client', guestName, guestPhone);
         if (!result.user) throw new Error('Erro ao criar conta');
         clientId = result.user.id;
       }
