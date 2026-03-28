@@ -1,32 +1,50 @@
 
 
-# Ajuste do Header do Perfil + Dados do Usuário
+# Adicionar campos de veículo na tela de solicitação de assistência
 
 ## Problema
-O header azul com `pb-24` está muito alto, sobrepondo o primeiro accordion "Dados Pessoais". Além disso, o perfil do usuário `mayckhammersavecar@gmail.com` precisa ter nome "Mayck Hammer" e localização "Uberlândia - MG" cadastrados no banco.
+A tela `/assistencia` (RequestService) não possui campos para o cliente descrever o veículo. O usuário quer um select de tipo de veículo (Automóvel, Motocicleta, Picape, Caminhão, Outros) e campos de Marca, Modelo e Ano.
 
 ## Mudanças
 
-### 1. `src/pages/ClientProfile.tsx` — Reduzir altura do header
-- Alterar `pb-24` para `pb-16` no container do header azul
-- Reduzir `mt-5` do bloco avatar para `mt-3`
-- Isso diminui a área azul e libera espaço para o accordion ficar visível sem sobreposição
+### `src/pages/RequestService.tsx`
 
-### 2. Banco de dados — Atualizar perfil do usuário
-- Executar migration para atualizar o `full_name`, `city` e `state` do perfil vinculado ao email `mayckhammersavecar@gmail.com`:
+1. **Adicionar estados** para os novos campos:
+   - `vehicleType` (select): Automóvel, Motocicleta, Picape, Caminhão, Outros
+   - `vehicleBrand` (input): Marca
+   - `vehicleModel` (input): Modelo
+   - `vehicleYear` (input): Ano
 
-```sql
-UPDATE public.profiles
-SET full_name = 'Mayck Hammer',
-    city = 'Uberlândia',
-    state = 'MG'
-WHERE user_id = (
-  SELECT id FROM auth.users WHERE email = 'mayckhammersavecar@gmail.com'
-);
+2. **Adicionar campos no painel inferior**, entre o select de serviço e o campo de origem:
+   - Select "Tipo de veículo" com ícone de carro
+   - Inputs para Marca, Modelo e Ano (Marca e Modelo lado a lado, Ano abaixo ou junto)
+
+3. **Tornar o painel scrollável** — com tantos campos, o painel precisa de `overflow-y-auto` e `max-h` para não ultrapassar a tela
+
+4. **Incluir dados do veículo no submit** — concatenar no campo `vehicle_info` da tabela `service_requests`: ex. `"Automóvel - Honda Civic 2020"`
+
+5. **Pré-carregar dados do perfil** — se o usuário já tem `vehicle_brand`, `vehicle_model`, `vehicle_year` no perfil, preencher automaticamente
+
+### Layout do painel (mobile 390px)
+
+```text
+┌─────────────────────────────┐
+│  ── drag handle ──          │
+│  [Tipo de serviço      ▾]   │
+│  [Tipo de veículo      ▾]   │
+│  [Marca        ] [Modelo  ] │
+│  [Ano                     ] │
+│  💰 Valor assinante R$XX    │
+│  📍 Localização atual       │
+│  🧭 Localização de destino  │
+│  [ Solicitar Assistência ]  │
+└─────────────────────────────┘
 ```
 
-## Detalhes técnicos
-- A redução do padding (`pb-24` → `pb-16`) mantém a curva SVG e o avatar visíveis, mas recua o header ~32px
-- O nome e localização já são exibidos pelo código existente via `profile?.full_name` e `locationText`
-- A migration garante que os dados apareçam corretamente para esse usuário específico
+### Detalhes técnicos
+- Importar `Car` de lucide-react para ícone no select de veículo
+- Usar o mesmo estilo `rounded-xl h-12 border-border bg-muted/50` dos campos existentes
+- Marca e Modelo em `flex gap-3` lado a lado
+- Adicionar `overflow-y-auto max-h-[65vh]` no painel inferior para scroll quando necessário
+- No `handleSubmit`, montar `vehicle_info` como `"${vehicleType} - ${vehicleBrand} ${vehicleModel} ${vehicleYear}"`
 
