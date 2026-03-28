@@ -172,9 +172,33 @@ export default function ClientProfile() {
         </div>
 
         {/* Avatar + Name + Location */}
-        <div className="flex flex-col items-center mt-3 relative z-10">
-          <div className="w-20 h-20 rounded-full bg-primary-foreground/20 border-2 border-primary-foreground/40 flex items-center justify-center">
-            <User className="w-10 h-10 text-primary-foreground" />
+        <div className="flex flex-col items-center mt-3 relative z-10 pb-6">
+          <div className="relative">
+            <div className="w-20 h-20 rounded-full bg-primary-foreground/20 border-2 border-primary-foreground/40 flex items-center justify-center overflow-hidden">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-10 h-10 text-primary-foreground" />
+              )}
+            </div>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-accent border-2 border-primary flex items-center justify-center shadow-md"
+            >
+              {uploadingAvatar ? (
+                <Loader2 className="w-3.5 h-3.5 text-accent-foreground animate-spin" />
+              ) : (
+                <Camera className="w-3.5 h-3.5 text-accent-foreground" />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              className="hidden"
+            />
           </div>
           <p className="text-primary-foreground font-display font-bold text-lg mt-3">
             {profile?.full_name}
@@ -196,7 +220,7 @@ export default function ClientProfile() {
         </svg>
       </div>
 
-      <div className="px-4 -mt-6 pb-8 space-y-5">
+      <div className="px-4 -mt-2 pb-8 space-y-5">
         {/* Accordion Sections */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
