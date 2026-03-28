@@ -41,6 +41,7 @@ interface ProfileData {
   vehicle_year: string | null;
   vehicle_color: string | null;
   current_plan_id: string | null;
+  avatar_url: string | null;
 }
 
 export default function ClientProfile() {
@@ -50,6 +51,8 @@ export default function ClientProfile() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const updateProfile = (updated: Record<string, string | null>) => {
     setProfile(prev => prev ? { ...prev, ...updated } : prev);
