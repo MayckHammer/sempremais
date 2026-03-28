@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { signOut } from '@/lib/auth';
-import { User, Building2, LogOut } from 'lucide-react';
+import { User, Building2, LogOut, Shield, FileText } from 'lucide-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import {
   Carousel,
@@ -56,6 +56,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
   const availableRoles = useMemo(() => user?.roles ?? (user ? [user.role] : []), [user]);
   const hasClientAccess = availableRoles.includes('client');
   const hasProviderAccess = availableRoles.includes('provider');
+  const hasAdminAccess = availableRoles.includes('admin');
 
   const handleSignOut = async () => {
     await signOut();
@@ -109,6 +110,18 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                     <Link to="/prestador" onClick={() => setMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
                         <Building2 className="w-5 h-5 mr-3 text-primary" /> Painel Prestador
+                      </Button>
+                    </Link>
+                  )}
+                  <Link to="/cliente/solicitacoes" onClick={() => setMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
+                      <FileText className="w-5 h-5 mr-3 text-primary" /> Minhas Solicitações
+                    </Button>
+                  </Link>
+                  {hasAdminAccess && (
+                    <Link to="/admin" onClick={() => setMenuOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
+                        <Shield className="w-5 h-5 mr-3 text-primary" /> Painel Admin
                       </Button>
                     </Link>
                   )}
