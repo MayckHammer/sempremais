@@ -159,7 +159,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
             <img
               src={logoSempre}
               alt="Sempre+"
-              className="h-9 object-contain"
+              className="h-14 object-contain"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
 
