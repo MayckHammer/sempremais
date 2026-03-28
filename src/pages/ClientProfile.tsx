@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Phone, MapPin, Car, Crown, Check, Star } from 'lucide-react';
+import { ArrowLeft, User, Phone, MapPin, Car, Crown, Check, Star, Camera, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import {
@@ -41,6 +41,7 @@ interface ProfileData {
   vehicle_year: string | null;
   vehicle_color: string | null;
   current_plan_id: string | null;
+  avatar_url: string | null;
 }
 
 export default function ClientProfile() {
@@ -50,6 +51,8 @@ export default function ClientProfile() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const updateProfile = (updated: Record<string, string | null>) => {
     setProfile(prev => prev ? { ...prev, ...updated } : prev);
@@ -73,6 +76,53 @@ export default function ClientProfile() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Selecione uma imagem válida.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Imagem deve ter no máximo 5MB.');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const filePath = `${user.id}/avatar.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: avatarUrl })
+        .eq('user_id', user.id);
+
+      if (updateError) throw updateError;
+
+      setProfile(prev => prev ? { ...prev, avatar_url: avatarUrl } : prev);
+      toast.success('Foto atualizada!');
+    } catch {
+      toast.error('Erro ao enviar foto.');
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -122,9 +172,33 @@ export default function ClientProfile() {
         </div>
 
         {/* Avatar + Name + Location */}
-        <div className="flex flex-col items-center mt-3 relative z-10">
-          <div className="w-20 h-20 rounded-full bg-primary-foreground/20 border-2 border-primary-foreground/40 flex items-center justify-center">
-            <User className="w-10 h-10 text-primary-foreground" />
+        <div className="flex flex-col items-center mt-3 relative z-10 pb-6">
+          <div className="relative">
+            <div className="w-20 h-20 rounded-full bg-primary-foreground/20 border-2 border-primary-foreground/40 flex items-center justify-center overflow-hidden">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-10 h-10 text-primary-foreground" />
+              )}
+            </div>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-accent border-2 border-primary flex items-center justify-center shadow-md"
+            >
+              {uploadingAvatar ? (
+                <Loader2 className="w-3.5 h-3.5 text-accent-foreground animate-spin" />
+              ) : (
+                <Camera className="w-3.5 h-3.5 text-accent-foreground" />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              className="hidden"
+            />
           </div>
           <p className="text-primary-foreground font-display font-bold text-lg mt-3">
             {profile?.full_name}
@@ -146,7 +220,7 @@ export default function ClientProfile() {
         </svg>
       </div>
 
-      <div className="px-4 -mt-6 pb-8 space-y-5">
+      <div className="px-4 -mt-2 pb-8 space-y-5">
         {/* Accordion Sections */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
