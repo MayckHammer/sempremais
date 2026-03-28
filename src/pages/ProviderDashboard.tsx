@@ -63,6 +63,11 @@ export default function ProviderDashboard() {
     if (user) {
       fetchProviderData();
       fetchAvailableRequests();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (providerData) {
       fetchMyJobs();
 
       const channel = supabase
@@ -74,7 +79,7 @@ export default function ProviderDashboard() {
 
       return () => { supabase.removeChannel(channel); };
     }
-  }, [user]);
+  }, [providerData]);
 
   const fetchProviderData = async () => {
     if (!user) return;
