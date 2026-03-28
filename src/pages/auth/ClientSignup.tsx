@@ -143,7 +143,7 @@ export default function ClientSignup() {
         </div>
         <div className="relative z-10 text-center pt-10 pb-16 sm:pt-14 sm:pb-20 px-4">
           <Link to="/">
-            <img src={logoSempre} alt="Sempre+ Assistências e Benefícios" className="mx-auto h-16 sm:h-20 object-contain drop-shadow-2xl" style={{ filter: 'brightness(0) invert(1)' }} />
+            <img src={logoSempre} alt="Sempre+ Assistências e Benefícios" className="mx-auto h-16 sm:h-20 object-contain drop-shadow-2xl" />
           </Link>
         </div>
       </div>
