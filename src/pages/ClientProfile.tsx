@@ -184,7 +184,7 @@ export default function ClientProfile() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingAvatar}
-              className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-accent border-2 border-primary flex items-center justify-center shadow-md"
+              className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-muted-foreground border-2 border-primary flex items-center justify-center shadow-md"
             >
               {uploadingAvatar ? (
                 <Loader2 className="w-3.5 h-3.5 text-accent-foreground animate-spin" />
