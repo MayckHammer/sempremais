@@ -26,6 +26,15 @@ export function AuthForm({ type, role }: AuthFormProps) {
 
   const roleLabels = { client: 'Cliente', provider: 'Prestador' };
 
+  // Redirect authenticated users to their dashboard
+  if (!authLoading && user) {
+    const destination = user.roles.includes(role) 
+      ? (role === 'client' ? '/cliente' : '/prestador')
+      : (user.role === 'client' ? '/cliente' : '/prestador');
+    return <Navigate to={destination} replace />;
+  }
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
