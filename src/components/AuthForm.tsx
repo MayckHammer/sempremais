@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +15,8 @@ interface AuthFormProps {
 }
 
 export function AuthForm({ type, role }: AuthFormProps) {
+  const { user, loading: authLoading } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -22,6 +25,15 @@ export function AuthForm({ type, role }: AuthFormProps) {
   const navigate = useNavigate();
 
   const roleLabels = { client: 'Cliente', provider: 'Prestador' };
+
+  // Redirect authenticated users to their dashboard
+  if (!authLoading && user) {
+    const destination = user.roles.includes(role) 
+      ? (role === 'client' ? '/cliente' : '/prestador')
+      : (user.role === 'client' ? '/cliente' : '/prestador');
+    return <Navigate to={destination} replace />;
+  }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
