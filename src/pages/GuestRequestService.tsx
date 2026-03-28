@@ -197,7 +197,46 @@ export default function GuestRequestService() {
           </SelectContent>
         </Select>
 
-        {/* Price display */}
+        {/* Vehicle type */}
+        <div className="relative">
+          <Car className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Select value={vehicleType} onValueChange={setVehicleType}>
+            <SelectTrigger className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm">
+              <SelectValue placeholder="Tipo de veículo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Automóvel">Automóvel</SelectItem>
+              <SelectItem value="Motocicleta">Motocicleta</SelectItem>
+              <SelectItem value="Picape">Picape</SelectItem>
+              <SelectItem value="Caminhão">Caminhão</SelectItem>
+              <SelectItem value="Outros">Outros</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Vehicle details */}
+        <div className="flex gap-3">
+          <Input
+            value={vehicleBrand}
+            onChange={(e) => setVehicleBrand(e.target.value)}
+            placeholder="Marca"
+            className="rounded-xl h-11 border-border bg-muted/50 text-sm"
+          />
+          <Input
+            value={vehicleModel}
+            onChange={(e) => setVehicleModel(e.target.value)}
+            placeholder="Modelo"
+            className="rounded-xl h-11 border-border bg-muted/50 text-sm"
+          />
+        </div>
+        <Input
+          value={vehicleYear}
+          onChange={(e) => setVehicleYear(e.target.value)}
+          placeholder="Ano"
+          className="rounded-xl h-11 border-border bg-muted/50 text-sm"
+        />
+
+
         {selectedPrice !== null && (
           <div className="bg-muted/60 rounded-xl px-4 py-3 flex items-center justify-between">
             <span className="text-xs text-muted-foreground font-body">Valor do serviço</span>
