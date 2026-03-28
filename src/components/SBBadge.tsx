@@ -4,7 +4,7 @@ import { Coins } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
-export function SBBadge() {
+export function SBBadge({ position = 'bottom' }: { position?: 'bottom' | 'top' }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [balance, setBalance] = useState<number>(0);
