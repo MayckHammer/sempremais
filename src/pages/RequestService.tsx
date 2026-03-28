@@ -158,6 +158,22 @@ export default function RequestService() {
           </SelectContent>
         </Select>
 
+        {/* Price + SB's display */}
+        {selectedPrice !== null && (
+          <div className="bg-muted/60 rounded-xl px-4 py-3 flex items-center justify-between">
+            <div>
+              <span className="text-xs text-muted-foreground font-body">Valor assinante</span>
+              <p className="text-lg font-display font-extrabold text-foreground">
+                R$ {selectedPrice.toFixed(2).replace('.', ',')}
+              </p>
+            </div>
+            <div className="flex items-center gap-1 text-primary">
+              <Coins className="w-4 h-4" />
+              <span className="text-xs font-display font-bold">Você ganhará SB's</span>
+            </div>
+          </div>
+        )}
+
         {/* Origin */}
         <div className="relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
