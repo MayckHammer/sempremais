@@ -22,6 +22,7 @@ export default function Index() {
 
   const handleSecretDown = useCallback(() => {
     longPressTimer.current = setTimeout(() => {
+      if (navigator.vibrate) navigator.vibrate(50);
       navigate('/admin/login');
     }, 3000);
   }, [navigate]);
