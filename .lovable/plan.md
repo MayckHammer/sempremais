@@ -1,73 +1,40 @@
 
 
-# Carteira SB's - Exibição Global + Página "Minha Carteira"
+# SBBadge Flutuante com Animação Premium
 
 ## O que será feito
 
-1. **Componente global `SBBadge`** - badge compacto mostrando "00 SB's" visível no header de todas as páginas do cliente assinante (ClientHome, RequestService, ClientRequests, TrackingService)
-2. **Nova página `/cliente/carteira`** - "Minha Carteira" com saldo, histórico de transações e explicação do programa
-3. **Link no menu lateral** e no badge para acessar a carteira
+1. **Reposicionar no header**: Colocar a logo centralizada no header (onde o SBBadge estava) e transformar o SBBadge em um ícone flutuante fixo na tela.
 
-## Fluxograma SB's
+2. **SBBadge como ícone flutuante**:
+   - Posição fixa no canto inferior direito (estilo FAB)
+   - Cor preta com texto branco, tamanho maior (~56px)
+   - Ícone de moeda + saldo "00 SB's"
+   - Ao clicar, navega para `/cliente/carteira`
 
-```text
-┌─────────────────────────────────────────────────┐
-│              GERAÇÃO DE SB's                     │
-│                                                  │
-│  Cliente solicita serviço                        │
-│        ↓                                         │
-│  Prestador conclui (status = completed)          │
-│        ↓                                         │
-│  Trigger/lógica verifica:                        │
-│    - is_subscriber = true?                       │
-│    - Serviço válido?                             │
-│        ↓                                         │
-│  Insere em sb_transactions (type: 'earned')      │
-│  Atualiza sb_wallets.balance += X                │
-└─────────────────────────────────────────────────┘
+3. **Animação premium - "Shimmer sweep"**:
+   - Um efeito de luz que percorre o botão em loop sutil (tipo laminado holográfico)
+   - Implementado via pseudo-elemento com gradiente linear animado (CSS)
+   - Frequência baixa (~3s por ciclo) para manter elegância sem distração
+   - Combinado com uma leve sombra pulsante (glow-pulse) para dar profundidade
 
-┌─────────────────────────────────────────────────┐
-│              GASTO DE SB's                       │
-│                                                  │
-│  Cliente escolhe usar SB's como desconto         │
-│        ↓                                         │
-│  Verifica saldo >= custo em SB's                 │
-│        ↓                                         │
-│  Insere em sb_transactions (type: 'spent')       │
-│  Atualiza sb_wallets.balance -= X                │
-│  Aplica desconto no service_request.price        │
-└─────────────────────────────────────────────────┘
+## Alterações
 
-┌─────────────────────────────────────────────────┐
-│           VISUALIZAÇÃO (implementar agora)        │
-│                                                  │
-│  SBBadge (header) ← lê sb_wallets.balance        │
-│       ↓ click                                    │
-│  /cliente/carteira                               │
-│    - Saldo atual                                 │
-│    - Histórico (sb_transactions)                 │
-│    - Como funciona (informativo)                 │
-└─────────────────────────────────────────────────┘
-```
+### `src/components/SBBadge.tsx`
+- Mudar para `position: fixed`, `bottom-6 right-6`, `z-50`
+- Fundo preto (`bg-foreground`), texto branco, border-radius circular
+- Tamanho maior: ícone `w-5 h-5`, texto `text-sm`
+- Adicionar classe CSS para efeito shimmer sweep
 
-## Arquivos
+### `src/components/ClientHome.tsx`
+- Remover `<SBBadge />` do header (linha 148)
+- A logo já fica centralizada naturalmente com `justify-between` (menu esquerda, logo centro, espaço direita)
+- Adicionar um `<div className="w-10" />` placeholder à direita para manter centralização da logo
+- Renderizar `<SBBadge />` fora do header, no final do componente (flutuante)
 
-### Criar
-- **`src/components/SBBadge.tsx`** - Badge compacto com ícone de moeda + "00 SB's", busca saldo de `sb_wallets`, link para `/cliente/carteira`
-- **`src/pages/ClientWallet.tsx`** - Página da carteira: saldo grande, lista de transações de `sb_transactions`, seção informativa "Como funciona"
+### `src/index.css`
+- Adicionar keyframe `shimmer-sweep`: gradiente diagonal branco translúcido que percorre o elemento da esquerda para direita em 3s
 
-### Editar
-- **`src/components/ClientHome.tsx`** - Adicionar `SBBadge` no header (ao lado do logo) + link "Minha Carteira" no menu lateral
-- **`src/pages/RequestService.tsx`** - Adicionar `SBBadge` no topo
-- **`src/pages/ClientRequests.tsx`** - Adicionar `SBBadge` no topo
-- **`src/App.tsx`** - Adicionar rota `/cliente/carteira`
-
-### Banco de dados
-- Nenhuma migração necessária (tabelas `sb_wallets` e `sb_transactions` já existem)
-- A criação automática da wallet ao cadastrar será implementada futuramente quando definir as regras de geração
-
-## Detalhes técnicos
-- `SBBadge` faz query em `sb_wallets` filtrando por `user_id = auth.uid()`. Se não existir registro, mostra "00 SB's"
-- Página da carteira mostra transações ordenadas por `created_at DESC` com tipo (ganhou/gastou), valor e descrição
-- Design consistente com o visual do app (rounded-2xl, cores primary, font-display)
+### Outras páginas com SBBadge
+- `ClientRequests.tsx`: mover SBBadge para flutuante (mesmo padrão)
 
