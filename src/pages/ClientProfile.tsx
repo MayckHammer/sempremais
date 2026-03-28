@@ -51,6 +51,10 @@ export default function ClientProfile() {
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
 
+  const updateProfile = (updated: Record<string, string | null>) => {
+    setProfile(prev => prev ? { ...prev, ...updated } : prev);
+  };
+
   useEffect(() => {
     if (!user) { navigate('/login/cliente'); return; }
     loadData();
