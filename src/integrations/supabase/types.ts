@@ -23,6 +23,7 @@ export type Database = {
           complement: string | null
           cpf: string | null
           created_at: string
+          current_plan_id: string | null
           full_name: string
           id: string
           neighborhood: string | null
@@ -46,6 +47,7 @@ export type Database = {
           complement?: string | null
           cpf?: string | null
           created_at?: string
+          current_plan_id?: string | null
           full_name: string
           id?: string
           neighborhood?: string | null
@@ -69,6 +71,7 @@ export type Database = {
           complement?: string | null
           cpf?: string | null
           created_at?: string
+          current_plan_id?: string | null
           full_name?: string
           id?: string
           neighborhood?: string | null
@@ -84,7 +87,15 @@ export type Database = {
           vehicle_plate?: string | null
           vehicle_year?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_current_plan_id_fkey"
+            columns: ["current_plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       providers: {
         Row: {
@@ -300,6 +311,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: string[]
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
