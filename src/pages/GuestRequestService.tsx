@@ -44,6 +44,12 @@ export default function GuestRequestService() {
   const [guestPhone, setGuestPhone] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
 
+  // Vehicle fields
+  const [vehicleType, setVehicleType] = useState('');
+  const [vehicleBrand, setVehicleBrand] = useState('');
+  const [vehicleModel, setVehicleModel] = useState('');
+  const [vehicleYear, setVehicleYear] = useState('');
+
   // Pricing
   const [pricing, setPricing] = useState<PricingRow[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
