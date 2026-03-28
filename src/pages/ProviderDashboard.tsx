@@ -185,6 +185,18 @@ export default function ProviderDashboard() {
     }
   }, [providerData, sendNotification]);
 
+  // Auto-resume tracking if there are active jobs
+  useEffect(() => {
+    if (providerData && myJobs.some(j => j.status === 'accepted' || j.status === 'in_progress')) {
+      startLocationTracking();
+    }
+  }, [myJobs, providerData, startLocationTracking]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => stopLocationTracking();
+  }, [stopLocationTracking]);
+
   const fetchProviderData = async () => {
     if (!user) return;
     const { data } = await supabase.from('providers').select('*').eq('user_id', user.id).single();
