@@ -205,7 +205,7 @@ export default function RequestService() {
           {loading ? 'Enviando...' : 'Solicitar'}
         </Button>
       </div>
-      <SBBadge />
+      <SBBadge position="top" />
     </div>
   );
 }
