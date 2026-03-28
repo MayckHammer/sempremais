@@ -8,7 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Inbox, CheckCircle, Star, Trophy, Bell } from 'lucide-react';
+import { Inbox, CheckCircle, Star, Trophy, Bell, MapPin } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
@@ -49,6 +50,9 @@ export default function ProviderDashboard() {
   );
   const prevRequestCountRef = useRef<number>(0);
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
+  const watchIdRef = useRef<number | null>(null);
+  const lastUpdateRef = useRef<number>(0);
+  const [isTracking, setIsTracking] = useState(false);
 
   // Initialize notification sound
   useEffect(() => {
@@ -87,6 +91,45 @@ export default function ProviderDashboard() {
       });
     }
   }, [notificationsEnabled]);
+
+  const startLocationTracking = useCallback(() => {
+    if (watchIdRef.current !== null || !providerData) return;
+    if (!navigator.geolocation) {
+      toast.error('Geolocalização não suportada pelo navegador');
+      return;
+    }
+
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      async (position) => {
+        const now = Date.now();
+        if (now - lastUpdateRef.current < 10000) return; // throttle 10s
+        lastUpdateRef.current = now;
+
+        const { latitude, longitude } = position.coords;
+        await supabase
+          .from('providers')
+          .update({ latitude, longitude })
+          .eq('id', providerData.id);
+      },
+      (err) => {
+        console.error('Geolocation error:', err);
+        if (err.code === err.PERMISSION_DENIED) {
+          toast.error('Permissão de localização negada');
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 5000 }
+    );
+    setIsTracking(true);
+    toast.success('Localização em tempo real ativada');
+  }, [providerData]);
+
+  const stopLocationTracking = useCallback(() => {
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+      setIsTracking(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (authLoading) return;
@@ -142,6 +185,18 @@ export default function ProviderDashboard() {
     }
   }, [providerData, sendNotification]);
 
+  // Auto-resume tracking if there are active jobs
+  useEffect(() => {
+    if (providerData && myJobs.some(j => j.status === 'accepted' || j.status === 'in_progress')) {
+      startLocationTracking();
+    }
+  }, [myJobs, providerData, startLocationTracking]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => stopLocationTracking();
+  }, [stopLocationTracking]);
+
   const fetchProviderData = async () => {
     if (!user) return;
     const { data } = await supabase.from('providers').select('*').eq('user_id', user.id).single();
@@ -163,7 +218,11 @@ export default function ProviderDashboard() {
     if (!providerData) return;
     const { error } = await supabase.from('service_requests').update({ provider_id: providerData.id, status: 'accepted', accepted_at: new Date().toISOString() }).eq('id', requestId);
     if (error) toast.error('Erro ao aceitar solicitação');
-    else { toast.success('Solicitação aceita!'); fetchAvailableRequests(); fetchMyJobs(); fetchProviderData(); }
+    else {
+      toast.success('Solicitação aceita!');
+      startLocationTracking();
+      fetchAvailableRequests(); fetchMyJobs(); fetchProviderData();
+    }
   };
 
   const handleDeclineRequest = (requestId: string) => {
@@ -174,7 +233,13 @@ export default function ProviderDashboard() {
   const handleCompleteRequest = async (requestId: string) => {
     const { error } = await supabase.from('service_requests').update({ status: 'completed', completed_at: new Date().toISOString() }).eq('id', requestId);
     if (error) toast.error('Erro ao concluir serviço');
-    else { toast.success('Serviço concluído!'); fetchMyJobs(); fetchProviderData(); }
+    else {
+      toast.success('Serviço concluído!');
+      // Only stop tracking if no other active jobs remain
+      const remainingActive = myJobs.filter(j => j.id !== requestId && (j.status === 'accepted' || j.status === 'in_progress'));
+      if (remainingActive.length === 0) stopLocationTracking();
+      fetchMyJobs(); fetchProviderData();
+    }
   };
 
   const acceptRate = providerData && providerData.total_jobs > 0
@@ -220,6 +285,17 @@ export default function ProviderDashboard() {
       <Header />
       
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        {/* Tracking Indicator */}
+        {isTracking && (
+          <div className="mb-3 sm:mb-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-primary/10 border border-primary/20">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+            </span>
+            <MapPin className="w-4 h-4 text-primary" />
+            <span className="text-xs font-display font-semibold text-primary">Localização sendo compartilhada em tempo real</span>
+          </div>
+        )}
         {/* Notification Permission */}
         {!notificationsEnabled && typeof Notification !== 'undefined' && (
           <motion.div
