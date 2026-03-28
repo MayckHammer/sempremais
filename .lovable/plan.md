@@ -1,62 +1,73 @@
 
 
-# Cadastro Profissional do Associado
-
-## Contexto
-A página de cadastro de cliente atual (`/cadastro/cliente`) é muito simples (nome, telefone, email, senha). Precisamos de um formulário profissional com dados importantes para o time de cadastro e para o negócio. Além disso, o banner "Seja assinante e pague menos!" na página `/assistencia` e o link "Quero me Cadastrar" na Index devem levar a essa nova tela.
+# Carteira SB's - Exibição Global + Página "Minha Carteira"
 
 ## O que será feito
 
-### 1. Nova página de cadastro completa (`src/pages/auth/ClientSignup.tsx`)
-Substituir o componente simples por um formulário profissional com os seguintes campos:
+1. **Componente global `SBBadge`** - badge compacto mostrando "00 SB's" visível no header de todas as páginas do cliente assinante (ClientHome, RequestService, ClientRequests, TrackingService)
+2. **Nova página `/cliente/carteira`** - "Minha Carteira" com saldo, histórico de transações e explicação do programa
+3. **Link no menu lateral** e no badge para acessar a carteira
 
-**Dados Pessoais:**
-- Nome Completo (obrigatório)
-- CPF (obrigatório)
-- Data de Nascimento (obrigatório)
-- Telefone/WhatsApp (obrigatório)
-- Email (obrigatório)
-- Senha (obrigatório)
+## Fluxograma SB's
 
-**Endereço:**
-- CEP (com auto-preenchimento via ViaCEP)
-- Rua, Número, Complemento
-- Bairro, Cidade, Estado
+```text
+┌─────────────────────────────────────────────────┐
+│              GERAÇÃO DE SB's                     │
+│                                                  │
+│  Cliente solicita serviço                        │
+│        ↓                                         │
+│  Prestador conclui (status = completed)          │
+│        ↓                                         │
+│  Trigger/lógica verifica:                        │
+│    - is_subscriber = true?                       │
+│    - Serviço válido?                             │
+│        ↓                                         │
+│  Insere em sb_transactions (type: 'earned')      │
+│  Atualiza sb_wallets.balance += X                │
+└─────────────────────────────────────────────────┘
 
-**Veículo (opcional):**
-- Marca/Modelo
-- Placa
-- Ano
-- Cor
+┌─────────────────────────────────────────────────┐
+│              GASTO DE SB's                       │
+│                                                  │
+│  Cliente escolhe usar SB's como desconto         │
+│        ↓                                         │
+│  Verifica saldo >= custo em SB's                 │
+│        ↓                                         │
+│  Insere em sb_transactions (type: 'spent')       │
+│  Atualiza sb_wallets.balance -= X                │
+│  Aplica desconto no service_request.price        │
+└─────────────────────────────────────────────────┘
 
-Layout: manter o visual S-Curve hero com logo no topo (mesmo padrão do AuthForm atual), formulário em card com seções separadas por títulos. Design mobile-first (390px viewport).
+┌─────────────────────────────────────────────────┐
+│           VISUALIZAÇÃO (implementar agora)        │
+│                                                  │
+│  SBBadge (header) ← lê sb_wallets.balance        │
+│       ↓ click                                    │
+│  /cliente/carteira                               │
+│    - Saldo atual                                 │
+│    - Histórico (sb_transactions)                 │
+│    - Como funciona (informativo)                 │
+└─────────────────────────────────────────────────┘
+```
 
-### 2. Banco de dados - Expandir tabela `profiles`
-Adicionar colunas:
-- `cpf` (text, nullable)
-- `birth_date` (date, nullable)
-- `cep` (text, nullable)
-- `street` (text, nullable)
-- `street_number` (text, nullable)
-- `complement` (text, nullable)
-- `neighborhood` (text, nullable)
-- `city` (text, nullable)
-- `state` (text, nullable)
-- `vehicle_brand` (text, nullable)
-- `vehicle_model` (text, nullable)
-- `vehicle_plate` (text, nullable)
-- `vehicle_year` (text, nullable)
-- `vehicle_color` (text, nullable)
+## Arquivos
 
-### 3. Atualizar fluxo de signup (`src/lib/auth.ts`)
-Expandir a função `signUp` para aceitar os novos campos e salvá-los na tabela `profiles` após o cadastro (ou via trigger/update posterior).
+### Criar
+- **`src/components/SBBadge.tsx`** - Badge compacto com ícone de moeda + "00 SB's", busca saldo de `sb_wallets`, link para `/cliente/carteira`
+- **`src/pages/ClientWallet.tsx`** - Página da carteira: saldo grande, lista de transações de `sb_transactions`, seção informativa "Como funciona"
 
-### 4. Links que devem apontar para `/cadastro/cliente`
-- **Index.tsx**: "Quero me Cadastrar" → mudar de `/cadastro/prestador` para `/cadastro/cliente`
-- **GuestRequestService.tsx**: Banner "Seja assinante" → adicionar link para `/cadastro/cliente`
+### Editar
+- **`src/components/ClientHome.tsx`** - Adicionar `SBBadge` no header (ao lado do logo) + link "Minha Carteira" no menu lateral
+- **`src/pages/RequestService.tsx`** - Adicionar `SBBadge` no topo
+- **`src/pages/ClientRequests.tsx`** - Adicionar `SBBadge` no topo
+- **`src/App.tsx`** - Adicionar rota `/cliente/carteira`
 
-## Arquivos afetados
-- **Reescrever:** `src/pages/auth/ClientSignup.tsx` (formulário completo)
-- **Editar:** `src/lib/auth.ts` (expandir signUp), `src/pages/Index.tsx` (link), `src/pages/GuestRequestService.tsx` (link no banner)
-- **Migração:** adicionar colunas à tabela `profiles`
+### Banco de dados
+- Nenhuma migração necessária (tabelas `sb_wallets` e `sb_transactions` já existem)
+- A criação automática da wallet ao cadastrar será implementada futuramente quando definir as regras de geração
+
+## Detalhes técnicos
+- `SBBadge` faz query em `sb_wallets` filtrando por `user_id = auth.uid()`. Se não existir registro, mostra "00 SB's"
+- Página da carteira mostra transações ordenadas por `created_at DESC` com tipo (ganhou/gastou), valor e descrição
+- Design consistente com o visual do app (rounded-2xl, cores primary, font-display)
 
