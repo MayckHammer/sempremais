@@ -50,14 +50,22 @@ export default function Index() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <motion.img
-          src={logoSempreText}
-          alt="Sempre+ Assistências e Benefícios"
-          className="w-72 sm:w-96 object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] brightness-0 invert"
-          initial={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 0px rgba(255,255,255,0))' }}
-          animate={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 30px rgba(255,255,255,0.3))' }}
-          transition={{ duration: 1.2, delay: 0.5 }}
-        />
+        <div className="relative">
+          <motion.img
+            src={logoSempreText}
+            alt="Sempre+ Assistências e Benefícios"
+            className="w-72 sm:w-96 object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] brightness-0 invert"
+            initial={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 0px rgba(255,255,255,0))' }}
+            animate={{ filter: 'brightness(0) invert(1) drop-shadow(0 0 30px rgba(255,255,255,0.3))' }}
+            transition={{ duration: 1.2, delay: 0.5 }}
+          />
+          {/* Secret admin access hotspot over the "+" sign */}
+          <div
+            onClick={() => navigate('/admin/login')}
+            className="absolute top-[10%] right-[15%] w-[18%] h-[45%] opacity-0 cursor-default z-10"
+            aria-hidden="true"
+          />
+        </div>
       </motion.div>
 
       <div className="flex-1" />
