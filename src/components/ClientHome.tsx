@@ -13,9 +13,12 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  type CarouselApi,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 interface ClientHomeProps {
   location: { address: string; lat: number; lng: number };
