@@ -13,6 +13,7 @@ import ProviderSignup from "./pages/auth/ProviderSignup";
 import ClientDashboard from "./pages/ClientDashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import RequestService from "./pages/RequestService";
+import TrackingService from "./pages/TrackingService";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/cadastro/prestador" element={<ProviderSignup />} />
             <Route path="/cliente" element={<ClientDashboard />} />
             <Route path="/cliente/solicitar" element={<RequestService />} />
+            <Route path="/cliente/acompanhar/:requestId" element={<TrackingService />} />
             <Route path="/prestador" element={<ProviderDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
