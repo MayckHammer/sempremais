@@ -8,7 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Inbox, CheckCircle, Star, Trophy, Bell } from 'lucide-react';
+import { Inbox, CheckCircle, Star, Trophy, Bell, MapPin } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
