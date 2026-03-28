@@ -33,6 +33,10 @@ interface ProviderData {
   average_rating: number;
   is_approved: boolean;
 }
+const serviceLabelsMap: Record<string, string> = {
+  reboque: 'Reboque', chaveiro: 'Chaveiro', borracheiro: 'Borracheiro',
+  destombamento: 'Destombamento', frete_pequeno: 'Frete Pequeno', frete_grande: 'Frete Grande',
+};
 
 export default function ProviderDashboard() {
   const { user, loading: authLoading, refreshUser } = useAuth();
