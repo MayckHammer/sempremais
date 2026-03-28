@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, User, Phone, Mail, Coins } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, User, Phone, Mail, Coins, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -43,6 +43,12 @@ export default function GuestRequestService() {
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
   const [guestEmail, setGuestEmail] = useState('');
+
+  // Vehicle fields
+  const [vehicleType, setVehicleType] = useState('');
+  const [vehicleBrand, setVehicleBrand] = useState('');
+  const [vehicleModel, setVehicleModel] = useState('');
+  const [vehicleYear, setVehicleYear] = useState('');
 
   // Pricing
   const [pricing, setPricing] = useState<PricingRow[]>([]);
@@ -112,6 +118,10 @@ export default function GuestRequestService() {
         clientId = result.user.id;
       }
 
+      const vehicleInfo = vehicleType
+        ? `${vehicleType}${vehicleBrand ? ` - ${vehicleBrand}` : ''}${vehicleModel ? ` ${vehicleModel}` : ''}${vehicleYear ? ` ${vehicleYear}` : ''}`
+        : null;
+
       const { data: inserted, error } = await supabase.from('service_requests').insert({
         client_id: clientId,
         client_name: guestName,
@@ -123,6 +133,7 @@ export default function GuestRequestService() {
         description: `Destino: ${destinationAddress}`,
         price: selectedPrice ?? 0,
         is_subscriber: false,
+        vehicle_info: vehicleInfo,
       }).select('id').single();
 
       if (error) throw error;
@@ -186,7 +197,46 @@ export default function GuestRequestService() {
           </SelectContent>
         </Select>
 
-        {/* Price display */}
+        {/* Vehicle type */}
+        <div className="relative">
+          <Car className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Select value={vehicleType} onValueChange={setVehicleType}>
+            <SelectTrigger className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm">
+              <SelectValue placeholder="Tipo de veículo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Automóvel">Automóvel</SelectItem>
+              <SelectItem value="Motocicleta">Motocicleta</SelectItem>
+              <SelectItem value="Picape">Picape</SelectItem>
+              <SelectItem value="Caminhão">Caminhão</SelectItem>
+              <SelectItem value="Outros">Outros</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Vehicle details */}
+        <div className="flex gap-3">
+          <Input
+            value={vehicleBrand}
+            onChange={(e) => setVehicleBrand(e.target.value)}
+            placeholder="Marca"
+            className="rounded-xl h-11 border-border bg-muted/50 text-sm"
+          />
+          <Input
+            value={vehicleModel}
+            onChange={(e) => setVehicleModel(e.target.value)}
+            placeholder="Modelo"
+            className="rounded-xl h-11 border-border bg-muted/50 text-sm"
+          />
+        </div>
+        <Input
+          value={vehicleYear}
+          onChange={(e) => setVehicleYear(e.target.value)}
+          placeholder="Ano"
+          className="rounded-xl h-11 border-border bg-muted/50 text-sm"
+        />
+
+
         {selectedPrice !== null && (
           <div className="bg-muted/60 rounded-xl px-4 py-3 flex items-center justify-between">
             <span className="text-xs text-muted-foreground font-body">Valor do serviço</span>
