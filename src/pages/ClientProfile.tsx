@@ -237,13 +237,27 @@ export default function ClientProfile() {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-0 font-body text-sm">
-                  <InfoRow label="Marca" value={profile?.vehicle_brand} />
-                  <InfoRow label="Modelo" value={profile?.vehicle_model} />
-                  <InfoRow label="Placa" value={profile?.vehicle_plate} />
-                  <InfoRow label="Ano" value={profile?.vehicle_year} />
-                  <InfoRow label="Cor" value={profile?.vehicle_color} />
-                </div>
+                <ProfileEditableSection
+                  userId={user!.id}
+                  fields={[
+                    { key: 'vehicle_brand', label: 'Marca', placeholder: 'Ex: Fiat' },
+                    { key: 'vehicle_model', label: 'Modelo', placeholder: 'Ex: Uno' },
+                    { key: 'vehicle_plate', label: 'Placa', placeholder: 'ABC-1234', maxLength: 8 },
+                    { key: 'vehicle_year', label: 'Ano', placeholder: 'Ex: 2020', maxLength: 4 },
+                    { key: 'vehicle_color', label: 'Cor', placeholder: 'Ex: Prata' },
+                  ]}
+                  values={profile || {}}
+                  onSave={updateProfile}
+                  renderView={() => (
+                    <div className="space-y-0 font-body text-sm">
+                      <InfoRow label="Marca" value={profile?.vehicle_brand} />
+                      <InfoRow label="Modelo" value={profile?.vehicle_model} />
+                      <InfoRow label="Placa" value={profile?.vehicle_plate} />
+                      <InfoRow label="Ano" value={profile?.vehicle_year} />
+                      <InfoRow label="Cor" value={profile?.vehicle_color} />
+                    </div>
+                  )}
+                />
               </AccordionContent>
             </AccordionItem>
           </Accordion>
