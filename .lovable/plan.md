@@ -1,19 +1,35 @@
 
 
-# Redirecionar usuários autenticados das páginas de login
+# Geolocation Watch para Prestador
 
-## Problema
-Após fazer login (na página inicial ou em `/login/cliente`), se o usuário acessar a rota de login novamente, a tela de login aparece em vez de redirecionar para o dashboard.
+## O que será feito
+Quando o prestador aceitar uma solicitação (`handleAcceptRequest`), iniciar `navigator.geolocation.watchPosition` para enviar suas coordenadas em tempo real para a tabela `providers` (campos `latitude`/`longitude`). Parar o watch quando o serviço for concluído ou o componente desmontar.
 
-## Solução
-Adicionar verificação de autenticação no `AuthForm.tsx` — se o usuário já estiver logado, redirecionar automaticamente para o dashboard correspondente.
+## Alterações em `src/pages/ProviderDashboard.tsx`
 
-## Alteração em `src/components/AuthForm.tsx`
-- Importar `useAuth` do contexto de autenticação
-- No início do componente, verificar se `user` existe e não está `loading`
-- Se autenticado: redirecionar para `/cliente` (client) ou `/prestador` (provider) usando `Navigate`
-- Isso cobre tanto `/login/cliente` quanto `/login/prestador`
+### 1. Adicionar ref para watchId
+```tsx
+const watchIdRef = useRef<number | null>(null);
+```
+
+### 2. Criar função `startLocationTracking`
+- Usa `navigator.geolocation.watchPosition` com `enableHighAccuracy: true`
+- A cada atualização, faz `supabase.from('providers').update({ latitude, longitude })` no registro do prestador
+- Throttle de ~10s para não sobrecarregar (comparar timestamp da última atualização)
+
+### 3. Criar função `stopLocationTracking`
+- Chama `navigator.geolocation.clearWatch(watchIdRef.current)`
+- Limpa o ref
+
+### 4. Integrar no fluxo
+- Em `handleAcceptRequest`: após aceitar com sucesso, chamar `startLocationTracking()`
+- Em `handleCompleteRequest`: após concluir com sucesso, chamar `stopLocationTracking()`
+- No `useEffect` cleanup (unmount): chamar `stopLocationTracking()`
+- Ao montar, verificar se há jobs `accepted`/`in_progress` e retomar tracking automaticamente
+
+### 5. Indicador visual
+- Mostrar um pequeno badge/ícone pulsante no dashboard quando o tracking está ativo
 
 ## Arquivo afetado
-- `src/components/AuthForm.tsx`
+- `src/pages/ProviderDashboard.tsx`
 
