@@ -92,6 +92,45 @@ export default function ProviderDashboard() {
     }
   }, [notificationsEnabled]);
 
+  const startLocationTracking = useCallback(() => {
+    if (watchIdRef.current !== null || !providerData) return;
+    if (!navigator.geolocation) {
+      toast.error('Geolocalização não suportada pelo navegador');
+      return;
+    }
+
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      async (position) => {
+        const now = Date.now();
+        if (now - lastUpdateRef.current < 10000) return; // throttle 10s
+        lastUpdateRef.current = now;
+
+        const { latitude, longitude } = position.coords;
+        await supabase
+          .from('providers')
+          .update({ latitude, longitude })
+          .eq('id', providerData.id);
+      },
+      (err) => {
+        console.error('Geolocation error:', err);
+        if (err.code === err.PERMISSION_DENIED) {
+          toast.error('Permissão de localização negada');
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 5000 }
+    );
+    setIsTracking(true);
+    toast.success('Localização em tempo real ativada');
+  }, [providerData]);
+
+  const stopLocationTracking = useCallback(() => {
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+      setIsTracking(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (authLoading) return;
 
