@@ -118,6 +118,10 @@ export default function GuestRequestService() {
         clientId = result.user.id;
       }
 
+      const vehicleInfo = vehicleType
+        ? `${vehicleType}${vehicleBrand ? ` - ${vehicleBrand}` : ''}${vehicleModel ? ` ${vehicleModel}` : ''}${vehicleYear ? ` ${vehicleYear}` : ''}`
+        : null;
+
       const { data: inserted, error } = await supabase.from('service_requests').insert({
         client_id: clientId,
         client_name: guestName,
@@ -129,6 +133,7 @@ export default function GuestRequestService() {
         description: `Destino: ${destinationAddress}`,
         price: selectedPrice ?? 0,
         is_subscriber: false,
+        vehicle_info: vehicleInfo,
       }).select('id').single();
 
       if (error) throw error;
