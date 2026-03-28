@@ -120,14 +120,27 @@ export default function ProviderDashboard() {
 
       const channel = supabase
         .channel('provider-requests')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' },
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'service_requests' },
+          (payload) => {
+            const newRequest = payload.new as ServiceRequest;
+            if (newRequest.status === 'pending') {
+              sendNotification(newRequest);
+            }
+            fetchAvailableRequests();
+            fetchMyJobs();
+          }
+        )
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'service_requests' },
           () => { fetchAvailableRequests(); fetchMyJobs(); }
         )
         .subscribe();
 
+      // Track initial count
+      prevRequestCountRef.current = availableRequests.length;
+
       return () => { supabase.removeChannel(channel); };
     }
-  }, [providerData]);
+  }, [providerData, sendNotification]);
 
   const fetchProviderData = async () => {
     if (!user) return;
