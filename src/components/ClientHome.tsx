@@ -149,7 +149,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
               variant="ghost"
               size="icon"
               onClick={() => navigate('/cliente/perfil')}
-              className="text-primary-foreground hover:bg-primary-foreground/10 rounded-xl"
+              className="bg-muted-foreground/30 hover:bg-muted-foreground/40 text-primary-foreground rounded-xl"
             >
               <User className="w-6 h-6" />
             </Button>
