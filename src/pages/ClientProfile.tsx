@@ -200,13 +200,29 @@ export default function ClientProfile() {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-0 font-body text-sm">
-                  <InfoRow label="CEP" value={profile?.cep} />
-                  <InfoRow label="Rua" value={profile?.street ? `${profile.street}${profile.street_number ? `, ${profile.street_number}` : ''}` : null} />
-                  <InfoRow label="Complemento" value={profile?.complement} />
-                  <InfoRow label="Bairro" value={profile?.neighborhood} />
-                  <InfoRow label="Cidade" value={profile?.city ? `${profile.city}${profile.state ? ` - ${profile.state}` : ''}` : null} />
-                </div>
+                <ProfileEditableSection
+                  userId={user!.id}
+                  fields={[
+                    { key: 'cep', label: 'CEP', placeholder: '00000-000', maxLength: 9 },
+                    { key: 'street', label: 'Rua', placeholder: 'Nome da rua' },
+                    { key: 'street_number', label: 'Número', placeholder: 'Nº', maxLength: 10 },
+                    { key: 'complement', label: 'Complemento', placeholder: 'Apto, bloco...' },
+                    { key: 'neighborhood', label: 'Bairro', placeholder: 'Bairro' },
+                    { key: 'city', label: 'Cidade', placeholder: 'Cidade' },
+                    { key: 'state', label: 'Estado', placeholder: 'UF', maxLength: 2 },
+                  ]}
+                  values={profile || {}}
+                  onSave={updateProfile}
+                  renderView={() => (
+                    <div className="space-y-0 font-body text-sm">
+                      <InfoRow label="CEP" value={profile?.cep} />
+                      <InfoRow label="Rua" value={profile?.street ? `${profile.street}${profile.street_number ? `, ${profile.street_number}` : ''}` : null} />
+                      <InfoRow label="Complemento" value={profile?.complement} />
+                      <InfoRow label="Bairro" value={profile?.neighborhood} />
+                      <InfoRow label="Cidade" value={profile?.city ? `${profile.city}${profile.state ? ` - ${profile.state}` : ''}` : null} />
+                    </div>
+                  )}
+                />
               </AccordionContent>
             </AccordionItem>
 
