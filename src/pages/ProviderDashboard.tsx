@@ -102,7 +102,7 @@ export default function ProviderDashboard() {
     watchIdRef.current = navigator.geolocation.watchPosition(
       async (position) => {
         const now = Date.now();
-        if (now - lastUpdateRef.current < 10000) return; // throttle 10s
+        if (now - lastUpdateRef.current < 3000) return; // throttle 3s
         lastUpdateRef.current = now;
 
         const { latitude, longitude } = position.coords;
