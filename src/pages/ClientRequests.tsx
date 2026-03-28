@@ -97,7 +97,7 @@ export default function ClientRequests() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-lg sm:text-xl font-display font-extrabold text-foreground tracking-tight">Minhas Solicitações</h1>
-          <div className="ml-auto"><SBBadge /></div>
+          <div className="w-10" />
         </div>
 
         <div className="space-y-2 sm:space-y-3">
@@ -139,6 +139,7 @@ export default function ClientRequests() {
         providerName={providerName}
         onSubmit={handleSubmitRating}
       />
+      <SBBadge />
     </div>
   );
 }
