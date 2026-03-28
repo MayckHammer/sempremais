@@ -62,7 +62,7 @@ export default function Index() {
           {/* Secret admin access hotspot over the "+" sign */}
           <div
             onClick={() => navigate('/admin/login')}
-            className="absolute top-[10%] right-[15%] w-[18%] h-[45%] opacity-0 cursor-default z-10"
+            className="absolute top-[0%] right-[8%] w-[20%] h-[55%] opacity-0 cursor-default z-10"
             aria-hidden="true"
           />
         </div>
