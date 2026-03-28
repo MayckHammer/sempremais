@@ -13,9 +13,12 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  type CarouselApi,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 interface ClientHomeProps {
   location: { address: string; lat: number; lng: number };
@@ -53,6 +56,8 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const availableRoles = useMemo(() => user?.roles ?? (user ? [user.role] : []), [user]);
   const hasClientAccess = availableRoles.includes('client');
@@ -64,6 +69,14 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     setMenuOpen(false);
     navigate('/');
   };
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on('select', onSelect);
+    onSelect();
+    return () => { carouselApi.off('select', onSelect); };
+  }, [carouselApi]);
 
   // Auto-scroll highlights
   useEffect(() => {
@@ -187,7 +200,8 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
         >
           <Carousel
             opts={{ loop: true, align: 'center' }}
-            plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
+            plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
+            setApi={setCarouselApi}
             className="w-full"
           >
             <CarouselContent>
@@ -200,7 +214,18 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                 </CarouselItem>
               ))}
             </CarouselContent>
+            <CarouselPrevious className="left-2 h-7 w-7 bg-white/30 border-0 text-white hover:bg-white/50" />
+            <CarouselNext className="right-2 h-7 w-7 bg-white/30 border-0 text-white hover:bg-white/50" />
           </Carousel>
+          <div className="flex justify-center gap-1.5 mt-2">
+            {banners.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => carouselApi?.scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all ${i === currentSlide ? 'w-4 bg-primary' : 'w-1.5 bg-primary/30'}`}
+              />
+            ))}
+          </div>
         </motion.div>
 
         {/* Destaques */}
