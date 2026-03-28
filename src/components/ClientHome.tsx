@@ -221,7 +221,6 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
 
           <div className="rounded-3xl overflow-hidden shadow-premium border border-border/40 bg-card">
             <div className="relative w-full h-32 bg-muted">
-              {/* Map placeholder / iframe */}
               <iframe
                 title="Mapa de Prestadores"
                 width="100%"
@@ -231,32 +230,25 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                 referrerPolicy="no-referrer-when-downgrade"
                 src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=${location.lat},${location.lng}&zoom=13`}
               />
-              {/* Provider pins overlay */}
-              <div className="absolute inset-0 pointer-events-none flex items-end p-3">
-                <div className="bg-card/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-sm pointer-events-auto">
-                  <p className="text-xs font-display font-semibold text-foreground">
-                    {providers.length} prestador{providers.length !== 1 ? 'es' : ''} próximo{providers.length !== 1 ? 's' : ''}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground">{location.address}</p>
-                </div>
-              </div>
             </div>
           </div>
-        </motion.section>
 
-        {/* Botão Solicitar Assistência */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.8 }}
-        >
+          {/* Informativo de prestadores */}
+          <div className="mt-4 text-center space-y-1">
+            <p className="text-base font-display font-bold text-foreground">
+              {providers.length} prestador{providers.length !== 1 ? 'es' : ''} próximo{providers.length !== 1 ? 's' : ''}
+            </p>
+            <p className="text-sm text-muted-foreground font-body">{location.address}</p>
+          </div>
+
+          {/* Botão Solicitar Assistência */}
           <Button
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 text-lg font-display font-bold shadow-premium"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 text-lg font-display font-bold shadow-premium mt-4"
             onClick={() => navigate('/cliente/solicitar')}
           >
             Solicitar Assistência
           </Button>
-        </motion.div>
+        </motion.section>
       </div>
     </div>
   );
