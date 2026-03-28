@@ -297,14 +297,20 @@ export default function ProviderDashboard() {
           </div>
         )}
         {/* Notification Permission */}
-        {!notificationsEnabled && typeof Notification !== 'undefined' && (
+        {!notificationsEnabled && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-3 sm:mb-4"
           >
             <Button
-              onClick={requestNotificationPermission}
+              onClick={() => {
+                if (typeof Notification === 'undefined') {
+                  toast.info('Para receber notificações, adicione o site à tela inicial do seu celular');
+                  return;
+                }
+                requestNotificationPermission();
+              }}
               variant="outline"
               className="w-full h-11 rounded-xl border-primary/30 text-primary hover:bg-primary/10 font-display font-semibold gap-2"
             >
