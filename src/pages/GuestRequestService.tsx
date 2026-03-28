@@ -162,12 +162,15 @@ export default function GuestRequestService() {
         <div className="w-10 h-1 rounded-full bg-muted mx-auto mb-1" />
 
         {/* Subscriber banner */}
-        <div className="bg-primary/10 rounded-xl px-3 py-2 flex items-center gap-2">
+        <button
+          onClick={() => navigate('/cadastro/cliente')}
+          className="bg-primary/10 rounded-xl px-3 py-2 flex items-center gap-2 w-full text-left hover:bg-primary/20 transition-colors"
+        >
           <Coins className="w-4 h-4 text-primary flex-shrink-0" />
           <p className="text-[11px] text-primary font-body font-medium">
             Seja assinante e pague menos! Ganhe <span className="font-bold">SB's</span> a cada serviço.
           </p>
-        </div>
+        </button>
 
         {/* Service type */}
         <Select value={serviceType} onValueChange={setServiceType}>

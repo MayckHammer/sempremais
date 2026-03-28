@@ -238,7 +238,7 @@ export default function Index() {
                   </motion.span>
                   <span className="absolute -bottom-0.5 left-0 w-0 h-[2px] bg-primary group-hover:w-full transition-all duration-300 ease-out" />
                 </Link>
-                <Link to="/cadastro/prestador" className="group relative">
+                <Link to="/cadastro/cliente" className="group relative">
                   <motion.span
                     className="text-primary/70 text-sm font-medium tracking-wide"
                     whileHover={{ scale: 1.05, color: 'hsl(207, 78%, 38%)' }}

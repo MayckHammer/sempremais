@@ -17,30 +17,72 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          birth_date: string | null
+          cep: string | null
+          city: string | null
+          complement: string | null
+          cpf: string | null
           created_at: string
           full_name: string
           id: string
+          neighborhood: string | null
           phone: string | null
+          state: string | null
+          street: string | null
+          street_number: string | null
           updated_at: string
           user_id: string
+          vehicle_brand: string | null
+          vehicle_color: string | null
+          vehicle_model: string | null
+          vehicle_plate: string | null
+          vehicle_year: string | null
         }
         Insert: {
           avatar_url?: string | null
+          birth_date?: string | null
+          cep?: string | null
+          city?: string | null
+          complement?: string | null
+          cpf?: string | null
           created_at?: string
           full_name: string
           id?: string
+          neighborhood?: string | null
           phone?: string | null
+          state?: string | null
+          street?: string | null
+          street_number?: string | null
           updated_at?: string
           user_id: string
+          vehicle_brand?: string | null
+          vehicle_color?: string | null
+          vehicle_model?: string | null
+          vehicle_plate?: string | null
+          vehicle_year?: string | null
         }
         Update: {
           avatar_url?: string | null
+          birth_date?: string | null
+          cep?: string | null
+          city?: string | null
+          complement?: string | null
+          cpf?: string | null
           created_at?: string
           full_name?: string
           id?: string
+          neighborhood?: string | null
           phone?: string | null
+          state?: string | null
+          street?: string | null
+          street_number?: string | null
           updated_at?: string
           user_id?: string
+          vehicle_brand?: string | null
+          vehicle_color?: string | null
+          vehicle_model?: string | null
+          vehicle_plate?: string | null
+          vehicle_year?: string | null
         }
         Relationships: []
       }

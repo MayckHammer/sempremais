@@ -58,12 +58,30 @@ function resolveActiveRole(roles: UserRole[]): UserRole {
   return 'client';
 }
 
+export interface SignUpExtraData {
+  cpf?: string;
+  birth_date?: string;
+  cep?: string;
+  street?: string;
+  street_number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  vehicle_brand?: string;
+  vehicle_model?: string;
+  vehicle_plate?: string;
+  vehicle_year?: string;
+  vehicle_color?: string;
+}
+
 export async function signUp(
   email: string,
   password: string,
   role: UserRole,
   fullName: string,
-  phone?: string
+  phone?: string,
+  extraData?: SignUpExtraData
 ) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -74,11 +92,29 @@ export async function signUp(
         role,
         full_name: fullName,
         phone,
+        ...extraData,
       },
     },
   });
 
   if (error) throw error;
+
+  // Update profile with extra data if provided and user was created
+  if (data.user && extraData) {
+    const profileUpdate: Record<string, string | undefined> = {};
+    for (const [key, value] of Object.entries(extraData)) {
+      if (value && value.trim()) {
+        profileUpdate[key] = value;
+      }
+    }
+    if (Object.keys(profileUpdate).length > 0) {
+      await supabase
+        .from('profiles')
+        .update(profileUpdate)
+        .eq('user_id', data.user.id);
+    }
+  }
+
   return data;
 }
 
