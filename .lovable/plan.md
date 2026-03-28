@@ -1,35 +1,19 @@
 
 
-# Mover Informativo de Prestadores para Fora do Mapa
+# Redirecionar usuários autenticados das páginas de login
 
-## O que muda
-Remover o overlay "0 prestadores próximos" de dentro do mapa e colocá-lo como um bloco informativo maior abaixo do mapa, seguido pelo botão "Solicitar Assistência".
+## Problema
+Após fazer login (na página inicial ou em `/login/cliente`), se o usuário acessar a rota de login novamente, a tela de login aparece em vez de redirecionar para o dashboard.
 
-## Alterações em `src/components/ClientHome.tsx`
+## Solução
+Adicionar verificação de autenticação no `AuthForm.tsx` — se o usuário já estiver logado, redirecionar automaticamente para o dashboard correspondente.
 
-### 1. Remover overlay interno do mapa (linhas 234-242)
-Apagar o `div` absoluto que mostra o contador de prestadores dentro do iframe do mapa.
+## Alteração em `src/components/AuthForm.tsx`
+- Importar `useAuth` do contexto de autenticação
+- No início do componente, verificar se `user` existe e não está `loading`
+- Se autenticado: redirecionar para `/cliente` (client) ou `/prestador` (provider) usando `Navigate`
+- Isso cobre tanto `/login/cliente` quanto `/login/prestador`
 
-### 2. Adicionar informativo abaixo do mapa (após linha 244)
-Criar um bloco com texto maior mostrando:
-- Quantidade de prestadores próximos (fonte `text-base font-bold`)
-- Endereço atual (fonte `text-sm text-muted-foreground`)
-
-### 3. Mover botão para dentro da mesma section do mapa
-O botão "Solicitar Assistência" virá logo após o informativo, ainda dentro da `motion.section` do mapa. Remover o `motion.div` separado do botão (linhas 247-259).
-
-### Resultado visual
-```text
-┌──────────────────────┐
-│      MAPA (iframe)   │
-└──────────────────────┘
-  0 prestadores próximos
-  São Paulo, SP
-┌──────────────────────┐
-│ Solicitar Assistência│
-└──────────────────────┘
-```
-
-### Arquivo afetado
-- `src/components/ClientHome.tsx`
+## Arquivo afetado
+- `src/components/AuthForm.tsx`
 
