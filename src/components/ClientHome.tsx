@@ -84,7 +84,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Curved Header */}
       <div className="relative">
-        <div className="bg-primary pt-12 pb-28 px-4 relative overflow-hidden">
+        <div className="bg-primary pt-14 pb-36 px-4 relative overflow-hidden">
           {/* Menu + Logo */}
           <div className="flex items-center justify-between relative z-10">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
@@ -158,7 +158,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
               <CarouselContent>
                 {banners.map((banner) => (
                   <CarouselItem key={banner.id}>
-                    <div className={`bg-gradient-to-r ${banner.bg} rounded-2xl p-5 h-28 flex flex-col justify-end shadow-premium`}>
+                    <div className={`bg-gradient-to-r ${banner.bg} rounded-2xl p-6 h-36 flex flex-col justify-end shadow-premium`}>
                       <p className="text-primary-foreground/70 text-xs font-body">{banner.subtitle}</p>
                       <h3 className="text-primary-foreground font-display font-bold text-lg">{banner.title}</h3>
                     </div>
@@ -171,7 +171,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-4 pt-2 pb-6 space-y-6">
+      <div className="flex-1 px-4 pt-6 pb-8 space-y-8">
         {/* Destaques */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -243,6 +243,20 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
             </div>
           </div>
         </motion.section>
+
+        {/* Botão Solicitar Assistência */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.8 }}
+        >
+          <Button
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 text-lg font-display font-bold shadow-premium"
+            onClick={() => navigate('/cliente')}
+          >
+            Solicitar Assistência
+          </Button>
+        </motion.div>
       </div>
     </div>
   );
