@@ -117,7 +117,7 @@ export default function ClientProfile() {
         </div>
 
         {/* Avatar + Name + Location */}
-        <div className="flex flex-col items-center mt-5 relative z-10">
+        <div className="flex flex-col items-center mt-3 relative z-10">
           <div className="w-20 h-20 rounded-full bg-primary-foreground/20 border-2 border-primary-foreground/40 flex items-center justify-center">
             <User className="w-10 h-10 text-primary-foreground" />
           </div>
