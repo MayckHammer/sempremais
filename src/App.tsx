@@ -14,10 +14,19 @@ import ClientDashboard from "./pages/ClientDashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import RequestService from "./pages/RequestService";
 import TrackingService from "./pages/TrackingService";
-import AdminDashboard from "./pages/AdminDashboard";
 import ClientRequests from "./pages/ClientRequests";
 import GuestRequestService from "./pages/GuestRequestService";
 import ClientWallet from "./pages/ClientWallet";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminHome from "./pages/admin/AdminHome";
+import AdminClients from "./pages/admin/AdminClients";
+import AdminProviders from "./pages/admin/AdminProviders";
+import AdminPartners from "./pages/admin/AdminPartners";
+import AdminRequests from "./pages/admin/AdminRequests";
+import AdminPricing from "./pages/admin/AdminPricing";
+import AdminSBWallets from "./pages/admin/AdminSBWallets";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -38,10 +47,23 @@ const App = () => (
             <Route path="/cliente/solicitar" element={<RequestService />} />
             <Route path="/cliente/acompanhar/:requestId" element={<TrackingService />} />
             <Route path="/prestador" element={<ProviderDashboard />} />
-            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/cliente/solicitacoes" element={<ClientRequests />} />
             <Route path="/cliente/carteira" element={<ClientWallet />} />
             <Route path="/assistencia" element={<GuestRequestService />} />
+
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminHome />} />
+              <Route path="clients" element={<AdminClients />} />
+              <Route path="providers" element={<AdminProviders />} />
+              <Route path="partners" element={<AdminPartners />} />
+              <Route path="requests" element={<AdminRequests />} />
+              <Route path="pricing" element={<AdminPricing />} />
+              <Route path="wallets" element={<AdminSBWallets />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
