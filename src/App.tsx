@@ -17,6 +17,7 @@ import TrackingService from "./pages/TrackingService";
 import ClientRequests from "./pages/ClientRequests";
 import GuestRequestService from "./pages/GuestRequestService";
 import ClientWallet from "./pages/ClientWallet";
+import ClientProfile from "./pages/ClientProfile";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminHome from "./pages/admin/AdminHome";
@@ -26,6 +27,7 @@ import AdminPartners from "./pages/admin/AdminPartners";
 import AdminRequests from "./pages/admin/AdminRequests";
 import AdminPricing from "./pages/admin/AdminPricing";
 import AdminSBWallets from "./pages/admin/AdminSBWallets";
+import AdminPlans from "./pages/admin/AdminPlans";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
@@ -49,6 +51,7 @@ const App = () => (
             <Route path="/prestador" element={<ProviderDashboard />} />
             <Route path="/cliente/solicitacoes" element={<ClientRequests />} />
             <Route path="/cliente/carteira" element={<ClientWallet />} />
+            <Route path="/cliente/perfil" element={<ClientProfile />} />
             <Route path="/assistencia" element={<GuestRequestService />} />
 
             {/* Admin Routes */}
@@ -60,6 +63,7 @@ const App = () => (
               <Route path="partners" element={<AdminPartners />} />
               <Route path="requests" element={<AdminRequests />} />
               <Route path="pricing" element={<AdminPricing />} />
+              <Route path="plans" element={<AdminPlans />} />
               <Route path="wallets" element={<AdminSBWallets />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>

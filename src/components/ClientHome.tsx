@@ -145,7 +145,14 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
               style={{ filter: 'brightness(0) invert(1)' }}
             />
 
-            <div className="w-10" />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/cliente/perfil')}
+              className="text-primary-foreground hover:bg-primary-foreground/10 rounded-xl"
+            >
+              <User className="w-6 h-6" />
+            </Button>
           </div>
         </div>
 
