@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { signOut } from '@/lib/auth';
-import { User, Building2, LogOut, Shield, FileText } from 'lucide-react';
+import { User, Building2, LogOut, Shield, FileText, Wallet } from 'lucide-react';
+import { SBBadge } from '@/components/SBBadge';
 import logoSempre from '@/assets/logo-sempre.png';
 import {
   Carousel,
@@ -118,6 +119,11 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                       <FileText className="w-5 h-5 mr-3 text-primary" /> Minhas Solicitações
                     </Button>
                   </Link>
+                  <Link to="/cliente/carteira" onClick={() => setMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
+                      <Wallet className="w-5 h-5 mr-3 text-primary" /> Minha Carteira
+                    </Button>
+                  </Link>
                   {hasAdminAccess && (
                     <Link to="/admin" onClick={() => setMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start rounded-xl hover:bg-primary/5">
@@ -135,11 +141,11 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
             <img
               src={logoSempre}
               alt="Sempre+"
-              className="h-8 object-contain"
+              className="h-7 object-contain"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
 
-            <div className="w-10" /> {/* spacer */}
+            <SBBadge />
           </div>
         </div>
 
