@@ -139,6 +139,7 @@ export default function ClientRequests() {
         providerName={providerName}
         onSubmit={handleSubmitRating}
       />
+      <SBBadge />
     </div>
   );
 }
