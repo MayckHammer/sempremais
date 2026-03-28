@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound";
 import ClientLogin from "./pages/auth/ClientLogin";
 import ClientSignup from "./pages/auth/ClientSignup";
 import ProviderLogin from "./pages/auth/ProviderLogin";
-
+import ProviderSignup from "./pages/auth/ProviderSignup";
 import ClientDashboard from "./pages/ClientDashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import RequestService from "./pages/RequestService";
@@ -44,7 +44,7 @@ const App = () => (
             <Route path="/login/cliente" element={<ClientLogin />} />
             <Route path="/cadastro/cliente" element={<ClientSignup />} />
             <Route path="/login/prestador" element={<ProviderLogin />} />
-            
+            <Route path="/cadastro/prestador" element={<ProviderSignup />} />
             <Route path="/cliente" element={<ClientDashboard />} />
             <Route path="/cliente/solicitar" element={<RequestService />} />
             <Route path="/cliente/acompanhar/:requestId" element={<TrackingService />} />
