@@ -233,7 +233,7 @@ export default function TrackingService() {
           </>
         )}
       </div>
-      <SBBadge />
+      <SBBadge position="top" />
     </div>
   );
 }
