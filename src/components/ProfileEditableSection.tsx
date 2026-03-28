@@ -17,7 +17,7 @@ interface FieldConfig {
 interface ProfileEditableSectionProps {
   userId: string;
   fields: FieldConfig[];
-  values: Record<string, string | null | undefined>;
+  values: Record<string, string | null | undefined> | { [key: string]: any };
   onSave: (updated: Record<string, string | null>) => void;
   renderView: () => React.ReactNode;
 }
