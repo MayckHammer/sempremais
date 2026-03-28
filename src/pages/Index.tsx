@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,6 +18,20 @@ export default function Index() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSecretDown = useCallback(() => {
+    longPressTimer.current = setTimeout(() => {
+      navigate('/admin/login');
+    }, 3000);
+  }, [navigate]);
+
+  const handleSecretUp = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }, []);
 
   if (!loading && user) {
     const dashboardPath = user.role === 'provider' ? '/prestador' : '/cliente';
@@ -61,7 +75,11 @@ export default function Index() {
           />
           {/* Secret admin access hotspot over the "+" sign */}
           <div
-            onClick={() => navigate('/admin/login')}
+            onMouseDown={handleSecretDown}
+            onMouseUp={handleSecretUp}
+            onMouseLeave={handleSecretUp}
+            onTouchStart={handleSecretDown}
+            onTouchEnd={handleSecretUp}
             className="absolute top-[0%] right-[8%] w-[20%] h-[55%] opacity-0 cursor-default z-10"
             aria-hidden="true"
           />
