@@ -73,7 +73,7 @@ export default function RequestService() {
         .eq('user_id', user.id)
         .single();
 
-      const { error } = await supabase.from('service_requests').insert({
+      const { data: inserted, error } = await supabase.from('service_requests').insert({
         client_id: user.id,
         client_name: profile?.full_name || 'Cliente',
         client_phone: profile?.phone || '',
@@ -82,12 +82,12 @@ export default function RequestService() {
         latitude: coords.lat,
         longitude: coords.lng,
         description: `Destino: ${destinationAddress}`,
-      });
+      }).select('id').single();
 
       if (error) throw error;
 
       toast({ title: 'Solicitação enviada com sucesso!' });
-      navigate('/cliente');
+      navigate(`/cliente/acompanhar/${inserted.id}`);
     } catch (err: any) {
       toast({ title: 'Erro ao solicitar', description: err.message, variant: 'destructive' });
     } finally {
