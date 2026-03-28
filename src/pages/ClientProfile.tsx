@@ -164,14 +164,28 @@ export default function ClientProfile() {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-0 font-body text-sm">
-                  <InfoRow label="CPF" value={profile?.cpf} />
-                  <InfoRow label="Telefone" value={profile?.phone} icon={<Phone className="w-3.5 h-3.5" />} />
-                  <InfoRow
-                    label="Data de Nascimento"
-                    value={profile?.birth_date ? new Date(profile.birth_date + 'T12:00:00').toLocaleDateString('pt-BR') : null}
-                  />
-                </div>
+                <ProfileEditableSection
+                  userId={user!.id}
+                  fields={[
+                    { key: 'full_name', label: 'Nome Completo', placeholder: 'Seu nome completo' },
+                    { key: 'cpf', label: 'CPF', placeholder: '000.000.000-00', maxLength: 14 },
+                    { key: 'phone', label: 'Telefone', placeholder: '(00) 00000-0000', maxLength: 15 },
+                    { key: 'birth_date', label: 'Data de Nascimento', type: 'date' },
+                  ]}
+                  values={profile || {}}
+                  onSave={updateProfile}
+                  renderView={() => (
+                    <div className="space-y-0 font-body text-sm">
+                      <InfoRow label="Nome" value={profile?.full_name} />
+                      <InfoRow label="CPF" value={profile?.cpf} />
+                      <InfoRow label="Telefone" value={profile?.phone} icon={<Phone className="w-3.5 h-3.5" />} />
+                      <InfoRow
+                        label="Data de Nascimento"
+                        value={profile?.birth_date ? new Date(profile.birth_date + 'T12:00:00').toLocaleDateString('pt-BR') : null}
+                      />
+                    </div>
+                  )}
+                />
               </AccordionContent>
             </AccordionItem>
 
