@@ -50,6 +50,9 @@ export default function ProviderDashboard() {
   );
   const prevRequestCountRef = useRef<number>(0);
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
+  const watchIdRef = useRef<number | null>(null);
+  const lastUpdateRef = useRef<number>(0);
+  const [isTracking, setIsTracking] = useState(false);
 
   // Initialize notification sound
   useEffect(() => {
