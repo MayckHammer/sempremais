@@ -1,55 +1,32 @@
 
 
-# Redesign do Perfil do Cliente — UX/UI Melhorado
+# Ajuste do Header do Perfil + Dados do Usuário
+
+## Problema
+O header azul com `pb-24` está muito alto, sobrepondo o primeiro accordion "Dados Pessoais". Além disso, o perfil do usuário `mayckhammersavecar@gmail.com` precisa ter nome "Mayck Hammer" e localização "Uberlândia - MG" cadastrados no banco.
 
 ## Mudanças
 
-### `src/pages/ClientProfile.tsx` — Reescrita do layout
+### 1. `src/pages/ClientProfile.tsx` — Reduzir altura do header
+- Alterar `pb-24` para `pb-16` no container do header azul
+- Reduzir `mt-5` do bloco avatar para `mt-3`
+- Isso diminui a área azul e libera espaço para o accordion ficar visível sem sobreposição
 
-**Header + Avatar:**
-- Manter header azul com curva orgânica e seta de voltar
-- Abaixo do avatar (icone do boneco), colocar:
-  - **Nome em negrito** (`font-bold text-lg`)
-  - **Cidade - UF** em texto normal/leve abaixo (`font-normal text-sm text-primary-foreground/70`)
+### 2. Banco de dados — Atualizar perfil do usuário
+- Executar migration para atualizar o `full_name`, `city` e `state` do perfil vinculado ao email `mayckhammersavecar@gmail.com`:
 
-**Seções colapsáveis (Accordion):**
-- Substituir os 3 cards fixos (Dados Pessoais, Endereço, Veículo) por um `Accordion` do Radix (já existe em `src/components/ui/accordion.tsx`)
-- Cada seção vira um `AccordionItem` com icone + título no trigger
-- Conteúdo expande/colapsa ao clicar
-- Visual: fundo `bg-card`, bordas arredondadas, sem borda entre items — cada item como card separado com `rounded-2xl` e gap entre eles
-
-**Seção "Meu Plano":**
-- Permanece como está (cards de planos com upgrade), apenas abaixo do accordion
-
-### Estrutura visual resultante
-
-```text
-┌─────────────────────────┐
-│  ←  Meu Perfil          │  header azul
-│                         │
-│        (👤)             │  avatar
-│    João da Silva        │  nome bold
-│   São Paulo - SP        │  cidade normal
-│  ╲_______________╱      │  curva
-├─────────────────────────┤
-│ ▸ 👤 Dados Pessoais     │  accordion (fechado)
-├─────────────────────────┤
-│ ▸ 📍 Endereço           │  accordion (fechado)
-├─────────────────────────┤
-│ ▸ 🚗 Veículo            │  accordion (fechado)
-├─────────────────────────┤
-│ 👑 Meu Plano            │
-│ ┌─ Básico R$49,90 ────┐ │
-│ └─────────────────────┘ │
-│ ┌─ Premium R$69,90 ───┐ │
-│ └─────────────────────┘ │
-└─────────────────────────┘
+```sql
+UPDATE public.profiles
+SET full_name = 'Mayck Hammer',
+    city = 'Uberlândia',
+    state = 'MG'
+WHERE user_id = (
+  SELECT id FROM auth.users WHERE email = 'mayckhammersavecar@gmail.com'
+);
 ```
 
-### Detalhes técnicos
-- Importar `Accordion, AccordionItem, AccordionTrigger, AccordionContent` de `@/components/ui/accordion`
-- Usar `type="multiple"` para permitir abrir várias seções ao mesmo tempo
-- Estilizar cada `AccordionItem` com `bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden` e remover a `border-b` padrão
-- Manter a função `InfoRow` existente dentro do conteúdo de cada accordion
-- Manter animações `motion` no container geral
+## Detalhes técnicos
+- A redução do padding (`pb-24` → `pb-16`) mantém a curva SVG e o avatar visíveis, mas recua o header ~32px
+- O nome e localização já são exibidos pelo código existente via `profile?.full_name` e `locationText`
+- A migration garante que os dados apareçam corretamente para esse usuário específico
 
