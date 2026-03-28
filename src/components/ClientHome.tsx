@@ -70,12 +70,17 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     const el = scrollRef.current;
     if (!el) return;
     let animId: number;
-    let pos = 0;
-    const speed = 0.2;
-    const scroll = () => {
-      pos += speed;
-      if (pos >= el.scrollWidth / 2) pos = 0;
-      el.scrollLeft = pos;
+    let lastTime = 0;
+    const speed = 30; // pixels per second
+    const scroll = (time: number) => {
+      if (lastTime) {
+        const delta = (time - lastTime) / 1000;
+        el.scrollLeft += speed * delta;
+        if (el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0;
+        }
+      }
+      lastTime = time;
       animId = requestAnimationFrame(scroll);
     };
     animId = requestAnimationFrame(scroll);
