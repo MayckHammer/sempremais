@@ -1,19 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { ServiceCard } from '@/components/ServiceCard';
-import { ProviderCard } from '@/components/ProviderCard';
-import { RequestCard } from '@/components/RequestCard';
-import { ServiceRequestModal } from '@/components/ServiceRequestModal';
-import { RatingModal } from '@/components/RatingModal';
-import { Button } from '@/components/ui/button';
+import { ClientHome } from '@/components/ClientHome';
 import { useAuth } from '@/contexts/AuthContext';
 import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { MapPin, Truck, Key, Circle, RotateCcw, Package, RefreshCw, Clipboard } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface Provider {
   id: string;
