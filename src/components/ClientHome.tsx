@@ -214,8 +214,6 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-2 h-7 w-7 bg-white/30 border-0 text-white hover:bg-white/50" />
-            <CarouselNext className="right-2 h-7 w-7 bg-white/30 border-0 text-white hover:bg-white/50" />
           </Carousel>
           <div className="flex justify-center gap-1.5 mt-2">
             {banners.map((_, i) => (
