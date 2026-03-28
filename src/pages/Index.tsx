@@ -18,6 +18,20 @@ export default function Index() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSecretDown = useCallback(() => {
+    longPressTimer.current = setTimeout(() => {
+      navigate('/admin/login');
+    }, 3000);
+  }, [navigate]);
+
+  const handleSecretUp = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }, []);
 
   if (!loading && user) {
     const dashboardPath = user.role === 'provider' ? '/prestador' : '/cliente';
