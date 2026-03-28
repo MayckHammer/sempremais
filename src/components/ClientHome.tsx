@@ -84,7 +84,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Curved Header */}
       <div className="relative">
-        <div className="bg-primary pt-20 pb-20 px-4 relative overflow-hidden">
+        <div className="bg-primary pt-14 pb-16 px-4 relative overflow-hidden">
           {/* Menu + Logo */}
           <div className="flex items-center justify-between relative z-10">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
@@ -146,7 +146,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-4 pt-2 pb-4 space-y-5">
+      <div className="flex-1 px-4 pt-8 pb-4 space-y-5">
         {/* Banner Carousel */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
