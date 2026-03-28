@@ -101,6 +101,87 @@ export type Database = {
         }
         Relationships: []
       }
+      sb_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          reference_id: string | null
+          type: Database["public"]["Enums"]["sb_transaction_type"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          type: Database["public"]["Enums"]["sb_transaction_type"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          type?: Database["public"]["Enums"]["sb_transaction_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sb_wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      service_pricing: {
+        Row: {
+          created_at: string
+          id: string
+          non_subscriber_price: number
+          service_type: Database["public"]["Enums"]["service_type"]
+          subscriber_price: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          non_subscriber_price?: number
+          service_type: Database["public"]["Enums"]["service_type"]
+          subscriber_price?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          non_subscriber_price?: number
+          service_type?: Database["public"]["Enums"]["service_type"]
+          subscriber_price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       service_requests: {
         Row: {
           accepted_at: string | null
@@ -112,8 +193,10 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_subscriber: boolean
           latitude: number
           longitude: number
+          price: number | null
           provider_id: string | null
           rating: number | null
           rating_comment: string | null
@@ -132,8 +215,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_subscriber?: boolean
           latitude: number
           longitude: number
+          price?: number | null
           provider_id?: string | null
           rating?: number | null
           rating_comment?: string | null
@@ -152,8 +237,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_subscriber?: boolean
           latitude?: number
           longitude?: number
+          price?: number | null
           provider_id?: string | null
           rating?: number | null
           rating_comment?: string | null
@@ -218,6 +305,7 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      sb_transaction_type: "earned" | "spent"
       service_type:
         | "reboque"
         | "chaveiro"
@@ -360,6 +448,7 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      sb_transaction_type: ["earned", "spent"],
       service_type: [
         "reboque",
         "chaveiro",

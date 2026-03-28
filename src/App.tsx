@@ -16,6 +16,7 @@ import RequestService from "./pages/RequestService";
 import TrackingService from "./pages/TrackingService";
 import AdminDashboard from "./pages/AdminDashboard";
 import ClientRequests from "./pages/ClientRequests";
+import GuestRequestService from "./pages/GuestRequestService";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/prestador" element={<ProviderDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/cliente/solicitacoes" element={<ClientRequests />} />
+            <Route path="/assistencia" element={<GuestRequestService />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

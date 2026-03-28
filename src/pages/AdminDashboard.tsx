@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Shield, Users, FileText, CheckCircle, XCircle, Star, Phone, MapPin, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
+import AdminPricingTab from '@/components/AdminPricingTab';
 
 interface ProviderRow {
   id: string;
@@ -162,9 +163,10 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <Tabs defaultValue="providers" className="space-y-4">
-          <TabsList className="w-full grid grid-cols-2 rounded-xl bg-muted">
+          <TabsList className="w-full grid grid-cols-3 rounded-xl bg-muted">
             <TabsTrigger value="providers" className="rounded-lg font-display font-semibold text-sm">Prestadores</TabsTrigger>
             <TabsTrigger value="requests" className="rounded-lg font-display font-semibold text-sm">Solicitações</TabsTrigger>
+            <TabsTrigger value="pricing" className="rounded-lg font-display font-semibold text-sm">Preços</TabsTrigger>
           </TabsList>
 
           {/* Providers Tab */}
@@ -235,6 +237,11 @@ export default function AdminDashboard() {
             }) : (
               <p className="text-sm text-muted-foreground text-center py-8 font-body">Nenhuma solicitação encontrada</p>
             )}
+          </TabsContent>
+
+          {/* Pricing Tab */}
+          <TabsContent value="pricing">
+            <AdminPricingTab />
           </TabsContent>
         </Tabs>
       </div>

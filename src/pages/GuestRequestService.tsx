@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, Coins } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, User, Phone, Mail, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -10,15 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { signUp } from '@/lib/auth';
 import { toast } from '@/hooks/use-toast';
-
-interface PricingRow {
-  service_type: string;
-  subscriber_price: number;
-  non_subscriber_price: number;
-}
 
 const serviceLabels: Record<string, string> = {
   reboque: 'Reboque (Guincho)',
@@ -29,7 +24,13 @@ const serviceLabels: Record<string, string> = {
   frete_grande: 'Frete Grande',
 };
 
-export default function RequestService() {
+interface PricingRow {
+  service_type: string;
+  subscriber_price: number;
+  non_subscriber_price: number;
+}
+
+export default function GuestRequestService() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [serviceType, setServiceType] = useState('');
@@ -37,15 +38,18 @@ export default function RequestService() {
   const [destinationAddress, setDestinationAddress] = useState('');
   const [coords, setCoords] = useState({ lat: -23.55, lng: -46.63 });
   const [loading, setLoading] = useState(false);
+
+  // Guest fields
+  const [guestName, setGuestName] = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+
+  // Pricing
   const [pricing, setPricing] = useState<PricingRow[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
 
   useEffect(() => {
-    // Fetch pricing
-    supabase.from('service_pricing').select('*').then(({ data }) => {
-      if (data) setPricing(data as unknown as PricingRow[]);
-    });
-
+    fetchPricing();
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -67,10 +71,15 @@ export default function RequestService() {
     );
   }, []);
 
+  const fetchPricing = async () => {
+    const { data } = await supabase.from('service_pricing').select('*');
+    if (data) setPricing(data as unknown as PricingRow[]);
+  };
+
   useEffect(() => {
     if (serviceType && pricing.length > 0) {
       const found = pricing.find(p => p.service_type === serviceType);
-      setSelectedPrice(found ? Number(found.subscriber_price) : null);
+      setSelectedPrice(found ? Number(found.non_subscriber_price) : null);
     } else {
       setSelectedPrice(null);
     }
@@ -85,27 +94,35 @@ export default function RequestService() {
       toast({ title: 'Informe o destino', variant: 'destructive' });
       return;
     }
-    if (!user) return;
+    if (!guestName.trim() || !guestPhone.trim() || !guestEmail.trim()) {
+      toast({ title: 'Preencha nome, telefone e email', variant: 'destructive' });
+      return;
+    }
 
     setLoading(true);
     try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, phone')
-        .eq('user_id', user.id)
-        .single();
+      // If user is already logged in, use their session
+      let clientId = user?.id;
+
+      if (!clientId) {
+        // Quick signup for guest
+        const tempPassword = `guest_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const result = await signUp(guestEmail, tempPassword, 'client', guestName, guestPhone);
+        if (!result.user) throw new Error('Erro ao criar conta');
+        clientId = result.user.id;
+      }
 
       const { data: inserted, error } = await supabase.from('service_requests').insert({
-        client_id: user.id,
-        client_name: profile?.full_name || 'Cliente',
-        client_phone: profile?.phone || '',
+        client_id: clientId,
+        client_name: guestName,
+        client_phone: guestPhone,
         service_type: serviceType as any,
         address: originAddress,
         latitude: coords.lat,
         longitude: coords.lng,
         description: `Destino: ${destinationAddress}`,
         price: selectedPrice ?? 0,
-        is_subscriber: true,
+        is_subscriber: false,
       }).select('id').single();
 
       if (error) throw error;
@@ -141,12 +158,20 @@ export default function RequestService() {
       </div>
 
       {/* Bottom panel */}
-      <div className="bg-card rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-5 pt-6 pb-8 space-y-4 relative z-10">
-        <div className="w-10 h-1 rounded-full bg-muted mx-auto mb-2" />
+      <div className="bg-card rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-5 pt-5 pb-6 space-y-3 relative z-10 max-h-[70vh] overflow-y-auto">
+        <div className="w-10 h-1 rounded-full bg-muted mx-auto mb-1" />
+
+        {/* Subscriber banner */}
+        <div className="bg-primary/10 rounded-xl px-3 py-2 flex items-center gap-2">
+          <Coins className="w-4 h-4 text-primary flex-shrink-0" />
+          <p className="text-[11px] text-primary font-body font-medium">
+            Seja assinante e pague menos! Ganhe <span className="font-bold">SB's</span> a cada serviço.
+          </p>
+        </div>
 
         {/* Service type */}
         <Select value={serviceType} onValueChange={setServiceType}>
-          <SelectTrigger className="rounded-xl h-12 border-border bg-muted/50">
+          <SelectTrigger className="rounded-xl h-11 border-border bg-muted/50 text-sm">
             <SelectValue placeholder="Tipo de serviço" />
           </SelectTrigger>
           <SelectContent>
@@ -158,20 +183,48 @@ export default function RequestService() {
           </SelectContent>
         </Select>
 
-        {/* Price + SB's display */}
+        {/* Price display */}
         {selectedPrice !== null && (
           <div className="bg-muted/60 rounded-xl px-4 py-3 flex items-center justify-between">
-            <div>
-              <span className="text-xs text-muted-foreground font-body">Valor assinante</span>
-              <p className="text-lg font-display font-extrabold text-foreground">
-                R$ {selectedPrice.toFixed(2).replace('.', ',')}
-              </p>
-            </div>
-            <div className="flex items-center gap-1 text-primary">
-              <Coins className="w-4 h-4" />
-              <span className="text-xs font-display font-bold">Você ganhará SB's</span>
-            </div>
+            <span className="text-xs text-muted-foreground font-body">Valor do serviço</span>
+            <span className="text-lg font-display font-extrabold text-foreground">
+              R$ {selectedPrice.toFixed(2).replace('.', ',')}
+            </span>
           </div>
+        )}
+
+        {/* Guest info */}
+        {!user && (
+          <>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                placeholder="Seu nome"
+                className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm"
+              />
+            </div>
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={guestPhone}
+                onChange={(e) => setGuestPhone(e.target.value)}
+                placeholder="Telefone"
+                className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm"
+              />
+            </div>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="email"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                placeholder="Email"
+                className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm"
+              />
+            </div>
+          </>
         )}
 
         {/* Origin */}
@@ -181,7 +234,7 @@ export default function RequestService() {
             value={originAddress}
             onChange={(e) => setOriginAddress(e.target.value)}
             placeholder="Localização atual"
-            className="pl-10 rounded-xl h-12 border-border bg-muted/50"
+            className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm"
           />
         </div>
 
@@ -192,7 +245,7 @@ export default function RequestService() {
             value={destinationAddress}
             onChange={(e) => setDestinationAddress(e.target.value)}
             placeholder="Localização de destino"
-            className="pl-10 rounded-xl h-12 border-border bg-muted/50"
+            className="pl-10 rounded-xl h-11 border-border bg-muted/50 text-sm"
           />
         </div>
 
@@ -201,7 +254,7 @@ export default function RequestService() {
           disabled={loading}
           className="w-full rounded-2xl h-14 text-lg font-display font-bold shadow-premium"
         >
-          {loading ? 'Enviando...' : 'Solicitar'}
+          {loading ? 'Enviando...' : 'Solicitar Assistência'}
         </Button>
       </div>
     </div>
