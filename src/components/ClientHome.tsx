@@ -252,7 +252,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
         >
           <Button
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 text-lg font-display font-bold shadow-premium"
-            onClick={() => navigate('/cliente')}
+            onClick={() => navigate('/cliente/solicitar')}
           >
             Solicitar Assistência
           </Button>
