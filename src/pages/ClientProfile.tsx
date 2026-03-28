@@ -103,7 +103,7 @@ export default function ClientProfile() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-primary pt-14 pb-24 px-4 relative overflow-hidden">
+      <div className="bg-primary pt-14 pb-16 px-4 relative overflow-hidden">
         <div className="flex items-center gap-3 relative z-10">
           <Button
             variant="ghost"
