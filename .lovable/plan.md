@@ -1,27 +1,28 @@
 
 
-# Responsividade e Botão "Solicitar Assistência"
+# Ajustar Posição do Banner e Tamanho do Mapa
 
-## Problemas atuais
-- Itens muito colados no topo (header compacto demais)
-- Banner do carrossel pequeno (h-28)
-- Falta botão de ação principal abaixo do mapa
+## Problema
+- O banner carrossel está posicionado alto demais (dentro da curva azul)
+- O mapa ocupa muito espaço vertical, forçando scroll
+- Tudo precisa caber em uma tela (844px viewport)
 
 ## Alterações em `src/components/ClientHome.tsx`
 
-### 1. Mais espaçamento no header
-- Aumentar padding top do header de `pt-12` para `pt-14`
-- Aumentar padding bottom de `pb-28` para `pb-36` para dar mais espaço ao banner
+### 1. Mover o banner para a área branca
+- Remover o posicionamento `absolute` do banner (linha 147)
+- Colocar o carrossel como primeiro item dentro do container de conteúdo (`div` linha 174), antes da seção Destaques
+- Reduzir o `pb-36` do header para `pb-16` já que o banner não precisa mais de espaço sobreposto
+- Adicionar `margin-top: -2rem` no carrossel para que ele se sobreponha levemente à curva
 
-### 2. Banner maior
-- Aumentar altura do banner de `h-28` para `h-36`
-- Aumentar padding interno de `p-5` para `p-6`
+### 2. Reduzir o mapa
+- Diminuir altura do mapa de `h-52` para `h-32`
 
-### 3. Mais respiração no conteúdo
-- Aumentar `pt-2` para `pt-6` no container de conteúdo
-- Aumentar `space-y-6` para `space-y-8`
+### 3. Compactar espaçamentos
+- Reduzir `space-y-8` para `space-y-5` no container de conteúdo
+- Reduzir `pt-6` para `pt-2`
+- Reduzir altura do banner de `h-36` para `h-28`
+- Reduzir `pb-8` para `pb-4`
 
-### 4. Botão "Solicitar Assistência" abaixo do mapa
-- Adicionar um `Button` estilizado com a paleta primary, `rounded-2xl`, largura total, logo após a seção do mapa
-- Ao clicar, abre o fluxo de solicitação de serviço (navigate ou modal)
+Tudo cabe em 844px sem scroll.
 
