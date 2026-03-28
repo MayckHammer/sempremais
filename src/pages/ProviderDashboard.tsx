@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -8,8 +8,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Inbox, CheckCircle, Star, Trophy } from 'lucide-react';
+import { Inbox, CheckCircle, Star, Trophy, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 interface ServiceRequest {
   id: string;
@@ -32,6 +33,10 @@ interface ProviderData {
   average_rating: number;
   is_approved: boolean;
 }
+const serviceLabelsMap: Record<string, string> = {
+  reboque: 'Reboque', chaveiro: 'Chaveiro', borracheiro: 'Borracheiro',
+  destombamento: 'Destombamento', frete_pequeno: 'Frete Pequeno', frete_grande: 'Frete Grande',
+};
 
 export default function ProviderDashboard() {
   const { user, loading: authLoading, refreshUser } = useAuth();
@@ -39,6 +44,49 @@ export default function ProviderDashboard() {
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [availableRequests, setAvailableRequests] = useState<ServiceRequest[]>([]);
   const [myJobs, setMyJobs] = useState<ServiceRequest[]>([]);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    typeof Notification !== 'undefined' && Notification.permission === 'granted'
+  );
+  const prevRequestCountRef = useRef<number>(0);
+  const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize notification sound
+  useEffect(() => {
+    notificationSoundRef.current = new Audio('data:audio/wav;base64,UklGRlYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTIAAABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABk');
+  }, []);
+
+  const requestNotificationPermission = useCallback(async () => {
+    if (typeof Notification === 'undefined') {
+      toast.error('Seu navegador não suporta notificações');
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    setNotificationsEnabled(permission === 'granted');
+    if (permission === 'granted') {
+      toast.success('Notificações ativadas!');
+    } else {
+      toast.error('Permissão de notificação negada');
+    }
+  }, []);
+
+  const sendNotification = useCallback((request: ServiceRequest) => {
+    // Toast notification always
+    toast.success(`Nova solicitação! ${request.client_name} precisa de ${
+      serviceLabelsMap[request.service_type] || request.service_type
+    }`, { duration: 8000 });
+
+    // Play sound
+    notificationSoundRef.current?.play().catch(() => {});
+
+    // Browser notification if enabled
+    if (notificationsEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+      new Notification('Sempre+ Nova Solicitação', {
+        body: `${request.client_name} precisa de ${serviceLabelsMap[request.service_type] || request.service_type} em ${request.address}`,
+        icon: '/favicon.ico',
+        tag: request.id,
+      });
+    }
+  }, [notificationsEnabled]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -72,14 +120,27 @@ export default function ProviderDashboard() {
 
       const channel = supabase
         .channel('provider-requests')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' },
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'service_requests' },
+          (payload) => {
+            const newRequest = payload.new as ServiceRequest;
+            if (newRequest.status === 'pending') {
+              sendNotification(newRequest);
+            }
+            fetchAvailableRequests();
+            fetchMyJobs();
+          }
+        )
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'service_requests' },
           () => { fetchAvailableRequests(); fetchMyJobs(); }
         )
         .subscribe();
 
+      // Track initial count
+      prevRequestCountRef.current = availableRequests.length;
+
       return () => { supabase.removeChannel(channel); };
     }
-  }, [providerData]);
+  }, [providerData, sendNotification]);
 
   const fetchProviderData = async () => {
     if (!user) return;
@@ -159,7 +220,23 @@ export default function ProviderDashboard() {
       <Header />
       
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Provider Stats */}
+        {/* Notification Permission */}
+        {!notificationsEnabled && typeof Notification !== 'undefined' && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-3 sm:mb-4"
+          >
+            <Button
+              onClick={requestNotificationPermission}
+              variant="outline"
+              className="w-full h-11 rounded-xl border-primary/30 text-primary hover:bg-primary/10 font-display font-semibold gap-2"
+            >
+              <Bell className="w-4 h-4" />
+              Ativar notificações de novas solicitações
+            </Button>
+          </motion.div>
+        )}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           {stats.map((stat, index) => (
             <motion.div
