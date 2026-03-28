@@ -70,6 +70,14 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     navigate('/');
   };
 
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => setCurrentSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on('select', onSelect);
+    onSelect();
+    return () => { carouselApi.off('select', onSelect); };
+  }, [carouselApi]);
+
   // Auto-scroll highlights
   useEffect(() => {
     const el = scrollRef.current;
