@@ -54,7 +54,7 @@ export default function ClientWallet() {
           <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10 rounded-xl" onClick={() => navigate('/cliente')}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <img src={logoSempre} alt="Sempre+" className="h-7 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+          <img src={logoSempre} alt="Sempre+" className="h-9 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
           <div className="w-10" />
         </div>
 

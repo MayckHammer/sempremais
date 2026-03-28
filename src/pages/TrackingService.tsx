@@ -4,6 +4,7 @@ import { ArrowLeft, Phone, MapPin, Clock, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+import { SBBadge } from '@/components/SBBadge';
 
 function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371;
@@ -232,6 +233,7 @@ export default function TrackingService() {
           </>
         )}
       </div>
+      <SBBadge />
     </div>
   );
 }
