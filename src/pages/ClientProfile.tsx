@@ -6,6 +6,12 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, User, Phone, MapPin, Car, Crown, Check, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 interface Plan {
   id: string;
@@ -92,12 +98,12 @@ export default function ClientProfile() {
     );
   }
 
-  const currentPlan = plans.find(p => p.id === profile?.current_plan_id);
+  const locationText = [profile?.city, profile?.state].filter(Boolean).join(' - ');
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-primary pt-14 pb-20 px-4 relative overflow-hidden">
+      <div className="bg-primary pt-14 pb-24 px-4 relative overflow-hidden">
         <div className="flex items-center gap-3 relative z-10">
           <Button
             variant="ghost"
@@ -110,15 +116,20 @@ export default function ClientProfile() {
           <h1 className="text-primary-foreground font-display font-bold text-lg">Meu Perfil</h1>
         </div>
 
-        {/* Avatar */}
-        <div className="flex justify-center mt-4 relative z-10">
+        {/* Avatar + Name + Location */}
+        <div className="flex flex-col items-center mt-5 relative z-10">
           <div className="w-20 h-20 rounded-full bg-primary-foreground/20 border-2 border-primary-foreground/40 flex items-center justify-center">
             <User className="w-10 h-10 text-primary-foreground" />
           </div>
+          <p className="text-primary-foreground font-display font-bold text-lg mt-3">
+            {profile?.full_name}
+          </p>
+          {locationText && (
+            <p className="text-primary-foreground/70 font-body text-sm mt-0.5">
+              {locationText}
+            </p>
+          )}
         </div>
-        <p className="text-center text-primary-foreground font-display font-bold text-lg mt-2 relative z-10">
-          {profile?.full_name}
-        </p>
 
         <svg
           className="absolute bottom-0 left-0 w-full"
@@ -130,66 +141,84 @@ export default function ClientProfile() {
         </svg>
       </div>
 
-      <div className="px-4 -mt-4 pb-8 space-y-5">
-        {/* Dados Pessoais */}
+      <div className="px-4 -mt-6 pb-8 space-y-5">
+        {/* Accordion Sections */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-card rounded-2xl border border-border/60 p-4 shadow-sm space-y-3"
         >
-          <h2 className="font-display font-extrabold text-sm text-foreground flex items-center gap-2">
-            <User className="w-4 h-4 text-primary" /> Dados Pessoais
-          </h2>
-          <div className="grid grid-cols-1 gap-2 text-sm font-body">
-            <InfoRow label="CPF" value={profile?.cpf} />
-            <InfoRow label="Telefone" value={profile?.phone} icon={<Phone className="w-3.5 h-3.5" />} />
-            <InfoRow label="Data de Nascimento" value={profile?.birth_date ? new Date(profile.birth_date + 'T12:00:00').toLocaleDateString('pt-BR') : null} />
-          </div>
-        </motion.div>
+          <Accordion type="multiple" className="space-y-3">
+            {/* Dados Pessoais */}
+            <AccordionItem
+              value="personal"
+              className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden px-4 !border-b-0"
+            >
+              <AccordionTrigger className="hover:no-underline py-4">
+                <span className="flex items-center gap-2 font-display font-extrabold text-sm text-foreground">
+                  <User className="w-4 h-4 text-primary" /> Dados Pessoais
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-0 font-body text-sm">
+                  <InfoRow label="CPF" value={profile?.cpf} />
+                  <InfoRow label="Telefone" value={profile?.phone} icon={<Phone className="w-3.5 h-3.5" />} />
+                  <InfoRow
+                    label="Data de Nascimento"
+                    value={profile?.birth_date ? new Date(profile.birth_date + 'T12:00:00').toLocaleDateString('pt-BR') : null}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
 
-        {/* Endereço */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-card rounded-2xl border border-border/60 p-4 shadow-sm space-y-3"
-        >
-          <h2 className="font-display font-extrabold text-sm text-foreground flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary" /> Endereço
-          </h2>
-          <div className="grid grid-cols-1 gap-2 text-sm font-body">
-            <InfoRow label="CEP" value={profile?.cep} />
-            <InfoRow label="Rua" value={profile?.street ? `${profile.street}${profile.street_number ? `, ${profile.street_number}` : ''}` : null} />
-            <InfoRow label="Complemento" value={profile?.complement} />
-            <InfoRow label="Bairro" value={profile?.neighborhood} />
-            <InfoRow label="Cidade" value={profile?.city ? `${profile.city}${profile.state ? ` - ${profile.state}` : ''}` : null} />
-          </div>
-        </motion.div>
+            {/* Endereço */}
+            <AccordionItem
+              value="address"
+              className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden px-4 !border-b-0"
+            >
+              <AccordionTrigger className="hover:no-underline py-4">
+                <span className="flex items-center gap-2 font-display font-extrabold text-sm text-foreground">
+                  <MapPin className="w-4 h-4 text-primary" /> Endereço
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-0 font-body text-sm">
+                  <InfoRow label="CEP" value={profile?.cep} />
+                  <InfoRow label="Rua" value={profile?.street ? `${profile.street}${profile.street_number ? `, ${profile.street_number}` : ''}` : null} />
+                  <InfoRow label="Complemento" value={profile?.complement} />
+                  <InfoRow label="Bairro" value={profile?.neighborhood} />
+                  <InfoRow label="Cidade" value={profile?.city ? `${profile.city}${profile.state ? ` - ${profile.state}` : ''}` : null} />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
 
-        {/* Veículo */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-card rounded-2xl border border-border/60 p-4 shadow-sm space-y-3"
-        >
-          <h2 className="font-display font-extrabold text-sm text-foreground flex items-center gap-2">
-            <Car className="w-4 h-4 text-primary" /> Veículo
-          </h2>
-          <div className="grid grid-cols-1 gap-2 text-sm font-body">
-            <InfoRow label="Marca" value={profile?.vehicle_brand} />
-            <InfoRow label="Modelo" value={profile?.vehicle_model} />
-            <InfoRow label="Placa" value={profile?.vehicle_plate} />
-            <InfoRow label="Ano" value={profile?.vehicle_year} />
-            <InfoRow label="Cor" value={profile?.vehicle_color} />
-          </div>
+            {/* Veículo */}
+            <AccordionItem
+              value="vehicle"
+              className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden px-4 !border-b-0"
+            >
+              <AccordionTrigger className="hover:no-underline py-4">
+                <span className="flex items-center gap-2 font-display font-extrabold text-sm text-foreground">
+                  <Car className="w-4 h-4 text-primary" /> Veículo
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-0 font-body text-sm">
+                  <InfoRow label="Marca" value={profile?.vehicle_brand} />
+                  <InfoRow label="Modelo" value={profile?.vehicle_model} />
+                  <InfoRow label="Placa" value={profile?.vehicle_plate} />
+                  <InfoRow label="Ano" value={profile?.vehicle_year} />
+                  <InfoRow label="Cor" value={profile?.vehicle_color} />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </motion.div>
 
         {/* Meu Plano */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.15 }}
         >
           <h2 className="font-display font-extrabold text-base text-foreground flex items-center gap-2 mb-3">
             <Crown className="w-4 h-4 text-primary" /> Meu Plano
@@ -267,7 +296,7 @@ export default function ClientProfile() {
 
 function InfoRow({ label, value, icon }: { label: string; value: string | null | undefined; icon?: React.ReactNode }) {
   return (
-    <div className="flex justify-between items-center py-1 border-b border-border/30 last:border-0">
+    <div className="flex justify-between items-center py-2.5 border-b border-border/30 last:border-0">
       <span className="text-muted-foreground flex items-center gap-1.5">
         {icon} {label}
       </span>
