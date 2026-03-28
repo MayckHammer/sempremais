@@ -42,9 +42,9 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-foreground flex items-center justify-center p-4">
       <Card className="w-full max-w-sm bg-card border-border shadow-2xl">
         <CardContent className="p-6">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Shield className="w-6 h-6 text-primary" />
-            <h1 className="text-lg font-display font-extrabold text-foreground">SEMPRE+ Admin</h1>
+          <div className="flex flex-col items-center gap-3 mb-6">
+            <img src={logoSempre} alt="Sempre+" className="h-14 object-contain" />
+            <span className="text-xs font-display font-bold text-muted-foreground tracking-widest uppercase">Painel Administrativo</span>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

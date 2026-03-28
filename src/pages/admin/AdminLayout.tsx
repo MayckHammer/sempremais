@@ -34,10 +34,10 @@ function AdminSidebar() {
       <SidebarContent className="bg-sidebar text-sidebar-foreground">
         {/* Brand */}
         <div className="p-4 flex items-center gap-2 border-b border-sidebar-border/30">
-          <Shield className="w-6 h-6 text-sidebar-foreground shrink-0" />
+          <img src={logoSempre} alt="Sempre+" className="h-7 object-contain shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
           {!collapsed && (
-            <span className="font-display font-extrabold text-sm text-sidebar-foreground tracking-tight">
-              SEMPRE+ ADMIN
+            <span className="font-display font-bold text-[10px] text-sidebar-foreground/70 tracking-widest uppercase">
+              Admin
             </span>
           )}
         </div>
