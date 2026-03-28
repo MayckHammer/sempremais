@@ -178,7 +178,7 @@ export default function Index() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6, ease: 'easeOut' }}
               >
-                <Link to="/cadastro/cliente" className="block w-full">
+                <Link to="/assistencia" className="block w-full">
                   <GlowCard
                     glowColor="207 78 38"
                     backgroundColor="rgba(255,255,255,0.9)"
