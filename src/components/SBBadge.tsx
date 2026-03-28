@@ -29,10 +29,10 @@ export function SBBadge() {
   return (
     <button
       onClick={() => navigate('/cliente/carteira')}
-      className="flex items-center gap-1.5 bg-accent/20 hover:bg-accent/30 transition-colors rounded-full px-3 py-1.5"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-foreground text-background rounded-full px-5 py-3 shadow-elevated hover:scale-105 active:scale-95 transition-transform duration-200 overflow-hidden sb-shimmer"
     >
-      <Coins className="w-4 h-4 text-accent" />
-      <span className="text-xs font-display font-bold text-accent">
+      <Coins className="w-5 h-5 text-gold" />
+      <span className="text-sm font-display font-bold">
         {String(Math.floor(balance)).padStart(2, '0')} SB's
       </span>
     </button>

@@ -145,7 +145,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
               style={{ filter: 'brightness(0) invert(1)' }}
             />
 
-            <SBBadge />
+            <div className="w-10" />
           </div>
         </div>
 
@@ -269,6 +269,8 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
           </Button>
         </motion.section>
       </div>
+
+      <SBBadge />
     </div>
   );
 }

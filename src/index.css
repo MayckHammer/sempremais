@@ -371,6 +371,31 @@
     background-color: hsl(var(--gold));
   }
 
+  /* SB Badge shimmer sweep */
+  .sb-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      hsl(0 0% 100% / 0.15) 45%,
+      hsl(0 0% 100% / 0.25) 50%,
+      hsl(0 0% 100% / 0.15) 55%,
+      transparent 70%
+    );
+    transform: translateX(-100%);
+    animation: sb-shimmer-sweep 3s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  @keyframes sb-shimmer-sweep {
+    0% { transform: translateX(-100%); }
+    40% { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
+  }
+
   /* Scrollbar hide */
   .scrollbar-hide {
     -ms-overflow-style: none;
