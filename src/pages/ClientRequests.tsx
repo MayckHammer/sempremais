@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { SBBadge } from '@/components/SBBadge';
 
 interface ServiceRequest {
   id: string;
@@ -96,6 +97,7 @@ export default function ClientRequests() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-lg sm:text-xl font-display font-extrabold text-foreground tracking-tight">Minhas Solicitações</h1>
+          <div className="ml-auto"><SBBadge /></div>
         </div>
 
         <div className="space-y-2 sm:space-y-3">
