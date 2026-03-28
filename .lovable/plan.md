@@ -1,35 +1,58 @@
 
 
-# Geolocation Watch para Prestador
+# Fluxo de Assistência Avulsa + Pré-arquitetura de Preços e SB's
 
-## O que será feito
-Quando o prestador aceitar uma solicitação (`handleAcceptRequest`), iniciar `navigator.geolocation.watchPosition` para enviar suas coordenadas em tempo real para a tabela `providers` (campos `latitude`/`longitude`). Parar o watch quando o serviço for concluído ou o componente desmontar.
+## Contexto
+Atualmente "Preciso de Assistência" leva ao cadastro de cliente. O novo fluxo deve levar diretamente a uma tela de solicitação de serviço (estilo Uber/99) sem acesso aos benefícios de assinante (carrossel, destaques, parceiros). Também preparar a estrutura de preços e moeda digital SB's.
 
-## Alterações em `src/pages/ProviderDashboard.tsx`
+## 1. Banco de Dados - Novas tabelas e colunas
 
-### 1. Adicionar ref para watchId
-```tsx
-const watchIdRef = useRef<number | null>(null);
-```
+### Tabela `service_pricing` (preços por serviço)
+- `id`, `service_type` (enum), `subscriber_price` (decimal, default 0), `non_subscriber_price` (decimal, default 0), `created_at`, `updated_at`
+- Uma linha por tipo de serviço (6 linhas iniciais com R$0,00)
 
-### 2. Criar função `startLocationTracking`
-- Usa `navigator.geolocation.watchPosition` com `enableHighAccuracy: true`
-- A cada atualização, faz `supabase.from('providers').update({ latitude, longitude })` no registro do prestador
-- Throttle de ~10s para não sobrecarregar (comparar timestamp da última atualização)
+### Tabela `sb_wallets` (carteira de SB's)
+- `id`, `user_id` (ref auth.users), `balance` (decimal, default 0), `created_at`, `updated_at`
 
-### 3. Criar função `stopLocationTracking`
-- Chama `navigator.geolocation.clearWatch(watchIdRef.current)`
-- Limpa o ref
+### Tabela `sb_transactions` (histórico de SB's)
+- `id`, `user_id`, `amount` (decimal), `type` (enum: 'earned', 'spent'), `description`, `reference_id` (nullable - id da solicitação), `created_at`
 
-### 4. Integrar no fluxo
-- Em `handleAcceptRequest`: após aceitar com sucesso, chamar `startLocationTracking()`
-- Em `handleCompleteRequest`: após concluir com sucesso, chamar `stopLocationTracking()`
-- No `useEffect` cleanup (unmount): chamar `stopLocationTracking()`
-- Ao montar, verificar se há jobs `accepted`/`in_progress` e retomar tracking automaticamente
+### Coluna em `service_requests`
+- Adicionar `price` (decimal, nullable, default null) - valor cobrado
+- Adicionar `is_subscriber` (boolean, default false) - se era assinante no momento
+- RLS: permitir insert sem autenticação para usuários guest (com validação)
 
-### 5. Indicador visual
-- Mostrar um pequeno badge/ícone pulsante no dashboard quando o tracking está ativo
+## 2. Nova página `/assistencia` - Solicitação Avulsa
 
-## Arquivo afetado
-- `src/pages/ProviderDashboard.tsx`
+Criar `src/pages/GuestRequestService.tsx`:
+- Layout igual ao `RequestService.tsx` (mapa + painel inferior estilo Uber)
+- Campos adicionais: **Nome** e **Telefone** (já que pode não ter conta)
+- Ao selecionar o tipo de serviço, mostrar o **preço não-assinante** buscado de `service_pricing`
+- Card de preço visível: "Valor: R$ 0,00" (placeholder)
+- Banner sutil: "Seja assinante e pague menos! Ganhe SB's a cada serviço"
+- Não requer login para visualizar, mas pede cadastro rápido (nome + telefone + email) antes de confirmar
+- Após envio, redireciona para tela de acompanhamento
+
+## 3. Atualizar `RequestService.tsx` (assinantes)
+
+- Buscar preço de `service_pricing` com `subscriber_price` ao selecionar serviço
+- Mostrar card de preço: "Valor: R$ 0,00" e "Você ganhará X SB's"
+- Salvar `price` e `is_subscriber: true` no insert
+
+## 4. Atualizar `Index.tsx`
+
+- Mudar link de "Preciso de Assistência": de `/cadastro/cliente` para `/assistencia`
+
+## 5. Rota em `App.tsx`
+
+- Adicionar `<Route path="/assistencia" element={<GuestRequestService />} />`
+
+## 6. Painel Admin - Gestão de Preços (preparação)
+
+- Adicionar aba "Preços" no `AdminDashboard.tsx` com tabela editável dos 6 serviços mostrando preço assinante vs não-assinante (inputs editáveis, salvando em `service_pricing`)
+
+## Arquivos afetados
+- **Criar:** `src/pages/GuestRequestService.tsx`
+- **Editar:** `src/pages/Index.tsx`, `src/App.tsx`, `src/pages/RequestService.tsx`, `src/pages/AdminDashboard.tsx`
+- **Migração:** criar tabelas `service_pricing`, `sb_wallets`, `sb_transactions` + colunas em `service_requests`
 
