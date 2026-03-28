@@ -1,58 +1,62 @@
 
 
-# Fluxo de Assistência Avulsa + Pré-arquitetura de Preços e SB's
+# Cadastro Profissional do Associado
 
 ## Contexto
-Atualmente "Preciso de Assistência" leva ao cadastro de cliente. O novo fluxo deve levar diretamente a uma tela de solicitação de serviço (estilo Uber/99) sem acesso aos benefícios de assinante (carrossel, destaques, parceiros). Também preparar a estrutura de preços e moeda digital SB's.
+A página de cadastro de cliente atual (`/cadastro/cliente`) é muito simples (nome, telefone, email, senha). Precisamos de um formulário profissional com dados importantes para o time de cadastro e para o negócio. Além disso, o banner "Seja assinante e pague menos!" na página `/assistencia` e o link "Quero me Cadastrar" na Index devem levar a essa nova tela.
 
-## 1. Banco de Dados - Novas tabelas e colunas
+## O que será feito
 
-### Tabela `service_pricing` (preços por serviço)
-- `id`, `service_type` (enum), `subscriber_price` (decimal, default 0), `non_subscriber_price` (decimal, default 0), `created_at`, `updated_at`
-- Uma linha por tipo de serviço (6 linhas iniciais com R$0,00)
+### 1. Nova página de cadastro completa (`src/pages/auth/ClientSignup.tsx`)
+Substituir o componente simples por um formulário profissional com os seguintes campos:
 
-### Tabela `sb_wallets` (carteira de SB's)
-- `id`, `user_id` (ref auth.users), `balance` (decimal, default 0), `created_at`, `updated_at`
+**Dados Pessoais:**
+- Nome Completo (obrigatório)
+- CPF (obrigatório)
+- Data de Nascimento (obrigatório)
+- Telefone/WhatsApp (obrigatório)
+- Email (obrigatório)
+- Senha (obrigatório)
 
-### Tabela `sb_transactions` (histórico de SB's)
-- `id`, `user_id`, `amount` (decimal), `type` (enum: 'earned', 'spent'), `description`, `reference_id` (nullable - id da solicitação), `created_at`
+**Endereço:**
+- CEP (com auto-preenchimento via ViaCEP)
+- Rua, Número, Complemento
+- Bairro, Cidade, Estado
 
-### Coluna em `service_requests`
-- Adicionar `price` (decimal, nullable, default null) - valor cobrado
-- Adicionar `is_subscriber` (boolean, default false) - se era assinante no momento
-- RLS: permitir insert sem autenticação para usuários guest (com validação)
+**Veículo (opcional):**
+- Marca/Modelo
+- Placa
+- Ano
+- Cor
 
-## 2. Nova página `/assistencia` - Solicitação Avulsa
+Layout: manter o visual S-Curve hero com logo no topo (mesmo padrão do AuthForm atual), formulário em card com seções separadas por títulos. Design mobile-first (390px viewport).
 
-Criar `src/pages/GuestRequestService.tsx`:
-- Layout igual ao `RequestService.tsx` (mapa + painel inferior estilo Uber)
-- Campos adicionais: **Nome** e **Telefone** (já que pode não ter conta)
-- Ao selecionar o tipo de serviço, mostrar o **preço não-assinante** buscado de `service_pricing`
-- Card de preço visível: "Valor: R$ 0,00" (placeholder)
-- Banner sutil: "Seja assinante e pague menos! Ganhe SB's a cada serviço"
-- Não requer login para visualizar, mas pede cadastro rápido (nome + telefone + email) antes de confirmar
-- Após envio, redireciona para tela de acompanhamento
+### 2. Banco de dados - Expandir tabela `profiles`
+Adicionar colunas:
+- `cpf` (text, nullable)
+- `birth_date` (date, nullable)
+- `cep` (text, nullable)
+- `street` (text, nullable)
+- `street_number` (text, nullable)
+- `complement` (text, nullable)
+- `neighborhood` (text, nullable)
+- `city` (text, nullable)
+- `state` (text, nullable)
+- `vehicle_brand` (text, nullable)
+- `vehicle_model` (text, nullable)
+- `vehicle_plate` (text, nullable)
+- `vehicle_year` (text, nullable)
+- `vehicle_color` (text, nullable)
 
-## 3. Atualizar `RequestService.tsx` (assinantes)
+### 3. Atualizar fluxo de signup (`src/lib/auth.ts`)
+Expandir a função `signUp` para aceitar os novos campos e salvá-los na tabela `profiles` após o cadastro (ou via trigger/update posterior).
 
-- Buscar preço de `service_pricing` com `subscriber_price` ao selecionar serviço
-- Mostrar card de preço: "Valor: R$ 0,00" e "Você ganhará X SB's"
-- Salvar `price` e `is_subscriber: true` no insert
-
-## 4. Atualizar `Index.tsx`
-
-- Mudar link de "Preciso de Assistência": de `/cadastro/cliente` para `/assistencia`
-
-## 5. Rota em `App.tsx`
-
-- Adicionar `<Route path="/assistencia" element={<GuestRequestService />} />`
-
-## 6. Painel Admin - Gestão de Preços (preparação)
-
-- Adicionar aba "Preços" no `AdminDashboard.tsx` com tabela editável dos 6 serviços mostrando preço assinante vs não-assinante (inputs editáveis, salvando em `service_pricing`)
+### 4. Links que devem apontar para `/cadastro/cliente`
+- **Index.tsx**: "Quero me Cadastrar" → mudar de `/cadastro/prestador` para `/cadastro/cliente`
+- **GuestRequestService.tsx**: Banner "Seja assinante" → adicionar link para `/cadastro/cliente`
 
 ## Arquivos afetados
-- **Criar:** `src/pages/GuestRequestService.tsx`
-- **Editar:** `src/pages/Index.tsx`, `src/App.tsx`, `src/pages/RequestService.tsx`, `src/pages/AdminDashboard.tsx`
-- **Migração:** criar tabelas `service_pricing`, `sb_wallets`, `sb_transactions` + colunas em `service_requests`
+- **Reescrever:** `src/pages/auth/ClientSignup.tsx` (formulário completo)
+- **Editar:** `src/lib/auth.ts` (expandir signUp), `src/pages/Index.tsx` (link), `src/pages/GuestRequestService.tsx` (link no banner)
+- **Migração:** adicionar colunas à tabela `profiles`
 
