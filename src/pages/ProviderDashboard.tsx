@@ -40,6 +40,49 @@ export default function ProviderDashboard() {
   const [providerData, setProviderData] = useState<ProviderData | null>(null);
   const [availableRequests, setAvailableRequests] = useState<ServiceRequest[]>([]);
   const [myJobs, setMyJobs] = useState<ServiceRequest[]>([]);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    typeof Notification !== 'undefined' && Notification.permission === 'granted'
+  );
+  const prevRequestCountRef = useRef<number>(0);
+  const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize notification sound
+  useEffect(() => {
+    notificationSoundRef.current = new Audio('data:audio/wav;base64,UklGRlYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTIAAABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAZABk');
+  }, []);
+
+  const requestNotificationPermission = useCallback(async () => {
+    if (typeof Notification === 'undefined') {
+      toast.error('Seu navegador não suporta notificações');
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    setNotificationsEnabled(permission === 'granted');
+    if (permission === 'granted') {
+      toast.success('Notificações ativadas!');
+    } else {
+      toast.error('Permissão de notificação negada');
+    }
+  }, []);
+
+  const sendNotification = useCallback((request: ServiceRequest) => {
+    // Toast notification always
+    toast.success(`Nova solicitação! ${request.client_name} precisa de ${
+      serviceLabelsMap[request.service_type] || request.service_type
+    }`, { duration: 8000 });
+
+    // Play sound
+    notificationSoundRef.current?.play().catch(() => {});
+
+    // Browser notification if enabled
+    if (notificationsEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+      new Notification('Sempre+ Nova Solicitação', {
+        body: `${request.client_name} precisa de ${serviceLabelsMap[request.service_type] || request.service_type} em ${request.address}`,
+        icon: '/favicon.ico',
+        tag: request.id,
+      });
+    }
+  }, [notificationsEnabled]);
 
   useEffect(() => {
     if (authLoading) return;
