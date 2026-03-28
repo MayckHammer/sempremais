@@ -15,6 +15,8 @@ interface AuthFormProps {
 }
 
 export function AuthForm({ type, role }: AuthFormProps) {
+  const { user, loading: authLoading } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
