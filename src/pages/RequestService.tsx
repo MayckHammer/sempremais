@@ -37,6 +37,8 @@ export default function RequestService() {
   const [destinationAddress, setDestinationAddress] = useState('');
   const [coords, setCoords] = useState({ lat: -23.55, lng: -46.63 });
   const [loading, setLoading] = useState(false);
+  const [pricing, setPricing] = useState<PricingRow[]>([]);
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
