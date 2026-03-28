@@ -97,7 +97,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
               </SheetTrigger>
               <SheetContent side="left" className="w-72 glass-strong border-border">
                 <div className="flex items-center gap-3 mb-6 pt-4">
-                  <img src={logoSempre} alt="Sempre+" className="h-8 object-contain" />
+                  <img src={logoSempre} alt="Sempre+" className="h-10 object-contain" />
                 </div>
                 <div className="flex flex-col gap-2 p-2">
                   {hasClientAccess && (
@@ -141,7 +141,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
             <img
               src={logoSempre}
               alt="Sempre+"
-              className="h-7 object-contain"
+              className="h-9 object-contain"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
 

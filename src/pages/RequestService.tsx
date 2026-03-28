@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Navigation, Coins } from 'lucide-react';
+import { SBBadge } from '@/components/SBBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -204,6 +205,7 @@ export default function RequestService() {
           {loading ? 'Enviando...' : 'Solicitar'}
         </Button>
       </div>
+      <SBBadge />
     </div>
   );
 }

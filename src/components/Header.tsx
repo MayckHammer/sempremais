@@ -74,7 +74,7 @@ export function Header() {
             <img
               src={logoSempre}
               alt="Sempre+ Assistências e Benefícios"
-              className="h-8 sm:h-10 object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-10 sm:h-12 object-contain transition-transform duration-300 group-hover:scale-105"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </Link>
@@ -129,7 +129,7 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="right" className="w-72 glass-strong border-border">
                 <div className="flex items-center gap-3 mb-6 pt-4">
-                  <img src={logoSempre} alt="Sempre+" className="h-8 object-contain" />
+                  <img src={logoSempre} alt="Sempre+" className="h-10 object-contain" />
                 </div>
                 <MobileMenu />
               </SheetContent>
