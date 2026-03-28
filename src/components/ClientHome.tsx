@@ -84,7 +84,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Curved Header */}
       <div className="relative">
-        <div className="bg-primary pt-14 pb-36 px-4 relative overflow-hidden">
+        <div className="bg-primary pt-14 pb-16 px-4 relative overflow-hidden">
           {/* Menu + Logo */}
           <div className="flex items-center justify-between relative z-10">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
@@ -143,35 +143,35 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
           />
         </svg>
 
-        {/* Banner Carousel overlaid */}
-        <div className="absolute left-4 right-4 bottom-4 z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Carousel
-              opts={{ loop: true, align: 'center' }}
-              plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
-              className="w-full"
-            >
-              <CarouselContent>
-                {banners.map((banner) => (
-                  <CarouselItem key={banner.id}>
-                    <div className={`bg-gradient-to-r ${banner.bg} rounded-2xl p-6 h-36 flex flex-col justify-end shadow-premium`}>
-                      <p className="text-primary-foreground/70 text-xs font-body">{banner.subtitle}</p>
-                      <h3 className="text-primary-foreground font-display font-bold text-lg">{banner.title}</h3>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </motion.div>
-        </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-4 pt-6 pb-8 space-y-8">
+      <div className="flex-1 px-4 pt-2 pb-4 space-y-5">
+        {/* Banner Carousel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="-mt-8"
+        >
+          <Carousel
+            opts={{ loop: true, align: 'center' }}
+            plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
+            className="w-full"
+          >
+            <CarouselContent>
+              {banners.map((banner) => (
+                <CarouselItem key={banner.id}>
+                  <div className={`bg-gradient-to-r ${banner.bg} rounded-2xl p-6 h-28 flex flex-col justify-end shadow-premium`}>
+                    <p className="text-primary-foreground/70 text-xs font-body">{banner.subtitle}</p>
+                    <h3 className="text-primary-foreground font-display font-bold text-lg">{banner.title}</h3>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </motion.div>
+
         {/* Destaques */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -220,7 +220,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
           </div>
 
           <div className="rounded-3xl overflow-hidden shadow-premium border border-border/40 bg-card">
-            <div className="relative w-full h-52 bg-muted">
+            <div className="relative w-full h-32 bg-muted">
               {/* Map placeholder / iframe */}
               <iframe
                 title="Mapa de Prestadores"
