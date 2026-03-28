@@ -1,28 +1,36 @@
 
 
-# Ajustar Posição do Banner e Tamanho do Mapa
+# Nova Página "Solicitar Assistência"
 
-## Problema
-- O banner carrossel está posicionado alto demais (dentro da curva azul)
-- O mapa ocupa muito espaço vertical, forçando scroll
-- Tudo precisa caber em uma tela (844px viewport)
+## Objetivo
+Ao clicar em "Solicitar Assistência" no dashboard do cliente, navegar para uma nova página onde o usuário escolhe o tipo de serviço e define a localização de origem e destino no mapa, conforme o print de referência.
 
-## Alterações em `src/components/ClientHome.tsx`
+## Layout (seguindo o print)
+- Fundo é o mapa em tela cheia (Google Maps embed)
+- Na parte inferior, um painel branco arredondado no topo com 3 campos:
+  1. **Tipo de serviço** — Select/dropdown com opções: Reboque (Guincho), Chaveiro, Borracheiro, Destombamento, Frete Pequeno, Frete Grande
+  2. **Localização atual** — Campo com ícone de pin que mostra o endereço atual (auto-detectado via geolocalização)
+  3. **Localização de destino** — Campo para informar o destino do serviço
+- Botão primário azul "Solicitar" na parte inferior
 
-### 1. Mover o banner para a área branca
-- Remover o posicionamento `absolute` do banner (linha 147)
-- Colocar o carrossel como primeiro item dentro do container de conteúdo (`div` linha 174), antes da seção Destaques
-- Reduzir o `pb-36` do header para `pb-16` já que o banner não precisa mais de espaço sobreposto
-- Adicionar `margin-top: -2rem` no carrossel para que ele se sobreponha levemente à curva
+## Alterações
 
-### 2. Reduzir o mapa
-- Diminuir altura do mapa de `h-52` para `h-32`
+### 1. Criar `src/pages/RequestService.tsx`
+- Página full-screen com mapa de fundo (iframe Google Maps centralizado na localização do usuário)
+- Painel inferior com `rounded-t-3xl`, fundo branco, shadow
+- Select para tipo de serviço (usando componente `Select` existente)
+- Dois campos de localização com ícones de MapPin
+- Botão de voltar no topo
+- Ao submeter, cria o `service_request` no banco e navega de volta
 
-### 3. Compactar espaçamentos
-- Reduzir `space-y-8` para `space-y-5` no container de conteúdo
-- Reduzir `pt-6` para `pt-2`
-- Reduzir altura do banner de `h-36` para `h-28`
-- Reduzir `pb-8` para `pb-4`
+### 2. Atualizar `src/App.tsx`
+- Adicionar rota `/cliente/solicitar` → `RequestService`
 
-Tudo cabe em 844px sem scroll.
+### 3. Atualizar `src/components/ClientHome.tsx`
+- Alterar o onClick do botão "Solicitar Assistência" de `navigate('/cliente')` para `navigate('/cliente/solicitar')`
+
+### Arquivos afetados
+- `src/pages/RequestService.tsx` (novo)
+- `src/App.tsx` (nova rota)
+- `src/components/ClientHome.tsx` (link do botão)
 
