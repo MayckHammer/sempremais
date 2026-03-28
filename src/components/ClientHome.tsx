@@ -200,7 +200,8 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
         >
           <Carousel
             opts={{ loop: true, align: 'center' }}
-            plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
+            plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
+            setApi={setCarouselApi}
             className="w-full"
           >
             <CarouselContent>
@@ -213,7 +214,18 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                 </CarouselItem>
               ))}
             </CarouselContent>
+            <CarouselPrevious className="left-2 h-7 w-7 bg-white/30 border-0 text-white hover:bg-white/50" />
+            <CarouselNext className="right-2 h-7 w-7 bg-white/30 border-0 text-white hover:bg-white/50" />
           </Carousel>
+          <div className="flex justify-center gap-1.5 mt-2">
+            {banners.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => carouselApi?.scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all ${i === currentSlide ? 'w-4 bg-primary' : 'w-1.5 bg-primary/30'}`}
+              />
+            ))}
+          </div>
         </motion.div>
 
         {/* Destaques */}
