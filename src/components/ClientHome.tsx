@@ -56,6 +56,8 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const availableRoles = useMemo(() => user?.roles ?? (user ? [user.role] : []), [user]);
   const hasClientAccess = availableRoles.includes('client');
