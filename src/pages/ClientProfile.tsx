@@ -12,6 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import ProfileEditableSection from '@/components/ProfileEditableSection';
 
 interface Plan {
   id: string;
