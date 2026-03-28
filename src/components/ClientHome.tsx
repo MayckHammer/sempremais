@@ -71,7 +71,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
     if (!el) return;
     let animId: number;
     let pos = 0;
-    const speed = 0.5;
+    const speed = 0.2;
     const scroll = () => {
       pos += speed;
       if (pos >= el.scrollWidth / 2) pos = 0;
@@ -198,7 +198,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
           transition={{ duration: 0.4, delay: 0.4 }}
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display font-extrabold text-base text-foreground">Destaques</h2>
+            <h2 className="font-display font-extrabold text-base text-foreground">Parceiros</h2>
             <button className="text-xs text-primary font-semibold flex items-center gap-0.5">
               Ver todos <ChevronRight className="w-3.5 h-3.5" />
             </button>
@@ -229,7 +229,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
         >
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="font-display font-extrabold text-base text-foreground">Descubra Parceiros</h2>
+              <h2 className="font-display font-extrabold text-base text-foreground">Descubra Prestadores</h2>
               <p className="text-xs text-muted-foreground font-body">Venha conferir!</p>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-primary font-semibold">
