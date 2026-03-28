@@ -238,6 +238,11 @@ export default function AdminDashboard() {
               <p className="text-sm text-muted-foreground text-center py-8 font-body">Nenhuma solicitação encontrada</p>
             )}
           </TabsContent>
+
+          {/* Pricing Tab */}
+          <TabsContent value="pricing">
+            <AdminPricingTab />
+          </TabsContent>
         </Tabs>
       </div>
       <Footer />
