@@ -29,7 +29,8 @@ export function SBBadge() {
   return (
     <button
       onClick={() => navigate('/cliente/carteira')}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-foreground text-background rounded-full px-5 py-3 shadow-elevated hover:scale-105 active:scale-95 transition-transform duration-200 overflow-hidden sb-shimmer"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-foreground text-background rounded-full px-5 py-3 shadow-elevated hover:scale-105 active:scale-95 transition-transform duration-200 overflow-hidden sb-shimmer data-[position=top]:bottom-auto data-[position=top]:top-4 data-[position=top]:right-4 data-[position=top]:px-3 data-[position=top]:py-1.5"
+      data-position={position}
     >
       <Coins className="w-5 h-5 text-gold" />
       <span className="text-sm font-display font-bold">
