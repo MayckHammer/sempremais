@@ -220,7 +220,23 @@ export default function ProviderDashboard() {
       <Header />
       
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* Provider Stats */}
+        {/* Notification Permission */}
+        {!notificationsEnabled && typeof Notification !== 'undefined' && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-3 sm:mb-4"
+          >
+            <Button
+              onClick={requestNotificationPermission}
+              variant="outline"
+              className="w-full h-11 rounded-xl border-primary/30 text-primary hover:bg-primary/10 font-display font-semibold gap-2"
+            >
+              <Bell className="w-4 h-4" />
+              Ativar notificações de novas solicitações
+            </Button>
+          </motion.div>
+        )}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           {stats.map((stat, index) => (
             <motion.div
