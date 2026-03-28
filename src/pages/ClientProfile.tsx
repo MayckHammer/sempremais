@@ -12,6 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import ProfileEditableSection from '@/components/ProfileEditableSection';
 
 interface Plan {
   id: string;
@@ -49,6 +50,10 @@ export default function ClientProfile() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
+
+  const updateProfile = (updated: Record<string, string | null>) => {
+    setProfile(prev => prev ? { ...prev, ...updated } : prev);
+  };
 
   useEffect(() => {
     if (!user) { navigate('/login/cliente'); return; }
@@ -159,14 +164,28 @@ export default function ClientProfile() {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-0 font-body text-sm">
-                  <InfoRow label="CPF" value={profile?.cpf} />
-                  <InfoRow label="Telefone" value={profile?.phone} icon={<Phone className="w-3.5 h-3.5" />} />
-                  <InfoRow
-                    label="Data de Nascimento"
-                    value={profile?.birth_date ? new Date(profile.birth_date + 'T12:00:00').toLocaleDateString('pt-BR') : null}
-                  />
-                </div>
+                <ProfileEditableSection
+                  userId={user!.id}
+                  fields={[
+                    { key: 'full_name', label: 'Nome Completo', placeholder: 'Seu nome completo' },
+                    { key: 'cpf', label: 'CPF', placeholder: '000.000.000-00', maxLength: 14 },
+                    { key: 'phone', label: 'Telefone', placeholder: '(00) 00000-0000', maxLength: 15 },
+                    { key: 'birth_date', label: 'Data de Nascimento', type: 'date' },
+                  ]}
+                  values={profile || {}}
+                  onSave={updateProfile}
+                  renderView={() => (
+                    <div className="space-y-0 font-body text-sm">
+                      <InfoRow label="Nome" value={profile?.full_name} />
+                      <InfoRow label="CPF" value={profile?.cpf} />
+                      <InfoRow label="Telefone" value={profile?.phone} icon={<Phone className="w-3.5 h-3.5" />} />
+                      <InfoRow
+                        label="Data de Nascimento"
+                        value={profile?.birth_date ? new Date(profile.birth_date + 'T12:00:00').toLocaleDateString('pt-BR') : null}
+                      />
+                    </div>
+                  )}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -181,13 +200,29 @@ export default function ClientProfile() {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-0 font-body text-sm">
-                  <InfoRow label="CEP" value={profile?.cep} />
-                  <InfoRow label="Rua" value={profile?.street ? `${profile.street}${profile.street_number ? `, ${profile.street_number}` : ''}` : null} />
-                  <InfoRow label="Complemento" value={profile?.complement} />
-                  <InfoRow label="Bairro" value={profile?.neighborhood} />
-                  <InfoRow label="Cidade" value={profile?.city ? `${profile.city}${profile.state ? ` - ${profile.state}` : ''}` : null} />
-                </div>
+                <ProfileEditableSection
+                  userId={user!.id}
+                  fields={[
+                    { key: 'cep', label: 'CEP', placeholder: '00000-000', maxLength: 9 },
+                    { key: 'street', label: 'Rua', placeholder: 'Nome da rua' },
+                    { key: 'street_number', label: 'Número', placeholder: 'Nº', maxLength: 10 },
+                    { key: 'complement', label: 'Complemento', placeholder: 'Apto, bloco...' },
+                    { key: 'neighborhood', label: 'Bairro', placeholder: 'Bairro' },
+                    { key: 'city', label: 'Cidade', placeholder: 'Cidade' },
+                    { key: 'state', label: 'Estado', placeholder: 'UF', maxLength: 2 },
+                  ]}
+                  values={profile || {}}
+                  onSave={updateProfile}
+                  renderView={() => (
+                    <div className="space-y-0 font-body text-sm">
+                      <InfoRow label="CEP" value={profile?.cep} />
+                      <InfoRow label="Rua" value={profile?.street ? `${profile.street}${profile.street_number ? `, ${profile.street_number}` : ''}` : null} />
+                      <InfoRow label="Complemento" value={profile?.complement} />
+                      <InfoRow label="Bairro" value={profile?.neighborhood} />
+                      <InfoRow label="Cidade" value={profile?.city ? `${profile.city}${profile.state ? ` - ${profile.state}` : ''}` : null} />
+                    </div>
+                  )}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -202,13 +237,27 @@ export default function ClientProfile() {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-0 font-body text-sm">
-                  <InfoRow label="Marca" value={profile?.vehicle_brand} />
-                  <InfoRow label="Modelo" value={profile?.vehicle_model} />
-                  <InfoRow label="Placa" value={profile?.vehicle_plate} />
-                  <InfoRow label="Ano" value={profile?.vehicle_year} />
-                  <InfoRow label="Cor" value={profile?.vehicle_color} />
-                </div>
+                <ProfileEditableSection
+                  userId={user!.id}
+                  fields={[
+                    { key: 'vehicle_brand', label: 'Marca', placeholder: 'Ex: Fiat' },
+                    { key: 'vehicle_model', label: 'Modelo', placeholder: 'Ex: Uno' },
+                    { key: 'vehicle_plate', label: 'Placa', placeholder: 'ABC-1234', maxLength: 8 },
+                    { key: 'vehicle_year', label: 'Ano', placeholder: 'Ex: 2020', maxLength: 4 },
+                    { key: 'vehicle_color', label: 'Cor', placeholder: 'Ex: Prata' },
+                  ]}
+                  values={profile || {}}
+                  onSave={updateProfile}
+                  renderView={() => (
+                    <div className="space-y-0 font-body text-sm">
+                      <InfoRow label="Marca" value={profile?.vehicle_brand} />
+                      <InfoRow label="Modelo" value={profile?.vehicle_model} />
+                      <InfoRow label="Placa" value={profile?.vehicle_plate} />
+                      <InfoRow label="Ano" value={profile?.vehicle_year} />
+                      <InfoRow label="Cor" value={profile?.vehicle_color} />
+                    </div>
+                  )}
+                />
               </AccordionContent>
             </AccordionItem>
           </Accordion>
