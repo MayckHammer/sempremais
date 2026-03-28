@@ -218,7 +218,11 @@ export default function ProviderDashboard() {
     if (!providerData) return;
     const { error } = await supabase.from('service_requests').update({ provider_id: providerData.id, status: 'accepted', accepted_at: new Date().toISOString() }).eq('id', requestId);
     if (error) toast.error('Erro ao aceitar solicitação');
-    else { toast.success('Solicitação aceita!'); fetchAvailableRequests(); fetchMyJobs(); fetchProviderData(); }
+    else {
+      toast.success('Solicitação aceita!');
+      startLocationTracking();
+      fetchAvailableRequests(); fetchMyJobs(); fetchProviderData();
+    }
   };
 
   const handleDeclineRequest = (requestId: string) => {
@@ -229,7 +233,13 @@ export default function ProviderDashboard() {
   const handleCompleteRequest = async (requestId: string) => {
     const { error } = await supabase.from('service_requests').update({ status: 'completed', completed_at: new Date().toISOString() }).eq('id', requestId);
     if (error) toast.error('Erro ao concluir serviço');
-    else { toast.success('Serviço concluído!'); fetchMyJobs(); fetchProviderData(); }
+    else {
+      toast.success('Serviço concluído!');
+      // Only stop tracking if no other active jobs remain
+      const remainingActive = myJobs.filter(j => j.id !== requestId && (j.status === 'accepted' || j.status === 'in_progress'));
+      if (remainingActive.length === 0) stopLocationTracking();
+      fetchMyJobs(); fetchProviderData();
+    }
   };
 
   const acceptRate = providerData && providerData.total_jobs > 0
