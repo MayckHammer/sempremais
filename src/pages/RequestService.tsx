@@ -5,6 +5,7 @@ import { SBBadge } from '@/components/SBBadge';
 import LiveMap from '@/components/LiveMap';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PlacesAutocomplete } from '@/components/PlacesAutocomplete';
 import {
   Select,
   SelectContent,
@@ -42,6 +43,7 @@ export default function RequestService() {
   const [pricing, setPricing] = useState<PricingRow[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [vehicleType, setVehicleType] = useState('');
+  const [destinationCoords, setDestinationCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [vehicleBrand, setVehicleBrand] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleYear, setVehicleYear] = useState('');
@@ -245,10 +247,14 @@ export default function RequestService() {
 
           {/* Destination */}
           <div className="relative">
-            <Navigation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-accent-foreground" />
-            <Input
+            <Navigation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-accent-foreground z-10" />
+            <PlacesAutocomplete
               value={destinationAddress}
-              onChange={(e) => setDestinationAddress(e.target.value)}
+              onChange={setDestinationAddress}
+              onPlaceSelected={(address, lat, lng) => {
+                setDestinationAddress(address);
+                setDestinationCoords({ lat, lng });
+              }}
               placeholder="Localização de destino"
               className="pl-10 rounded-xl h-12 border-border bg-muted/50"
             />
