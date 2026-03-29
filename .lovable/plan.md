@@ -1,14 +1,22 @@
 
 
-# Atualizar chave da API do Google Maps
+# Atualizar LiveMap.tsx com versão avançada
 
 ## Resumo
-Substituir a chave atual (`AIzaSyAS6DIG32UlzRqldOlMlIhooo7wSLwvPNQ`) pela nova (`AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4`) em 4 arquivos:
+Substituir o `LiveMap.tsx` atual pela versão completa que o usuário forneceu, com ícones SVG customizados, animação suave do prestador, estilo minimalista do mapa e suporte a tráfego.
 
-1. **`src/components/LiveMap.tsx`** (linha 9) — constante `GOOGLE_MAPS_API_KEY`
-2. **`src/pages/RequestService.tsx`** (linha 73) — URL de geocoding
-3. **`src/components/ClientHome.tsx`** (linha 285) — iframe embed
-4. **`src/pages/GuestRequestService.tsx`** (linhas 66, 159) — geocoding + iframe embed
+## Mudanças
 
-Substituição direta de string, sem outras alterações.
+### 1. Reescrever `src/components/LiveMap.tsx`
+- Substituir todo o conteúdo pela versão colada pelo usuário
+- Inclui: `useSmoothMarker` hook, ícones SVG, `MAP_STYLE`, `trafficModel`, `loadError` handling, `className` prop
+- Libraries muda de `['places']` para `['geometry']`
+- `showRoute` default muda de `false` para `true`
+
+### 2. Verificar compatibilidade nos consumidores
+- **`RequestService.tsx`**: usa `<LiveMap clientLat clientLng />` — compatível (não passa `showRoute`, default muda para `true` mas sem provider não faz diferença)
+- **`TrackingService.tsx`**: usa `providerLat`, `providerLng`, `showRoute`, `onEtaUpdate` — a interface muda `providerLat/Lng` de `number | null` para `number | undefined`, mas o componente já recebe `undefined` quando não há provider, então é compatível
+- Export: a nova versão tem `export function LiveMap` + `export default LiveMap` — compatível com ambos os imports existentes
+
+Nenhuma alteração necessária nos consumidores.
 
