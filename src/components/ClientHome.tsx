@@ -282,7 +282,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
                 style={{ border: 0 }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=${location.lat},${location.lng}&zoom=13`}
+                src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAS6DIG32UlzRqldOlMlIhooo7wSLwvPNQ&center=${location.lat},${location.lng}&zoom=13`}
               />
             </div>
           </div>
