@@ -87,6 +87,39 @@ export default function RequestService() {
     );
   }, []);
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast({ title: 'Geolocalização não disponível', variant: 'destructive' });
+      return;
+    }
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setCoords({ lat: latitude, lng: longitude });
+        try {
+          const res = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4`
+          );
+          const data = await res.json();
+          if (data.results?.[0]) {
+            setOriginAddress(data.results[0].formatted_address);
+          } else {
+            setOriginAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          }
+        } catch {
+          setOriginAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        } finally {
+          setGpsLoading(false);
+        }
+      },
+      () => {
+        toast({ title: 'Não foi possível obter localização', variant: 'destructive' });
+        setGpsLoading(false);
+      }
+    );
+  };
+
   useEffect(() => {
     if (serviceType && pricing.length > 0) {
       const found = pricing.find(p => p.service_type === serviceType);
