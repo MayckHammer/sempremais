@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { LiveMap } from '@/components/LiveMap';
 import { motion } from 'framer-motion';
 import { Menu, MapPin, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';

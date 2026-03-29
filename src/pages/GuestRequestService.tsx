@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Navigation, User, Phone, Mail, Coins, Car } from 'lucide-react';
+import { LiveMap } from '@/components/LiveMap';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
