@@ -44,6 +44,7 @@ export default function RequestService() {
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [vehicleType, setVehicleType] = useState('');
   const [destinationCoords, setDestinationCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [gpsLoading, setGpsLoading] = useState(false);
   const [vehicleBrand, setVehicleBrand] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleYear, setVehicleYear] = useState('');
