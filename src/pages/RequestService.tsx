@@ -5,6 +5,7 @@ import { SBBadge } from '@/components/SBBadge';
 import LiveMap from '@/components/LiveMap';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PlacesAutocomplete } from '@/components/PlacesAutocomplete';
 import {
   Select,
   SelectContent,
