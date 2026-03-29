@@ -151,13 +151,7 @@ export default function GuestRequestService() {
     <div className="h-screen flex flex-col relative bg-muted">
       {/* Map background */}
       <div className="flex-1 relative">
-        <iframe
-          title="Mapa"
-          className="absolute inset-0 w-full h-full"
-          style={{ border: 0 }}
-          loading="lazy"
-          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4&center=${coords.lat},${coords.lng}&zoom=15`}
-        />
+        <LiveMap clientLat={coords.lat} clientLng={coords.lng} showRoute={false} className="absolute inset-0 w-full h-full" />
 
         {/* Back button */}
         <button
