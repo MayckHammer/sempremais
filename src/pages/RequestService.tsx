@@ -236,10 +236,14 @@ export default function RequestService() {
 
           {/* Origin */}
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-            <Input
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary z-10" />
+            <PlacesAutocomplete
               value={originAddress}
-              onChange={(e) => setOriginAddress(e.target.value)}
+              onChange={setOriginAddress}
+              onPlaceSelected={(address, lat, lng) => {
+                setOriginAddress(address);
+                setCoords({ lat, lng });
+              }}
               placeholder="Localização atual"
               className="pl-10 rounded-xl h-12 border-border bg-muted/50"
             />
