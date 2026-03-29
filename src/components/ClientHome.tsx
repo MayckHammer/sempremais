@@ -274,27 +274,30 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
             </div>
           </div>
 
-          <div className="rounded-3xl overflow-hidden border border-blue-500/30 bg-card shadow-[0_4px_30px_rgba(59,130,246,0.35),0_8px_60px_rgba(30,64,175,0.25)]">
-            <div className="relative w-full h-32 bg-muted">
-              <LiveMap clientLat={location.lat} clientLng={location.lng} showRoute={false} />
+          <div className="rounded-3xl bg-card/80 border border-border/40 p-4 space-y-4 shadow-premium">
+            {/* Mapa com glow neon */}
+            <div className="rounded-2xl overflow-hidden border border-blue-500/30 shadow-[0_4px_30px_rgba(59,130,246,0.35),0_8px_60px_rgba(30,64,175,0.25)]">
+              <div className="relative w-full h-32 bg-muted">
+                <LiveMap clientLat={location.lat} clientLng={location.lng} showRoute={false} />
+              </div>
             </div>
-          </div>
 
-          {/* Informativo de prestadores */}
-          <div className="mt-4 text-center space-y-1">
-            <p className="text-base font-display font-bold text-foreground">
-              {providers.length} prestador{providers.length !== 1 ? 'es' : ''} próximo{providers.length !== 1 ? 's' : ''}
-            </p>
-            <p className="text-sm text-muted-foreground font-body">{location.address}</p>
-          </div>
+            {/* Informativo de prestadores */}
+            <div className="text-center space-y-1 px-2">
+              <p className="text-base font-display font-bold text-foreground">
+                {providers.length} prestador{providers.length !== 1 ? 'es' : ''} próximo{providers.length !== 1 ? 's' : ''}
+              </p>
+              <p className="text-sm text-muted-foreground font-body">{location.address}</p>
+            </div>
 
-          {/* Botão Solicitar Assistência */}
-          <Button
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 text-lg font-display font-bold shadow-premium mt-4"
-            onClick={() => navigate('/cliente/solicitar')}
-          >
-            Solicitar Assistência
-          </Button>
+            {/* Botão Solicitar Assistência */}
+            <Button
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-14 text-lg font-display font-bold shadow-premium"
+              onClick={() => navigate('/cliente/solicitar')}
+            >
+              Solicitar Assistência
+            </Button>
+          </div>
         </motion.section>
       </div>
 
