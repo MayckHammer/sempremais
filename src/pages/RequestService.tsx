@@ -72,12 +72,18 @@ export default function RequestService() {
         const { latitude, longitude } = pos.coords;
         setCoords({ lat: latitude, lng: longitude });
         try {
-          const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4`
-          );
-          const data = await res.json();
-          if (data.results?.[0]) {
-            setOriginAddress(data.results[0].formatted_address);
+          const waitForGoogle = () => new Promise<void>((resolve) => {
+            if (window.google?.maps) return resolve();
+            const interval = setInterval(() => {
+              if (window.google?.maps) { clearInterval(interval); resolve(); }
+            }, 200);
+            setTimeout(() => { clearInterval(interval); resolve(); }, 5000);
+          });
+          await waitForGoogle();
+          const geocoder = new google.maps.Geocoder();
+          const response = await geocoder.geocode({ location: { lat: latitude, lng: longitude } });
+          if (response.results?.[0]) {
+            setOriginAddress(response.results[0].formatted_address);
           }
         } catch {
           setOriginAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
@@ -98,12 +104,10 @@ export default function RequestService() {
         const { latitude, longitude } = pos.coords;
         setCoords({ lat: latitude, lng: longitude });
         try {
-          const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4`
-          );
-          const data = await res.json();
-          if (data.results?.[0]) {
-            setOriginAddress(data.results[0].formatted_address);
+          const geocoder = new google.maps.Geocoder();
+          const response = await geocoder.geocode({ location: { lat: latitude, lng: longitude } });
+          if (response.results?.[0]) {
+            setOriginAddress(response.results[0].formatted_address);
           } else {
             setOriginAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           }
