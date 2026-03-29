@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, Coins, Car } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, Coins, Car, LocateFixed } from 'lucide-react';
 import { SBBadge } from '@/components/SBBadge';
 import LiveMap from '@/components/LiveMap';
 import { Button } from '@/components/ui/button';
@@ -44,6 +44,7 @@ export default function RequestService() {
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [vehicleType, setVehicleType] = useState('');
   const [destinationCoords, setDestinationCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [gpsLoading, setGpsLoading] = useState(false);
   const [vehicleBrand, setVehicleBrand] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleYear, setVehicleYear] = useState('');
@@ -85,6 +86,39 @@ export default function RequestService() {
       () => setOriginAddress('Não foi possível obter localização')
     );
   }, []);
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast({ title: 'Geolocalização não disponível', variant: 'destructive' });
+      return;
+    }
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setCoords({ lat: latitude, lng: longitude });
+        try {
+          const res = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4`
+          );
+          const data = await res.json();
+          if (data.results?.[0]) {
+            setOriginAddress(data.results[0].formatted_address);
+          } else {
+            setOriginAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          }
+        } catch {
+          setOriginAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        } finally {
+          setGpsLoading(false);
+        }
+      },
+      () => {
+        toast({ title: 'Não foi possível obter localização', variant: 'destructive' });
+        setGpsLoading(false);
+      }
+    );
+  };
 
   useEffect(() => {
     if (serviceType && pricing.length > 0) {
@@ -245,8 +279,17 @@ export default function RequestService() {
                 setCoords({ lat, lng });
               }}
               placeholder="Localização atual"
-              className="pl-10 rounded-xl h-12 border-border bg-muted/50"
+              className="pl-10 pr-12 rounded-xl h-12 border-border bg-muted/50"
             />
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              disabled={gpsLoading}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-primary/10 transition-colors z-10 disabled:opacity-50"
+              title="Usar localização atual"
+            >
+              <LocateFixed className={`w-4 h-4 ${gpsLoading ? 'animate-pulse' : ''}`} />
+            </button>
           </div>
 
           {/* Destination */}
