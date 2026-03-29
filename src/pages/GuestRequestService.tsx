@@ -63,7 +63,7 @@ export default function GuestRequestService() {
         setCoords({ lat: latitude, lng: longitude });
         try {
           const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAS6DIG32UlzRqldOlMlIhooo7wSLwvPNQ`
           );
           const data = await res.json();
           if (data.results?.[0]) {
@@ -156,7 +156,7 @@ export default function GuestRequestService() {
           className="absolute inset-0 w-full h-full"
           style={{ border: 0 }}
           loading="lazy"
-          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=${coords.lat},${coords.lng}&zoom=15`}
+          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAS6DIG32UlzRqldOlMlIhooo7wSLwvPNQ&center=${coords.lat},${coords.lng}&zoom=15`}
         />
 
         {/* Back button */}
