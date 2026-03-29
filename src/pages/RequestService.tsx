@@ -197,7 +197,7 @@ export default function RequestService() {
       </div>
 
       {/* Bottom panel */}
-      <div className="bg-card rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-5 pt-6 pb-8 relative z-10">
+      <div className="bg-card rounded-t-3xl border-t border-x border-blue-500/30 shadow-[0_-4px_30px_rgba(59,130,246,0.3),0_-8px_50px_rgba(30,64,175,0.2)] px-5 pt-6 pb-8 relative z-10">
         <div className="w-10 h-1 rounded-full bg-muted mx-auto mb-2" />
 
         <div className="space-y-3 overflow-y-auto max-h-[65vh] pr-1">
