@@ -279,8 +279,17 @@ export default function RequestService() {
                 setCoords({ lat, lng });
               }}
               placeholder="Localização atual"
-              className="pl-10 rounded-xl h-12 border-border bg-muted/50"
+              className="pl-10 pr-12 rounded-xl h-12 border-border bg-muted/50"
             />
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              disabled={gpsLoading}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-primary/10 transition-colors z-10 disabled:opacity-50"
+              title="Usar localização atual"
+            >
+              <LocateFixed className={`w-4 h-4 ${gpsLoading ? 'animate-pulse' : ''}`} />
+            </button>
           </div>
 
           {/* Destination */}
