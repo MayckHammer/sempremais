@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { LiveMap } from '@/components/LiveMap';
 import { motion } from 'framer-motion';
 import { Menu, MapPin, ChevronRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -275,15 +276,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
 
           <div className="rounded-3xl overflow-hidden shadow-premium border border-border/40 bg-card">
             <div className="relative w-full h-32 bg-muted">
-              <iframe
-                title="Mapa de Prestadores"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4&center=${location.lat},${location.lng}&zoom=13`}
-              />
+              <LiveMap clientLat={location.lat} clientLng={location.lng} showRoute={false} />
             </div>
           </div>
 
