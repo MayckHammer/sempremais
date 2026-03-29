@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Navigation, Coins, Car } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, Coins, Car, LocateFixed } from 'lucide-react';
 import { SBBadge } from '@/components/SBBadge';
 import LiveMap from '@/components/LiveMap';
 import { Button } from '@/components/ui/button';
