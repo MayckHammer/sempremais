@@ -274,7 +274,7 @@ export function ClientHome({ location, providers }: ClientHomeProps) {
             </div>
           </div>
 
-          <div className="rounded-3xl overflow-hidden shadow-premium border border-border/40 bg-card">
+          <div className="rounded-3xl overflow-hidden border border-blue-500/30 bg-card shadow-[0_4px_30px_rgba(59,130,246,0.35),0_8px_60px_rgba(30,64,175,0.25)]">
             <div className="relative w-full h-32 bg-muted">
               <LiveMap clientLat={location.lat} clientLng={location.lng} showRoute={false} />
             </div>
