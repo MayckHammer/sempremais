@@ -21,7 +21,7 @@ interface LiveMapProps {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCMLByhTQlf1RBbqWzdJb-DCbJxwOC_HL4";
-const LIBRARIES: ("geometry" | "places")[] = ["geometry"];
+const LIBRARIES: ("geometry" | "places")[] = ["geometry", "places"];
 
 // Estilo minimalista para o mapa (remove POIs genéricos, deixa limpo)
 const MAP_STYLE = [
