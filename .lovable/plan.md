@@ -1,22 +1,34 @@
 
 
-# Substituir iframes do Google Maps pelo componente LiveMap
+# Corrigir reverse geocoding usando Maps JavaScript API
 
 ## Problema
-O erro "This API is not activated on your API project" ocorre porque os `<iframe>` usam a **Maps Embed API**, que não está habilitada no projeto Google Cloud. O componente `LiveMap` (que usa a Maps JavaScript API) já funciona.
+A API REST de Geocoding (`maps.googleapis.com/maps/api/geocode/json`) **não está ativada** no projeto Google Cloud. As requisições retornam `REQUEST_DENIED`. Por isso, o código cai no fallback e exibe coordenadas brutas (`-18.9720, -48.3500`).
 
 ## Solução
-Substituir os `<iframe>` restantes pelo componente `LiveMap` interativo, que já está funcionando no projeto.
+Substituir as chamadas `fetch` à API REST pelo `google.maps.Geocoder`, que faz parte da **Maps JavaScript API** (já ativada e funcionando). Isso não requer ativar nenhuma API adicional.
 
 ## Mudanças
 
-### 1. Editar `src/components/ClientHome.tsx`
-- Importar `LiveMap`
-- Substituir o bloco `<iframe>` (linhas 278-286) por `<LiveMap clientLat={location.lat} clientLng={location.lng} showRoute={false} />`
+### Editar `src/pages/RequestService.tsx`
+- No `useEffect` inicial e na função `handleUseCurrentLocation`, substituir:
+  ```typescript
+  // DE (REST API - não ativada)
+  const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=...`);
+  const data = await res.json();
+  if (data.results?.[0]) setOriginAddress(data.results[0].formatted_address);
+  ```
+  ```typescript
+  // PARA (JavaScript API - já ativada)
+  const geocoder = new google.maps.Geocoder();
+  const response = await geocoder.geocode({ location: { lat, lng } });
+  if (response.results?.[0]) setOriginAddress(response.results[0].formatted_address);
+  ```
+- Aplicar a mesma mudança nos dois locais (useEffect e handleUseCurrentLocation)
+- Adicionar polling/espera para `window.google?.maps` antes de geocodificar, caso o script ainda não tenha carregado
 
-### 2. Editar `src/pages/GuestRequestService.tsx`
-- Importar `LiveMap`
-- Substituir o `<iframe>` pelo `<LiveMap>` com as coordenadas existentes
+### Editar `src/pages/GuestRequestService.tsx`
+- Mesma substituição do `fetch` por `google.maps.Geocoder` no `useEffect` inicial
 
-Duas edições simples, sem mudança de lógica.
+Duas edições simples, sem nova dependência. Usa a API que já está funcionando.
 
