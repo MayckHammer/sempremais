@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Navigation, Coins, Car } from 'lucide-react';
 import { SBBadge } from '@/components/SBBadge';
+import LiveMap from '@/components/LiveMap';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -144,13 +145,7 @@ export default function RequestService() {
     <div className="h-screen flex flex-col relative bg-muted">
       {/* Map background */}
       <div className="flex-1 relative">
-        <iframe
-          title="Mapa"
-          className="absolute inset-0 w-full h-full"
-          style={{ border: 0 }}
-          loading="lazy"
-          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=${coords.lat},${coords.lng}&zoom=15`}
-        />
+        <LiveMap clientLat={coords.lat} clientLng={coords.lng} />
 
         {/* Back button */}
         <button
