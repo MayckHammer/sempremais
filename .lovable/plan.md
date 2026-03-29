@@ -1,28 +1,39 @@
 
 
-# Adicionar indicadores de navegação no carrossel de banners
+# Mapa Interativo em Tempo Real (estilo Uber/99)
 
-## Problema
-O carrossel de banners roda automaticamente mas o cliente não tem como voltar ou avançar manualmente entre os destaques.
+## Resumo
+Substituir iframes estáticos pelo Google Maps JavaScript API com marcadores em tempo real, rota desenhada e ETA real.
 
-## Mudanças em `src/components/ClientHome.tsx`
+## Mudanças
 
-1. **Importar `CarouselPrevious` e `CarouselNext`** do carousel component
-2. **Adicionar botões de navegação** dentro do `<Carousel>`, após o `<CarouselContent>`
-3. **Estilizar os botões** para ficarem sobrepostos nas laterais do banner, semi-transparentes, tamanho pequeno (`h-7 w-7`), com fundo `bg-white/30` e ícone branco para combinar com o visual dos banners
-4. **Adicionar dots indicadores** abaixo do carrossel mostrando qual banner está ativo — usando estado com `setApi` do Embla para rastrear o slide atual
+### 1. Instalar `@react-google-maps/api`
 
-### Layout visual
-```text
-┌──────────────────────────────┐
-│  ◀  [  Banner Destaque  ]  ▶ │
-│         ● ○ ○ ○              │
-└──────────────────────────────┘
-```
+### 2. Criar `src/components/LiveMap.tsx`
+- Componente reutilizável com `useJsApiLoader` (key: `AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8`, libraries: `['places']`)
+- Props: `clientLat`, `clientLng`, `providerLat?`, `providerLng?`, `showRoute?`, `onEtaUpdate?`
+- `GoogleMap` com zoom 15, centralizado no cliente
+- Marcador cliente (pin azul/verde fixo)
+- Marcador prestador (pin vermelho, atualiza posição com animação suave via `useEffect` + interpolação)
+- Quando ambas posições existirem e `showRoute=true`: usar `DirectionsService` para calcular rota e renderizar com `DirectionsRenderer`
+- `fitBounds` automático quando há dois marcadores
+- Callback `onEtaUpdate(minutes, distanceKm)` com dados da Directions API
+- Recalcular rota a cada mudança de posição do prestador (com debounce de 5s para não exceder quota)
 
-### Detalhes técnicos
-- Usar `setApi` do Carousel para obter a API do Embla e rastrear `selectedScrollSnap`
-- Posicionar `CarouselPrevious` e `CarouselNext` com classes customizadas: `left-2` e `right-2` (dentro do banner, não fora)
-- Dots: renderizar `banners.map` com bolinha ativa (`bg-primary`) e inativas (`bg-primary/30`)
-- Alterar Autoplay para `stopOnInteraction: true` para pausar quando o usuário interagir manualmente
+### 3. Atualizar `src/pages/RequestService.tsx`
+- Remover iframe
+- Importar e usar `<LiveMap clientLat={coords.lat} clientLng={coords.lng} />` no lugar
+
+### 4. Atualizar `src/pages/TrackingService.tsx`
+- Remover iframe e função `haversineDistance`
+- Usar `<LiveMap>` com props do cliente e prestador
+- `showRoute={true}` quando prestador tem localização
+- Usar callback `onEtaUpdate` para atualizar distância e ETA no painel inferior (substituindo cálculo haversine)
+- Manter Supabase Realtime subscriptions como estão
+
+### 5. Verificar `src/pages/ProviderDashboard.tsx`
+- Confirmar que `enableHighAccuracy: true` já está no `getCurrentPosition` e `watchPosition`
+
+## Nota importante
+A API key precisa ter **Maps JavaScript API** e **Directions API** habilitadas no Google Cloud Console. Se não estiverem, o mapa não carregará.
 
