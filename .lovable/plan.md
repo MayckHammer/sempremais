@@ -1,34 +1,26 @@
 
 
-# Corrigir reverse geocoding usando Maps JavaScript API
+# Sombra 3D azul neon no container do mapa
 
-## Problema
-A API REST de Geocoding (`maps.googleapis.com/maps/api/geocode/json`) **não está ativada** no projeto Google Cloud. As requisições retornam `REQUEST_DENIED`. Por isso, o código cai no fallback e exibe coordenadas brutas (`-18.9720, -48.3500`).
+## Resumo
+Adicionar uma sombra estilizada com tonalidade azul escuro neon atrás do container do mapa na seção "Descubra Prestadores", criando um efeito de profundidade 3D.
 
-## Solução
-Substituir as chamadas `fetch` à API REST pelo `google.maps.Geocoder`, que faz parte da **Maps JavaScript API** (já ativada e funcionando). Isso não requer ativar nenhuma API adicional.
+## Mudança
 
-## Mudanças
+### Editar `src/components/ClientHome.tsx` (linha 277)
+Substituir a classe do container do mapa para incluir uma sombra personalizada azul neon:
 
-### Editar `src/pages/RequestService.tsx`
-- No `useEffect` inicial e na função `handleUseCurrentLocation`, substituir:
-  ```typescript
-  // DE (REST API - não ativada)
-  const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=...`);
-  const data = await res.json();
-  if (data.results?.[0]) setOriginAddress(data.results[0].formatted_address);
-  ```
-  ```typescript
-  // PARA (JavaScript API - já ativada)
-  const geocoder = new google.maps.Geocoder();
-  const response = await geocoder.geocode({ location: { lat, lng } });
-  if (response.results?.[0]) setOriginAddress(response.results[0].formatted_address);
-  ```
-- Aplicar a mesma mudança nos dois locais (useEffect e handleUseCurrentLocation)
-- Adicionar polling/espera para `window.google?.maps` antes de geocodificar, caso o script ainda não tenha carregado
+```tsx
+// DE
+<div className="rounded-3xl overflow-hidden shadow-premium border border-border/40 bg-card">
 
-### Editar `src/pages/GuestRequestService.tsx`
-- Mesma substituição do `fetch` por `google.maps.Geocoder` no `useEffect` inicial
+// PARA
+<div className="rounded-3xl overflow-hidden border border-blue-500/30 bg-card shadow-[0_4px_30px_rgba(59,130,246,0.35),0_8px_60px_rgba(30,64,175,0.25)]">
+```
 
-Duas edições simples, sem nova dependência. Usa a API que já está funcionando.
+A sombra combina duas camadas:
+- Uma camada próxima com azul primário (`blue-500`) para brilho
+- Uma camada mais distante com azul escuro (`blue-800`) para profundidade
+
+Resultado: efeito "glow" neon azul escuro que sugere 3D, alinhado com a identidade visual do projeto.
 
