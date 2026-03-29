@@ -70,7 +70,7 @@ export default function RequestService() {
         setCoords({ lat: latitude, lng: longitude });
         try {
           const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAS6DIG32UlzRqldOlMlIhooo7wSLwvPNQ`
           );
           const data = await res.json();
           if (data.results?.[0]) {

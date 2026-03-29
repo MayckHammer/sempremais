@@ -6,7 +6,7 @@ import {
   DirectionsRenderer,
 } from '@react-google-maps/api';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyAS6DIG32UlzRqldOlMlIhooo7wSLwvPNQ';
 const LIBRARIES: ('places')[] = ['places'];
 const ROUTE_DEBOUNCE_MS = 5000;
 
