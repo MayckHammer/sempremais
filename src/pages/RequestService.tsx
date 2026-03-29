@@ -43,6 +43,7 @@ export default function RequestService() {
   const [pricing, setPricing] = useState<PricingRow[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [vehicleType, setVehicleType] = useState('');
+  const [destinationCoords, setDestinationCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [vehicleBrand, setVehicleBrand] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleYear, setVehicleYear] = useState('');
