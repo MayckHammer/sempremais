@@ -1,22 +1,28 @@
 
 
-# Atualizar LiveMap.tsx com versão avançada
+# Autocomplete de endereço no campo de destino
 
 ## Resumo
-Substituir o `LiveMap.tsx` atual pela versão completa que o usuário forneceu, com ícones SVG customizados, animação suave do prestador, estilo minimalista do mapa e suporte a tráfego.
+Adicionar autocomplete do Google Places API no campo "Localização de destino" da tela `/cliente/solicitar`, usando a biblioteca `@react-google-maps/api` que já está instalada (com `Autocomplete` component). O `places` library já está carregado no `LiveMap.tsx`.
 
 ## Mudanças
 
-### 1. Reescrever `src/components/LiveMap.tsx`
-- Substituir todo o conteúdo pela versão colada pelo usuário
-- Inclui: `useSmoothMarker` hook, ícones SVG, `MAP_STYLE`, `trafficModel`, `loadError` handling, `className` prop
-- Libraries muda de `['places']` para `['geometry']`
-- `showRoute` default muda de `false` para `true`
+### 1. Criar componente `src/components/PlacesAutocomplete.tsx`
+- Componente reutilizável que wrapa um `<Input>` com `google.maps.places.Autocomplete`
+- Usa `useRef` + `useEffect` para inicializar o Autocomplete nativo no input
+- Props: `value`, `onChange`, `onPlaceSelected(address, lat, lng)`, `placeholder`, `className`
+- Restringe sugestões ao Brasil (`componentRestrictions: { country: 'br' }`)
+- Verifica se `google.maps.places` está disponível antes de inicializar
 
-### 2. Verificar compatibilidade nos consumidores
-- **`RequestService.tsx`**: usa `<LiveMap clientLat clientLng />` — compatível (não passa `showRoute`, default muda para `true` mas sem provider não faz diferença)
-- **`TrackingService.tsx`**: usa `providerLat`, `providerLng`, `showRoute`, `onEtaUpdate` — a interface muda `providerLat/Lng` de `number | null` para `number | undefined`, mas o componente já recebe `undefined` quando não há provider, então é compatível
-- Export: a nova versão tem `export function LiveMap` + `export default LiveMap` — compatível com ambos os imports existentes
+### 2. Editar `src/pages/RequestService.tsx`
+- Importar `PlacesAutocomplete`
+- Substituir o `<Input>` do destino (linhas 249-254) pelo `<PlacesAutocomplete>`
+- Adicionar estado `destinationCoords` para armazenar lat/lng do destino selecionado
+- O `onPlaceSelected` atualiza `destinationAddress` e `destinationCoords`
+- Opcionalmente incluir as coordenadas do destino no `description` ao submeter
 
-Nenhuma alteração necessária nos consumidores.
+### Detalhes técnicos
+- O `places` library já é carregado no `LiveMap.tsx` (`LIBRARIES = ["geometry", "places"]`), então o `google.maps.places.Autocomplete` estará disponível quando o mapa carregar
+- O componente aguarda `window.google?.maps?.places` estar disponível via polling ou callback
+- Mantém o ícone `<Navigation>` à esquerda com `pl-10`
 
