@@ -1,76 +1,58 @@
 
 
-# Agente de Atendimento com Transbordo Humano
+# Corrigir sobreposição SB Badge + Redesign do botão de chat
 
-## Resumo
-Implementar um sistema completo de chat com agente IA na área do cliente e painel de atendimento na área admin, com 3 estados de ticket: tratativa agente, análise e tratativa humana. Sem Obsidian — o conhecimento do agente fica no system prompt da edge function.
+## Problema
+O botão do chat de suporte (fixed bottom-4 right-4) sobrepõe o badge dos SB's (fixed bottom-6 right-6). Ambos disputam o canto inferior direito.
 
-## Fases de Implementação
+## Solução
 
-### Fase 1 — Banco de Dados (Migration)
+### 1. Mover SBBadge para o lado esquerdo (`src/components/SBBadge.tsx`)
+- Mudar posicionamento de `right-6` para `left-6`
+- Manter `bottom-6` e o efeito shimmer
+- Ajustar o data-position top para `left-4` em vez de `right-4`
 
-Criar:
-- **Enum `ticket_status`**: `agent_handling`, `analysis`, `human_handling`, `resolved`, `closed`
-- **Tabela `support_tickets`**: `id`, `client_id` (uuid), `service_request_id` (uuid nullable), `status` (ticket_status default `agent_handling`), `assigned_agent_id` (uuid nullable), `summary` (text), `trigger_words` (text[]), `created_at`, `updated_at`, `resolved_at`
-- **Tabela `chat_messages`**: `id`, `ticket_id` (ref support_tickets), `sender_type` enum (`client`, `agent`, `human_agent`), `sender_id` (uuid nullable), `content` (text), `metadata` (jsonb), `created_at`
-- Habilitar Realtime em ambas as tabelas
-- RLS: clientes veem apenas seus tickets/mensagens; admins veem tudo; clientes podem inserir mensagens nos seus tickets
+### 2. Redesign premium do botão de chat (`src/components/SupportChat.tsx`)
+Substituir o botão genérico (círculo azul com ícone MessageCircle) por um design diferenciado:
 
-### Fase 2 — Edge Function `chat-agent`
+- **Formato**: Pílula arredondada com micro-label "Suporte" ao lado do ícone (não apenas um círculo)
+- **Visual**: Glassmorphism (`backdrop-blur-xl`) + borda com glow neon azul sutil (`border border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.25)]`)
+- **Ícone**: Usar `Headphones` em vez de `MessageCircle` — menos genérico, mais "atendimento premium"
+- **Animação de entrada**: `motion.button` com spring animation ao montar
+- **Estado aberto**: Transição suave para ícone X com rotação
+- **Indicador de atividade**: Pulsing dot verde quando o chat tem ticket ativo (breathing animation via CSS)
+- **Posição**: `fixed bottom-4 right-4` (mantém, já que SBBadge vai para a esquerda)
 
-- Recebe `ticket_id` + mensagem do cliente
-- Carrega histórico completo do chat via Supabase service role
-- System prompt com personalidade Sempre+, regras de coleta de dados, palavras-gatilho para escalação
-- Usa Lovable AI Gateway (`google/gemini-3-flash-preview`) com streaming SSE
-- Salva resposta como `chat_messages` com `sender_type = 'agent'`
-- Detecta palavras-gatilho (ex: "reclamação", "advogado", "procon", "quero falar com atendente") → atualiza status do ticket
-- Detecta caso crítico → status `human_handling`
+### 3. Corrigir o runtime error (`src/pages/ClientDashboard.tsx`)
+O erro "SupportChat is not defined" indica que o import pode estar quebrado. Verificar e corrigir o import do componente.
 
-### Fase 3 — Chat do Cliente (UI)
+## Seção técnica
 
-- Componente `SupportChat` — botão flutuante no `ClientDashboard`
-- Ao abrir, cria ticket automaticamente ou retoma ticket aberto
-- Streaming de respostas do agente token por token
-- Escuta Realtime para mensagens do atendente humano
-- Indicador visual quando humano assume ("Um atendente entrou na conversa")
-- Renderiza mensagens com `react-markdown`
+**SBBadge** — troca `right-6` → `left-6` e `right-4` → `left-4` no data-position top.
 
-### Fase 4 — Painel do Atendente (Admin)
+**SupportChat** — estrutura do novo botão:
+```tsx
+<motion.button
+  initial={{ scale: 0, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+  className="fixed bottom-4 right-4 z-50 flex items-center gap-2 
+    bg-card/80 backdrop-blur-xl border border-blue-500/30 
+    shadow-[0_0_20px_rgba(59,130,246,0.25)] 
+    rounded-full pl-4 pr-3 py-3 
+    hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] 
+    active:scale-95 transition-all"
+>
+  <span className="text-xs font-display font-bold text-foreground">Suporte</span>
+  <div className="relative">
+    <Headphones className="w-5 h-5 text-primary" />
+    {/* pulsing dot */}
+    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+  </div>
+</motion.button>
+```
 
-- Nova rota `/admin/support` com item "Suporte" no sidebar do AdminLayout
-- Lista de tickets com filtros por status (chips coloridos: verde=agente, amarelo=análise, vermelho=humano)
-- Clique no ticket → visualização em tempo real da conversa (modo leitura com Realtime)
-- Botão "Assumir Atendimento" → muda status para `human_handling`, pausa agente
-- Campo de resposta para enviar mensagens como `human_agent`
-- Botão "Devolver ao Agente" → volta status para `agent_handling`
-- Botão "Encerrar" → status `resolved`
+Quando aberto, troca para ícone X com `AnimatePresence` + rotação.
 
-### Fase 5 — Lógica de Transbordo
-
-Regras na edge function:
-1. **Palavras-gatilho** (configuráveis no prompt): "reclamação", "processo", "advogado", "procon", "cancelar" → status `analysis`
-2. **Solicitação explícita** ("quero falar com atendente", "falar com humano") → status `human_handling`
-3. **Timeout** (agente não resolve em 10 mensagens) → status `analysis`
-4. Quando status != `agent_handling`, edge function retorna mensagem padrão ("Um atendente irá te atender em breve")
-
-## Arquivos Criados/Editados
-
-| Arquivo | Ação |
-|---------|------|
-| Migration SQL | Criar tabelas, enums, RLS, Realtime |
-| `supabase/functions/chat-agent/index.ts` | Edge function do agente |
-| `src/components/SupportChat.tsx` | Chat flutuante do cliente |
-| `src/components/SupportChatWindow.tsx` | Janela de conversa |
-| `src/pages/admin/AdminSupport.tsx` | Painel de suporte admin |
-| `src/pages/admin/AdminTicketDetail.tsx` | Detalhe do ticket com chat |
-| `src/pages/admin/AdminLayout.tsx` | Adicionar item "Suporte" no sidebar |
-| `src/App.tsx` | Adicionar rota `/admin/support` e `/admin/support/:ticketId` |
-
-## Seção Técnica
-
-- **Modelo**: `google/gemini-3-flash-preview` via Lovable AI Gateway (LOVABLE_API_KEY já configurada)
-- **Streaming**: SSE da edge function → frontend parse line-by-line
-- **Realtime**: `postgres_changes` em `chat_messages` e `support_tickets`
-- **Enum `sender_type`**: criado como DB enum para type safety
-- **Sem Obsidian**: conhecimento do agente embutido no system prompt da edge function, editável diretamente no código
+**Arquivos editados**: `SBBadge.tsx`, `SupportChat.tsx`, `ClientDashboard.tsx` (fix import)
 
