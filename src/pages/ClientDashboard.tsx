@@ -101,5 +101,10 @@ export default function ClientDashboard() {
     );
   }
 
-  return <ClientHome location={location} providers={providers} />;
+  return (
+    <>
+      <ClientHome location={location} providers={providers} />
+      <SupportChat />
+    </>
+  );
 }
