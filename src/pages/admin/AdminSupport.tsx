@@ -141,6 +141,9 @@ export default function AdminSupport() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[11px] font-mono text-primary font-bold">
+                          #{String((ticket as any).ticket_number || 0).padStart(5, '0')}
+                        </span>
                         <span className="font-semibold text-sm text-foreground truncate">
                           {ticket.profiles?.full_name || 'Cliente'}
                         </span>

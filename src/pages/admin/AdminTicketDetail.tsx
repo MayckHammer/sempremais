@@ -184,6 +184,7 @@ export default function AdminTicketDetail() {
         </Button>
         <div className="flex-1">
           <div className="flex items-center gap-2">
+            <span className="font-mono text-xs text-primary font-bold mr-1">#{String((ticket as any).ticket_number || 0).padStart(5, '0')}</span>
             <span className="font-display font-bold text-foreground">{clientName}</span>
             <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${statusColors[ticket.status] || ''}`}>
               {ticket.status}

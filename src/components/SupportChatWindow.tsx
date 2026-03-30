@@ -62,6 +62,7 @@ function SenderAvatar({ type }: { type: string }) {
 export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
   const { user } = useAuth();
   const [ticketId, setTicketId] = useState<string | null>(null);
+  const [ticketNumber, setTicketNumber] = useState<number | null>(null);
   const [ticketStatus, setTicketStatus] = useState<string>('agent_handling');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -92,6 +93,7 @@ export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
 
       if (existing && existing.length > 0) {
         setTicketId(existing[0].id);
+        setTicketNumber((existing[0] as any).ticket_number);
         setTicketStatus(existing[0].status);
         const { data: msgs } = await supabase
           .from('chat_messages')
@@ -107,7 +109,10 @@ export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
           .single();
         if (newTicket) {
           setTicketId(newTicket.id);
-          const welcomeMsg = `Olá${user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! 👋 Sou o assistente virtual da Sempre+. Como posso te ajudar hoje?`;
+          const tNum = (newTicket as any).ticket_number as number;
+          setTicketNumber(tNum);
+          const ticketLabel = `#${String(tNum).padStart(5, '0')}`;
+          const welcomeMsg = `Olá${user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! 👋 Sou o assistente virtual da Sempre+. Seu chamado **${ticketLabel}** foi aberto. Como posso te ajudar?`;
           const { data: welcomeData } = await supabase
             .from('chat_messages')
             .insert({
@@ -261,7 +266,9 @@ export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
             <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${statusConfig.dot} ring-2 ring-card status-pulse`} />
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-bold text-sm text-foreground leading-tight">Sempre+</span>
+            <span className="font-display font-bold text-sm text-foreground leading-tight">
+              Sempre+ {ticketNumber ? <span className="text-[10px] font-mono text-muted-foreground ml-1">#{String(ticketNumber).padStart(5, '0')}</span> : ''}
+            </span>
             <div className="flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot}`} />
               <span className="text-[10px] text-muted-foreground font-medium">{statusConfig.text}</span>
