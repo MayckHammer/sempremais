@@ -93,6 +93,7 @@ export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
 
       if (existing && existing.length > 0) {
         setTicketId(existing[0].id);
+        setTicketNumber((existing[0] as any).ticket_number);
         setTicketStatus(existing[0].status);
         const { data: msgs } = await supabase
           .from('chat_messages')
