@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          sender_id: string | null
+          sender_type: Database["public"]["Enums"]["sender_type"]
+          ticket_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          sender_id?: string | null
+          sender_type: Database["public"]["Enums"]["sender_type"]
+          ticket_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          sender_id?: string | null
+          sender_type?: Database["public"]["Enums"]["sender_type"]
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -348,6 +386,53 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          assigned_agent_id: string | null
+          client_id: string
+          created_at: string
+          id: string
+          resolved_at: string | null
+          service_request_id: string | null
+          status: Database["public"]["Enums"]["ticket_status"]
+          summary: string | null
+          trigger_words: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_agent_id?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          service_request_id?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          summary?: string | null
+          trigger_words?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_agent_id?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          service_request_id?: string | null
+          status?: Database["public"]["Enums"]["ticket_status"]
+          summary?: string | null
+          trigger_words?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -395,6 +480,7 @@ export type Database = {
         | "completed"
         | "cancelled"
       sb_transaction_type: "earned" | "spent"
+      sender_type: "client" | "agent" | "human_agent"
       service_type:
         | "reboque"
         | "chaveiro"
@@ -402,6 +488,12 @@ export type Database = {
         | "destombamento"
         | "frete_pequeno"
         | "frete_grande"
+      ticket_status:
+        | "agent_handling"
+        | "analysis"
+        | "human_handling"
+        | "resolved"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -538,6 +630,7 @@ export const Constants = {
         "cancelled",
       ],
       sb_transaction_type: ["earned", "spent"],
+      sender_type: ["client", "agent", "human_agent"],
       service_type: [
         "reboque",
         "chaveiro",
@@ -545,6 +638,13 @@ export const Constants = {
         "destombamento",
         "frete_pequeno",
         "frete_grande",
+      ],
+      ticket_status: [
+        "agent_handling",
+        "analysis",
+        "human_handling",
+        "resolved",
+        "closed",
       ],
     },
   },

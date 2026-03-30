@@ -29,6 +29,8 @@ import AdminPricing from "./pages/admin/AdminPricing";
 import AdminSBWallets from "./pages/admin/AdminSBWallets";
 import AdminPlans from "./pages/admin/AdminPlans";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminSupport from "./pages/admin/AdminSupport";
+import AdminTicketDetail from "./pages/admin/AdminTicketDetail";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +67,8 @@ const App = () => (
               <Route path="pricing" element={<AdminPricing />} />
               <Route path="plans" element={<AdminPlans />} />
               <Route path="wallets" element={<AdminSBWallets />} />
+              <Route path="support" element={<AdminSupport />} />
+              <Route path="support/:ticketId" element={<AdminTicketDetail />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
 
