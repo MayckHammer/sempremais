@@ -91,20 +91,58 @@ serve(async (req) => {
       });
     }
 
-    // If ticket is not in agent_handling, return standard message
+    // If ticket is not in agent_handling
     if (ticket.status !== "agent_handling") {
-      const waitMessage =
-        ticket.status === "human_handling"
-          ? "Você está sendo atendido por um de nossos atendentes. Aguarde a resposta."
-          : "Um atendente irá te atender em breve. Por favor, aguarde.";
+      // Save client message first
+      await supabase.from("chat_messages").insert({
+        ticket_id,
+        sender_type: "client",
+        sender_id: ticket.client_id,
+        content: message,
+      });
 
+      if (ticket.status === "human_handling") {
+        // Check last human_agent message timestamp
+        const { data: lastHumanMsg } = await supabase
+          .from("chat_messages")
+          .select("created_at")
+          .eq("ticket_id", ticket_id)
+          .eq("sender_type", "human_agent")
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        const lastMsgTime = lastHumanMsg?.[0]?.created_at
+          ? new Date(lastHumanMsg[0].created_at)
+          : null;
+
+        if (!lastMsgTime || lastMsgTime < fiveMinutesAgo) {
+          const waitMessage = "Nosso atendente está analisando seu caso. Por favor, aguarde. 🙏";
+          await supabase.from("chat_messages").insert({
+            ticket_id,
+            sender_type: "agent",
+            content: waitMessage,
+            metadata: { auto_response: true },
+          });
+          return new Response(JSON.stringify({ message: waitMessage, status: ticket.status }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Agent active — silent return
+        return new Response(JSON.stringify({ message: null, status: ticket.status }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // analysis or other states
+      const waitMessage = "Um atendente irá te atender em breve. Por favor, aguarde.";
       await supabase.from("chat_messages").insert({
         ticket_id,
         sender_type: "agent",
         content: waitMessage,
         metadata: { auto_response: true },
       });
-
       return new Response(JSON.stringify({ message: waitMessage, status: ticket.status }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
