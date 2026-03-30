@@ -90,6 +90,7 @@ export default function Index() {
           />
           {/* Secret admin access hotspot over the "+" sign */}
           <div
+            onClick={handleSecretTap}
             onMouseDown={handleSecretDown}
             onMouseUp={handleSecretUp}
             onMouseLeave={handleSecretUp}
