@@ -266,7 +266,9 @@ export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
             <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${statusConfig.dot} ring-2 ring-card status-pulse`} />
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-bold text-sm text-foreground leading-tight">Sempre+</span>
+            <span className="font-display font-bold text-sm text-foreground leading-tight">
+              Sempre+ {ticketNumber ? <span className="text-[10px] font-mono text-muted-foreground ml-1">#{String(ticketNumber).padStart(5, '0')}</span> : ''}
+            </span>
             <div className="flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot}`} />
               <span className="text-[10px] text-muted-foreground font-medium">{statusConfig.text}</span>
