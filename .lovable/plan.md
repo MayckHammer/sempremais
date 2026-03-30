@@ -1,25 +1,20 @@
 
 
-# Separação visual entre mapa e painel de formulário
+# Adicionar triplo clique como acesso alternativo ao painel admin
 
-## Problema
-O mapa e o painel de preenchimento têm tonalidades muito parecidas, dificultando a distinção visual entre as duas áreas.
-
-## Solução
-Adicionar o glow neon azul na borda superior do painel de formulário (o container `rounded-t-3xl`), criando uma linha de luz que separa visualmente o mapa do formulário. Isso reforça a identidade visual do projeto e cria profundidade.
+## Resumo
+Além do long press de 3 segundos já existente no sinal "+", adicionar detecção de triplo clique (3 toques rápidos) no mesmo hotspot como método alternativo de acesso ao `/admin/login`.
 
 ## Mudança
 
-### Editar `src/pages/RequestService.tsx` (linha 200)
-Atualizar as classes do painel inferior para incluir borda azul neon e sombra glow:
+### Editar `src/pages/Index.tsx`
 
-```tsx
-// DE
-<div className="bg-card rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-5 pt-6 pb-8 relative z-10">
+1. Adicionar estado `tapCount` (useRef) e `tapTimer` (useRef) para rastrear cliques consecutivos
+2. Criar função `handleSecretTap` que:
+   - Incrementa o contador a cada clique/toque
+   - Reseta o contador após 600ms de inatividade
+   - Ao atingir 3 toques, dispara vibração + navega para `/admin/login`
+3. No hotspot `<div>` existente (linha 78-86), adicionar `onClick={handleSecretTap}` sem interferir nos handlers de long press já existentes
 
-// PARA
-<div className="bg-card rounded-t-3xl border-t border-x border-blue-500/30 shadow-[0_-4px_30px_rgba(59,130,246,0.3),0_-8px_50px_rgba(30,64,175,0.2)] px-5 pt-6 pb-8 relative z-10">
-```
-
-Resultado: uma linha de luz azul neon na borda superior do painel + sombra glow azul que se projeta sobre o mapa, criando separação clara e efeito de profundidade 3D consistente com o estilo já aplicado no mapa da home.
+A lógica de triplo clique é independente do long press — ambos funcionam simultaneamente no mesmo elemento.
 
