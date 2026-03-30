@@ -444,6 +444,7 @@ export type Database = {
           service_request_id: string | null
           status: Database["public"]["Enums"]["ticket_status"]
           summary: string | null
+          ticket_number: number
           trigger_words: string[] | null
           updated_at: string
         }
@@ -456,6 +457,7 @@ export type Database = {
           service_request_id?: string | null
           status?: Database["public"]["Enums"]["ticket_status"]
           summary?: string | null
+          ticket_number?: number
           trigger_words?: string[] | null
           updated_at?: string
         }
@@ -468,6 +470,7 @@ export type Database = {
           service_request_id?: string | null
           status?: Database["public"]["Enums"]["ticket_status"]
           summary?: string | null
+          ticket_number?: number
           trigger_words?: string[] | null
           updated_at?: string
         }
