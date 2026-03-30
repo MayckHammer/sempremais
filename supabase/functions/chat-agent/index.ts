@@ -7,19 +7,19 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const TRIGGER_ANALYSIS = [
+const DEFAULT_TRIGGER_ANALYSIS = [
   "reclamação", "reclamacao", "processo", "advogado", "procon",
   "cancelar", "cancelamento", "insatisfeito", "absurdo", "denúncia",
   "denuncia", "tribunal", "indenização", "indenizacao",
 ];
 
-const TRIGGER_HUMAN = [
+const DEFAULT_TRIGGER_HUMAN = [
   "quero falar com atendente", "falar com humano", "atendente humano",
   "quero um humano", "falar com pessoa", "atendimento humano",
   "quero falar com uma pessoa", "transferir para atendente",
 ];
 
-const SYSTEM_PROMPT = `Você é o assistente virtual da Sempre+, uma plataforma de assistência veicular 24h.
+const DEFAULT_SYSTEM_PROMPT = `Você é o assistente virtual da Sempre+, uma plataforma de assistência veicular 24h.
 
 Seu papel:
 - Atender clientes de forma educada, profissional e empática
@@ -49,6 +49,28 @@ Quando o cliente relatar um problema com um serviço, colete:
 3. Data/hora aproximada do ocorrido
 4. Se já tem um número de solicitação`;
 
+async function loadConfig(supabase: any) {
+  const { data } = await supabase
+    .from("agent_config")
+    .select("*")
+    .limit(1)
+    .single();
+
+  if (!data) {
+    return {
+      system_prompt: DEFAULT_SYSTEM_PROMPT,
+      trigger_analysis: DEFAULT_TRIGGER_ANALYSIS,
+      trigger_human: DEFAULT_TRIGGER_HUMAN,
+      max_messages_before_escalation: 10,
+      inactivity_timeout_minutes: 5,
+      ai_model: "google/gemini-3-flash-preview",
+      escalation_message: "Entendi! Vou transferir você para um de nossos atendentes agora mesmo. Por favor, aguarde um momento. 🙏",
+      wait_message: "Nosso atendente está analisando seu caso. Por favor, aguarde. 🙏",
+    };
+  }
+  return data;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -77,6 +99,9 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Load dynamic config
+    const config = await loadConfig(supabase);
+
     // Check ticket status
     const { data: ticket, error: ticketError } = await supabase
       .from("support_tickets")
@@ -102,7 +127,6 @@ serve(async (req) => {
       });
 
       if (ticket.status === "human_handling") {
-        // Check last human_agent message timestamp
         const { data: lastHumanMsg } = await supabase
           .from("chat_messages")
           .select("created_at")
@@ -111,13 +135,14 @@ serve(async (req) => {
           .order("created_at", { ascending: false })
           .limit(1);
 
-        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        const timeoutMs = (config.inactivity_timeout_minutes || 5) * 60 * 1000;
+        const cutoff = new Date(Date.now() - timeoutMs);
         const lastMsgTime = lastHumanMsg?.[0]?.created_at
           ? new Date(lastHumanMsg[0].created_at)
           : null;
 
-        if (!lastMsgTime || lastMsgTime < fiveMinutesAgo) {
-          const waitMessage = "Nosso atendente está analisando seu caso. Por favor, aguarde. 🙏";
+        if (!lastMsgTime || lastMsgTime < cutoff) {
+          const waitMessage = config.wait_message;
           await supabase.from("chat_messages").insert({
             ticket_id,
             sender_type: "agent",
@@ -129,7 +154,6 @@ serve(async (req) => {
           });
         }
 
-        // Agent active — silent return
         return new Response(JSON.stringify({ message: null, status: ticket.status }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
@@ -156,13 +180,15 @@ serve(async (req) => {
       content: message,
     });
 
-    // Check for trigger words
+    // Check for trigger words using dynamic config
     const lowerMessage = message.toLowerCase();
-    const foundAnalysisTriggers = TRIGGER_ANALYSIS.filter((w) => lowerMessage.includes(w));
-    const foundHumanTriggers = TRIGGER_HUMAN.filter((w) => lowerMessage.includes(w));
+    const triggerAnalysis = config.trigger_analysis || DEFAULT_TRIGGER_ANALYSIS;
+    const triggerHuman = config.trigger_human || DEFAULT_TRIGGER_HUMAN;
+
+    const foundAnalysisTriggers = triggerAnalysis.filter((w: string) => lowerMessage.includes(w));
+    const foundHumanTriggers = triggerHuman.filter((w: string) => lowerMessage.includes(w));
 
     if (foundHumanTriggers.length > 0) {
-      // Direct escalation to human
       await supabase
         .from("support_tickets")
         .update({
@@ -171,7 +197,7 @@ serve(async (req) => {
         })
         .eq("id", ticket_id);
 
-      const escalationMsg = "Entendi! Vou transferir você para um de nossos atendentes agora mesmo. Por favor, aguarde um momento. 🙏";
+      const escalationMsg = config.escalation_message;
       await supabase.from("chat_messages").insert({
         ticket_id,
         sender_type: "agent",
@@ -194,14 +220,15 @@ serve(async (req) => {
         .eq("id", ticket_id);
     }
 
-    // Count messages to check timeout
+    // Count messages to check escalation limit
+    const maxMessages = config.max_messages_before_escalation || 10;
     const { count } = await supabase
       .from("chat_messages")
       .select("*", { count: "exact", head: true })
       .eq("ticket_id", ticket_id)
       .eq("sender_type", "client");
 
-    if ((count || 0) >= 10 && ticket.status === "agent_handling") {
+    if ((count || 0) >= maxMessages && ticket.status === "agent_handling") {
       await supabase
         .from("support_tickets")
         .update({ status: "analysis" })
@@ -221,12 +248,14 @@ serve(async (req) => {
       content: m.content,
     }));
 
-    // Add current message
     messages.push({ role: "user", content: message });
 
+    const systemPrompt = config.system_prompt || DEFAULT_SYSTEM_PROMPT;
     const systemWithContext = client_name
-      ? `${SYSTEM_PROMPT}\n\nO cliente se chama ${client_name}.`
-      : SYSTEM_PROMPT;
+      ? `${systemPrompt}\n\nO cliente se chama ${client_name}.`
+      : systemPrompt;
+
+    const aiModel = config.ai_model || "google/gemini-3-flash-preview";
 
     // Call Lovable AI Gateway with streaming
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -236,7 +265,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: aiModel,
         messages: [{ role: "system", content: systemWithContext }, ...messages],
         stream: true,
       }),
@@ -299,7 +328,6 @@ serve(async (req) => {
             }
           }
 
-          // Save full agent response
           if (fullResponse) {
             await supabase.from("chat_messages").insert({
               ticket_id,
