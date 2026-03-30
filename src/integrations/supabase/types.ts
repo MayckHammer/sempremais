@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_config: {
+        Row: {
+          agent_name: string
+          ai_model: string
+          escalation_message: string
+          greeting_message: string
+          id: string
+          inactivity_timeout_minutes: number
+          max_messages_before_escalation: number
+          system_prompt: string
+          trigger_analysis: string[]
+          trigger_human: string[]
+          updated_at: string
+          updated_by: string | null
+          wait_message: string
+        }
+        Insert: {
+          agent_name?: string
+          ai_model?: string
+          escalation_message?: string
+          greeting_message?: string
+          id?: string
+          inactivity_timeout_minutes?: number
+          max_messages_before_escalation?: number
+          system_prompt: string
+          trigger_analysis?: string[]
+          trigger_human?: string[]
+          updated_at?: string
+          updated_by?: string | null
+          wait_message?: string
+        }
+        Update: {
+          agent_name?: string
+          ai_model?: string
+          escalation_message?: string
+          greeting_message?: string
+          id?: string
+          inactivity_timeout_minutes?: number
+          max_messages_before_escalation?: number
+          system_prompt?: string
+          trigger_analysis?: string[]
+          trigger_human?: string[]
+          updated_at?: string
+          updated_by?: string | null
+          wait_message?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
