@@ -19,6 +19,20 @@ export default function Index() {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSecretTap = useCallback(() => {
+    tapCount.current++;
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+    if (tapCount.current >= 3) {
+      tapCount.current = 0;
+      if (navigator.vibrate) navigator.vibrate(50);
+      navigate('/admin/login');
+      return;
+    }
+    tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 600);
+  }, [navigate]);
 
   const handleSecretDown = useCallback(() => {
     longPressTimer.current = setTimeout(() => {
@@ -76,6 +90,7 @@ export default function Index() {
           />
           {/* Secret admin access hotspot over the "+" sign */}
           <div
+            onClick={handleSecretTap}
             onMouseDown={handleSecretDown}
             onMouseUp={handleSecretUp}
             onMouseLeave={handleSecretUp}
