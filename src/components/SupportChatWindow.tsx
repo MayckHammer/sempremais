@@ -62,6 +62,7 @@ function SenderAvatar({ type }: { type: string }) {
 export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
   const { user } = useAuth();
   const [ticketId, setTicketId] = useState<string | null>(null);
+  const [ticketNumber, setTicketNumber] = useState<number | null>(null);
   const [ticketStatus, setTicketStatus] = useState<string>('agent_handling');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
