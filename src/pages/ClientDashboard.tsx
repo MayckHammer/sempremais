@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { setPreferredUserRole } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { SupportChat } from '@/components/SupportChat';
 
 interface Provider {
   id: string;

@@ -17,6 +17,7 @@ const navItems = [
   { title: 'Preços', url: '/admin/pricing', icon: DollarSign },
   { title: 'Planos', url: '/admin/plans', icon: Crown },
   { title: 'Carteira SBs', url: '/admin/wallets', icon: Coins },
+  { title: 'Suporte', url: '/admin/support', icon: Headphones },
   { title: 'Configurações', url: '/admin/settings', icon: Settings },
 ];
 

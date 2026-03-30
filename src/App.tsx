@@ -67,6 +67,8 @@ const App = () => (
               <Route path="pricing" element={<AdminPricing />} />
               <Route path="plans" element={<AdminPlans />} />
               <Route path="wallets" element={<AdminSBWallets />} />
+              <Route path="support" element={<AdminSupport />} />
+              <Route path="support/:ticketId" element={<AdminTicketDetail />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
 

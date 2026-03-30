@@ -42,7 +42,7 @@ export default function AdminSupport() {
       .order('updated_at', { ascending: false });
 
     if (filter !== 'all') {
-      query = query.eq('status', filter);
+      query = query.eq('status', filter as any);
     }
 
     const { data } = await query;
