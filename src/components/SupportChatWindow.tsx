@@ -109,7 +109,10 @@ export function SupportChatWindow({ onClose }: SupportChatWindowProps) {
           .single();
         if (newTicket) {
           setTicketId(newTicket.id);
-          const welcomeMsg = `Olá${user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! 👋 Sou o assistente virtual da Sempre+. Como posso te ajudar hoje?`;
+          const tNum = (newTicket as any).ticket_number as number;
+          setTicketNumber(tNum);
+          const ticketLabel = `#${String(tNum).padStart(5, '0')}`;
+          const welcomeMsg = `Olá${user.fullName ? `, ${user.fullName.split(' ')[0]}` : ''}! 👋 Sou o assistente virtual da Sempre+. Seu chamado **${ticketLabel}** foi aberto. Como posso te ajudar?`;
           const { data: welcomeData } = await supabase
             .from('chat_messages')
             .insert({
