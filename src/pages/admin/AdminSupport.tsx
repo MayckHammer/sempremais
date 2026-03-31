@@ -146,10 +146,12 @@ export default function AdminSupport() {
       <div className="space-y-2">
         {loading ? (
           <div className="text-center py-8 text-muted-foreground text-sm">Carregando...</div>
-        ) : tickets.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground text-sm">Nenhum ticket encontrado</div>
+        ) : filteredTickets.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            {search.trim() ? 'Nenhum ticket encontrado para essa busca' : 'Nenhum ticket encontrado'}
+          </div>
         ) : (
-          tickets.map(ticket => {
+          filteredTickets.map(ticket => {
             const statusConf = STATUS_CONFIG[ticket.status] || STATUS_CONFIG.agent_handling;
             const StatusIcon = statusConf.icon;
             return (
