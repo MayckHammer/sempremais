@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, Clock, AlertTriangle, Headphones, CheckCircle } from 'lucide-react';
+import { MessageCircle, Clock, AlertTriangle, Headphones, CheckCircle, Search } from 'lucide-react';
 
 interface Ticket {
   id: string;
