@@ -92,6 +92,16 @@ export default function AdminSupport() {
     { key: 'resolved', label: 'Resolvidos' },
   ];
 
+  const filteredTickets = useMemo(() => {
+    if (!search.trim()) return tickets;
+    const q = search.trim().replace(/^#/, '');
+    return tickets.filter(t => {
+      const num = String((t as any).ticket_number || 0);
+      const padded = num.padStart(5, '0');
+      return num.includes(q) || padded.includes(q) || (t.profiles?.full_name || '').toLowerCase().includes(q.toLowerCase());
+    });
+  }, [tickets, search]);
+
   const counts = {
     all: tickets.length,
     agent_handling: tickets.filter(t => t.status === 'agent_handling').length,
