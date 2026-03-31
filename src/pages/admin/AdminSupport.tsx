@@ -34,6 +34,7 @@ export default function AdminSupport() {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
   const fetchTickets = async () => {
