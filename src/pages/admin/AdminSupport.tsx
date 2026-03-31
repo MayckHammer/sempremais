@@ -112,8 +112,17 @@ export default function AdminSupport() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-display font-bold text-foreground">Suporte</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-display font-bold text-foreground shrink-0">Suporte</h1>
+        <div className="relative w-48">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="#00001 ou nome..."
+            className="h-8 pl-8 text-xs"
+          />
+        </div>
       </div>
 
       {/* Filter chips */}
