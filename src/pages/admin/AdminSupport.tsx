@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, Clock, AlertTriangle, Headphones, CheckCircle } from 'lucide-react';
+import { MessageCircle, Clock, AlertTriangle, Headphones, CheckCircle, Search } from 'lucide-react';
 
 interface Ticket {
   id: string;
@@ -33,6 +34,7 @@ export default function AdminSupport() {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
   const fetchTickets = async () => {
@@ -90,6 +92,16 @@ export default function AdminSupport() {
     { key: 'resolved', label: 'Resolvidos' },
   ];
 
+  const filteredTickets = useMemo(() => {
+    if (!search.trim()) return tickets;
+    const q = search.trim().replace(/^#/, '');
+    return tickets.filter(t => {
+      const num = String((t as any).ticket_number || 0);
+      const padded = num.padStart(5, '0');
+      return num.includes(q) || padded.includes(q) || (t.profiles?.full_name || '').toLowerCase().includes(q.toLowerCase());
+    });
+  }, [tickets, search]);
+
   const counts = {
     all: tickets.length,
     agent_handling: tickets.filter(t => t.status === 'agent_handling').length,
@@ -100,8 +112,17 @@ export default function AdminSupport() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-display font-bold text-foreground">Suporte</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-display font-bold text-foreground shrink-0">Suporte</h1>
+        <div className="relative w-48">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="#00001 ou nome..."
+            className="h-8 pl-8 text-xs"
+          />
+        </div>
       </div>
 
       {/* Filter chips */}
@@ -125,10 +146,12 @@ export default function AdminSupport() {
       <div className="space-y-2">
         {loading ? (
           <div className="text-center py-8 text-muted-foreground text-sm">Carregando...</div>
-        ) : tickets.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground text-sm">Nenhum ticket encontrado</div>
+        ) : filteredTickets.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            {search.trim() ? 'Nenhum ticket encontrado para essa busca' : 'Nenhum ticket encontrado'}
+          </div>
         ) : (
-          tickets.map(ticket => {
+          filteredTickets.map(ticket => {
             const statusConf = STATUS_CONFIG[ticket.status] || STATUS_CONFIG.agent_handling;
             const StatusIcon = statusConf.icon;
             return (
