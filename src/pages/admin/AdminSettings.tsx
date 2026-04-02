@@ -208,23 +208,17 @@ export default function AdminSettings() {
     if (!config) return;
     setSaving(true);
 
-    const promises: Promise<any>[] = [];
-
     // Save agent config
     const { id, updated_at, ...rest } = config;
-    promises.push(
-      supabase.from('agent_config').upsert({ ...rest, id, updated_at: new Date().toISOString() } as any)
-    );
+    const agentResult = await supabase.from('agent_config').upsert({ ...rest, id, updated_at: new Date().toISOString() } as any);
 
-    // Save urgency config
+    let urgencyResult: { error: any } = { error: null };
     if (urgencyConfig) {
       const { id: uId, updated_at: uUpdated, ...uRest } = urgencyConfig;
-      promises.push(
-        supabase.from('urgency_config').upsert({ ...uRest, id: uId, updated_at: new Date().toISOString() } as any)
-      );
+      urgencyResult = await supabase.from('urgency_config').upsert({ ...uRest, id: uId, updated_at: new Date().toISOString() } as any);
     }
 
-    const results = await Promise.all(promises);
+    const hasError = agentResult.error || urgencyResult.error;
     const hasError = results.some(r => r.error);
 
     if (hasError) {
