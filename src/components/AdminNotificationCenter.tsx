@@ -125,7 +125,7 @@ export default function AdminNotificationCenter() {
                   </p>
                 </div>
               </div>,
-              { duration: 15000 }
+              { duration: 3000 }
             );
           }
         }
