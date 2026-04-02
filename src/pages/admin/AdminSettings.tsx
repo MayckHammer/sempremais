@@ -218,12 +218,9 @@ export default function AdminSettings() {
       urgencyResult = await supabase.from('urgency_config').upsert({ ...uRest, id: uId, updated_at: new Date().toISOString() } as any);
     }
 
-    const hasError = agentResult.error || urgencyResult.error;
-    const hasError = results.some(r => r.error);
-
-    if (hasError) {
+    if (agentResult.error || urgencyResult.error) {
       toast.error('Erro ao salvar configurações');
-      console.error(results.map(r => r.error).filter(Boolean));
+      console.error(agentResult.error, urgencyResult.error);
     } else {
       toast.success('Configurações salvas com sucesso!');
       setSaved(true);
