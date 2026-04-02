@@ -114,9 +114,10 @@ export default function AdminLayout() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center gap-3 border-b border-border px-4 bg-card shrink-0">
             <SidebarTrigger className="text-muted-foreground" />
-            <span className="text-sm font-display font-bold text-foreground">
+            <span className="text-sm font-display font-bold text-foreground flex-1">
               {navItems.find(n => location.pathname === n.url || (n.url !== '/admin' && location.pathname.startsWith(n.url)))?.title || 'Dashboard'}
             </span>
+            <AdminNotificationCenter />
           </header>
           <main className="flex-1 p-4 lg:p-6 overflow-auto">
             <Outlet />
