@@ -1,0 +1,1 @@
+ALTER TABLE public.service_requests ADD COLUMN urgency text DEFAULT 'pending_analysis';
