@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,6 +37,8 @@ export default function AdminSupport() {
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 15;
 
   const fetchTickets = async () => {
     let query = supabase
@@ -102,6 +105,12 @@ export default function AdminSupport() {
     });
   }, [tickets, search]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredTickets.length / PAGE_SIZE));
+  const paginatedTickets = filteredTickets.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Reset page when filter/search changes
+  useEffect(() => { setPage(1); }, [search, filter]);
+
   const counts = {
     all: tickets.length,
     agent_handling: tickets.filter(t => t.status === 'agent_handling').length,
@@ -151,7 +160,7 @@ export default function AdminSupport() {
             {search.trim() ? 'Nenhum ticket encontrado para essa busca' : 'Nenhum ticket encontrado'}
           </div>
         ) : (
-          filteredTickets.map(ticket => {
+          paginatedTickets.map(ticket => {
             const statusConf = STATUS_CONFIG[ticket.status] || STATUS_CONFIG.agent_handling;
             const StatusIcon = statusConf.icon;
             return (
@@ -196,6 +205,29 @@ export default function AdminSupport() {
           })
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-2">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="p-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-xs text-muted-foreground font-medium">
+            {page} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="p-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
