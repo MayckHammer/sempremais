@@ -37,6 +37,8 @@ export default function AdminSupport() {
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 15;
 
   const fetchTickets = async () => {
     let query = supabase
