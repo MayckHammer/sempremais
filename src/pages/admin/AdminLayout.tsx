@@ -7,6 +7,7 @@ import { NavLink } from '@/components/NavLink';
 import { LayoutDashboard, Users, Wrench, Handshake, ClipboardList, DollarSign, Coins, Settings, LogOut, Crown, Headphones } from 'lucide-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import { Button } from '@/components/ui/button';
+import AdminNotificationCenter from '@/components/AdminNotificationCenter';
 
 const navItems = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, end: true },
