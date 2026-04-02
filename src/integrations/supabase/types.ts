@@ -342,6 +342,7 @@ export type Database = {
           service_type: Database["public"]["Enums"]["service_type"]
           status: Database["public"]["Enums"]["request_status"]
           updated_at: string
+          urgency: string | null
           vehicle_info: string | null
         }
         Insert: {
@@ -364,6 +365,7 @@ export type Database = {
           service_type: Database["public"]["Enums"]["service_type"]
           status?: Database["public"]["Enums"]["request_status"]
           updated_at?: string
+          urgency?: string | null
           vehicle_info?: string | null
         }
         Update: {
@@ -386,6 +388,7 @@ export type Database = {
           service_type?: Database["public"]["Enums"]["service_type"]
           status?: Database["public"]["Enums"]["request_status"]
           updated_at?: string
+          urgency?: string | null
           vehicle_info?: string | null
         }
         Relationships: [
