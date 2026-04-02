@@ -1,53 +1,77 @@
 
 
-# Classificacao Automatica de Urgencia com IA
+# Configuração Admin da Classificação de Urgência com IA
 
 ## Resumo
 
-Quando uma solicitacao de servico e criada, uma Edge Function analisa os dados (tipo de servico, descricao, horario) e classifica a urgencia automaticamente em: **baixa**, **media**, **alta** ou **critica**. O admin ve a urgencia na tabela de solicitacoes com badges coloridos e pode filtrar por urgencia.
+Adicionar uma nova aba "Urgência" no painel de configurações do admin (AdminSettings.tsx) para gerenciar os parâmetros da classificação automática. A Edge Function `classify-urgency` passará a ler essas configurações do banco antes de classificar.
 
 ## Etapas
 
-### 1. Migracaco — adicionar coluna `urgency` na tabela `service_requests`
+### 1. Migração — criar tabela `urgency_config`
+
+Nova tabela com os parâmetros configuráveis:
 
 ```sql
-ALTER TABLE public.service_requests 
-ADD COLUMN urgency text DEFAULT 'pending_analysis';
+CREATE TABLE public.urgency_config (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  is_enabled boolean NOT NULL DEFAULT true,
+  ai_model text NOT NULL DEFAULT 'google/gemini-2.5-flash-lite',
+  classification_prompt text NOT NULL DEFAULT 'Classifique a urgência desta solicitação...',
+  criteria_rules text NOT NULL DEFAULT 'Reboque e destombamento são mais urgentes...',
+  fallback_urgency text NOT NULL DEFAULT 'medium',
+  night_boost boolean NOT NULL DEFAULT true,
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by uuid
+);
+
+ALTER TABLE public.urgency_config ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins can manage urgency config"
+  ON public.urgency_config FOR ALL TO authenticated
+  USING (has_role(auth.uid(), 'admin'));
+
+-- Insert default row
+INSERT INTO public.urgency_config (classification_prompt, criteria_rules) VALUES (...defaults from current edge function...);
 ```
 
-Valores possiveis: `pending_analysis`, `low`, `medium`, `high`, `critical`.
+Campos configuráveis:
+- **is_enabled**: liga/desliga a classificação automática
+- **ai_model**: modelo IA usado (seleção visual como no agente)
+- **classification_prompt**: prompt de sistema para o classificador
+- **criteria_rules**: critérios de classificação (editável como textarea)
+- **fallback_urgency**: nível padrão quando a IA falha (low/medium/high/critical)
+- **night_boost**: se horário noturno/madrugada aumenta urgência
 
-### 2. Edge Function `classify-urgency`
+### 2. Atualizar AdminSettings.tsx
 
-Nova funcao que recebe o `request_id`, carrega os dados da solicitacao e chama Lovable AI para classificar a urgencia usando tool calling (structured output).
+- Adicionar nova aba "Urgência" (ícone `Zap` ou `AlertTriangle`) ao array `TABS`
+- Carregar `urgency_config` junto com `agent_config` no useEffect
+- Novo painel com:
+  - **Switch** para ativar/desativar classificação
+  - **Seleção de modelo IA** (mesma lista visual de cards)
+  - **Textarea** para prompt de classificação
+  - **Textarea** para critérios/regras
+  - **Select** para fallback urgency (low/medium/high/critical)
+  - **Switch** para night boost
+- Salvar na tabela `urgency_config` junto com o botão existente
 
-Criterios que a IA considera:
-- Tipo de servico (reboque/destombamento = mais urgente por natureza)
-- Descricao do cliente
-- Horario (madrugada = mais urgente)
-- Tipo de veiculo (caminhao em rodovia = critico)
+### 3. Atualizar Edge Function `classify-urgency`
 
-Retorna um dos 4 niveis e salva direto no banco.
+- Antes de classificar, buscar configurações da tabela `urgency_config`
+- Se `is_enabled = false`, definir urgência como `fallback_urgency` sem chamar IA
+- Usar `ai_model` da config em vez de hardcoded
+- Usar `classification_prompt` e `criteria_rules` da config no prompt
+- Aplicar `night_boost` condicionalmente
+- Usar `fallback_urgency` como fallback em caso de erro
 
-### 3. Chamar a classificacao apos criar solicitacao
+### 4. Atualizar RequestService.tsx e GuestRequestService.tsx
 
-No `RequestService.tsx` e `GuestRequestService.tsx`, apos o insert bem-sucedido, chamar `supabase.functions.invoke('classify-urgency', { body: { request_id } })` de forma assíncrona (fire-and-forget, sem bloquear o usuario).
+- Nenhuma alteração necessária — a lógica fire-and-forget já existe, a Edge Function decide internamente se classifica ou não.
 
-### 4. Exibir urgencia no painel admin (`AdminRequests.tsx`)
+## Arquivos Afetados
 
-- Nova coluna "Urgencia" na tabela com badges coloridos:
-  - Baixa: verde
-  - Media: amarelo
-  - Alta: laranja
-  - Critica: vermelho pulsante
-  - Analisando: cinza com shimmer
-- Novo filtro de urgencia no topo (dropdown)
-
-## Detalhes Tecnicos
-
-- **Modelo IA**: `google/gemini-2.5-flash-lite` (rapido e barato, classificacao simples)
-- **Structured output** via tool calling para garantir resposta no formato correto (`low`/`medium`/`high`/`critical`)
-- Edge Function usa `SUPABASE_SERVICE_ROLE_KEY` para update direto
-- Chamada fire-and-forget no client para nao atrasar o fluxo do usuario
-- Coluna `urgency` com default `pending_analysis` para requests existentes
+- `supabase/migrations/` — nova migração para `urgency_config`
+- `src/pages/admin/AdminSettings.tsx` — nova aba + formulário
+- `supabase/functions/classify-urgency/index.ts` — ler config do banco
 
