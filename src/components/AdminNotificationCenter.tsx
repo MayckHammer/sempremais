@@ -100,7 +100,7 @@ export default function AdminNotificationCenter() {
                   </p>
                 </div>
               </div>,
-              { duration: 10000 }
+              { duration: 1000 }
             );
           }
 
@@ -125,7 +125,7 @@ export default function AdminNotificationCenter() {
                   </p>
                 </div>
               </div>,
-              { duration: 15000 }
+              { duration: 3000 }
             );
           }
         }
@@ -179,7 +179,7 @@ export default function AdminNotificationCenter() {
                   </p>
                 </div>
               </div>,
-              { duration: 20000 }
+              { duration: 5000 }
             );
           }
         }
