@@ -1,18 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Sparkles, Zap, Shield, Bot, X, Plus, Save, Loader2, Clock, MessageSquare, AlertTriangle, Users, ChevronRight } from 'lucide-react';
+import { Brain, Sparkles, Zap, Shield, Bot, X, Plus, Save, Loader2, Clock, MessageSquare, AlertTriangle, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const AI_MODELS = [
   { id: 'google/gemini-3-flash-preview', name: 'Gemini 3 Flash', provider: 'Google', badge: 'Rápido', badgeColor: 'text-emerald-400', desc: 'Velocidade e eficiência para respostas ágeis' },
   { id: 'google/gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'Google', badge: 'Balanceado', badgeColor: 'text-sky-400', desc: 'Equilíbrio entre custo e qualidade' },
+  { id: 'google/gemini-2.5-flash-lite', name: 'Gemini 2.5 Flash Lite', provider: 'Google', badge: 'Econômico', badgeColor: 'text-teal-400', desc: 'Mais rápido e barato, ideal para classificações' },
   { id: 'google/gemini-2.5-pro', name: 'Gemini 2.5 Pro', provider: 'Google', badge: 'Premium', badgeColor: 'text-amber-400', desc: 'Raciocínio complexo e contexto amplo' },
   { id: 'openai/gpt-5-mini', name: 'GPT-5 Mini', provider: 'OpenAI', badge: 'Eficiente', badgeColor: 'text-violet-400', desc: 'Custo-benefício com alta capacidade' },
   { id: 'openai/gpt-5', name: 'GPT-5', provider: 'OpenAI', badge: 'Máximo', badgeColor: 'text-rose-400', desc: 'Melhor precisão e raciocínio avançado' },
@@ -23,6 +26,7 @@ const TABS = [
   { id: 'escalation', label: 'Escalação', icon: AlertTriangle },
   { id: 'rules', label: 'Regras', icon: Shield },
   { id: 'model', label: 'Modelo IA', icon: Zap },
+  { id: 'urgency', label: 'Urgência', icon: Zap },
 ];
 
 interface AgentConfig {
@@ -37,6 +41,17 @@ interface AgentConfig {
   greeting_message: string;
   escalation_message: string;
   wait_message: string;
+  updated_at?: string;
+}
+
+interface UrgencyConfig {
+  id?: string;
+  is_enabled: boolean;
+  ai_model: string;
+  classification_prompt: string;
+  criteria_rules: string;
+  fallback_urgency: string;
+  night_boost: boolean;
   updated_at?: string;
 }
 
@@ -105,9 +120,56 @@ function TagInput({ tags, onAdd, onRemove, placeholder }: { tags: string[]; onAd
   );
 }
 
+function ModelSelector({ selectedModel, onSelect }: { selectedModel: string; onSelect: (id: string) => void }) {
+  return (
+    <div className="space-y-3">
+      {AI_MODELS.map((model) => {
+        const isSelected = selectedModel === model.id;
+        return (
+          <motion.button
+            key={model.id}
+            onClick={() => onSelect(model.id)}
+            whileTap={{ scale: 0.98 }}
+            className={`w-full text-left rounded-xl border p-4 transition-all ${
+              isSelected
+                ? 'bg-primary/5 border-primary/30 shadow-md shadow-primary/10'
+                : 'bg-card border-border/50 hover:border-border'
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm text-foreground">{model.name}</span>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${model.badgeColor}`}>
+                    {model.badge}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">{model.desc}</p>
+                <p className="text-[10px] text-muted-foreground/40 font-mono">{model.provider}</p>
+              </div>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                isSelected ? 'border-primary bg-primary' : 'border-border'
+              }`}>
+                {isSelected && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-2 h-2 rounded-full bg-primary-foreground"
+                  />
+                )}
+              </div>
+            </div>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('personality');
   const [config, setConfig] = useState<AgentConfig | null>(null);
+  const [urgencyConfig, setUrgencyConfig] = useState<UrgencyConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -118,14 +180,16 @@ export default function AdminSettings() {
 
   const loadConfig = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('agent_config')
-      .select('*')
-      .limit(1)
-      .single();
+    const [agentRes, urgencyRes] = await Promise.all([
+      supabase.from('agent_config').select('*').limit(1).single(),
+      supabase.from('urgency_config').select('*').limit(1).single(),
+    ]);
 
-    if (data && !error) {
-      setConfig(data as unknown as AgentConfig);
+    if (agentRes.data && !agentRes.error) {
+      setConfig(agentRes.data as unknown as AgentConfig);
+    }
+    if (urgencyRes.data && !urgencyRes.error) {
+      setUrgencyConfig(urgencyRes.data as unknown as UrgencyConfig);
     }
     setLoading(false);
   };
@@ -135,18 +199,28 @@ export default function AdminSettings() {
     setSaved(false);
   }, []);
 
+  const updateUrgencyConfig = useCallback((field: keyof UrgencyConfig, value: any) => {
+    setUrgencyConfig(prev => prev ? { ...prev, [field]: value } : prev);
+    setSaved(false);
+  }, []);
+
   const handleSave = async () => {
     if (!config) return;
     setSaving(true);
 
+    // Save agent config
     const { id, updated_at, ...rest } = config;
-    const { error } = await supabase
-      .from('agent_config')
-      .upsert({ ...rest, id, updated_at: new Date().toISOString() } as any);
+    const agentResult = await supabase.from('agent_config').upsert({ ...rest, id, updated_at: new Date().toISOString() } as any);
 
-    if (error) {
+    let urgencyResult: { error: any } = { error: null };
+    if (urgencyConfig) {
+      const { id: uId, updated_at: uUpdated, ...uRest } = urgencyConfig;
+      urgencyResult = await supabase.from('urgency_config').upsert({ ...uRest, id: uId, updated_at: new Date().toISOString() } as any);
+    }
+
+    if (agentResult.error || urgencyResult.error) {
       toast.error('Erro ao salvar configurações');
-      console.error(error);
+      console.error(agentResult.error, urgencyResult.error);
     } else {
       toast.success('Configurações salvas com sucesso!');
       setSaved(true);
@@ -438,46 +512,133 @@ export default function AdminSettings() {
               )}
 
               {activeTab === 'model' && (
-                <div className="space-y-4">
-                  {AI_MODELS.map((model) => {
-                    const isSelected = config.ai_model === model.id;
-                    return (
-                      <motion.button
-                        key={model.id}
-                        onClick={() => updateConfig('ai_model', model.id)}
-                        whileTap={{ scale: 0.98 }}
-                        className={`w-full text-left rounded-xl border p-4 transition-all ${
-                          isSelected
-                            ? 'bg-primary/5 border-primary/30 shadow-md shadow-primary/10'
-                            : 'bg-card border-border/50 hover:border-border'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-sm text-foreground">{model.name}</span>
-                              <span className={`text-[10px] font-bold uppercase tracking-widest ${model.badgeColor}`}>
-                                {model.badge}
-                              </span>
-                            </div>
-                            <p className="text-xs text-muted-foreground">{model.desc}</p>
-                            <p className="text-[10px] text-muted-foreground/40 font-mono">{model.provider}</p>
-                          </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                            isSelected ? 'border-primary bg-primary' : 'border-border'
-                          }`}>
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="w-2 h-2 rounded-full bg-primary-foreground"
-                              />
-                            )}
-                          </div>
+                <ModelSelector selectedModel={config.ai_model} onSelect={(id) => updateConfig('ai_model', id)} />
+              )}
+
+              {activeTab === 'urgency' && urgencyConfig && (
+                <div className="space-y-5">
+                  <Card className="bg-card border-border/50">
+                    <CardContent className="p-5 space-y-6">
+                      {/* Enable/Disable */}
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <Label className="text-sm font-semibold text-foreground">
+                            Classificação Automática
+                          </Label>
+                          <p className="text-xs text-muted-foreground/60">
+                            Quando ativa, a IA analisa cada solicitação e atribui um nível de urgência.
+                          </p>
                         </div>
-                      </motion.button>
-                    );
-                  })}
+                        <Switch
+                          checked={urgencyConfig.is_enabled}
+                          onCheckedChange={(v) => updateUrgencyConfig('is_enabled', v)}
+                        />
+                      </div>
+
+                      <div className="h-px bg-border/50" />
+
+                      {/* Night boost */}
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <Label className="text-sm font-semibold text-foreground">
+                            Boost Noturno
+                          </Label>
+                          <p className="text-xs text-muted-foreground/60">
+                            Aumenta automaticamente a urgência para solicitações feitas entre 00h e 06h.
+                          </p>
+                        </div>
+                        <Switch
+                          checked={urgencyConfig.night_boost}
+                          onCheckedChange={(v) => updateUrgencyConfig('night_boost', v)}
+                        />
+                      </div>
+
+                      <div className="h-px bg-border/50" />
+
+                      {/* Fallback urgency */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          Urgência Padrão (Fallback)
+                        </Label>
+                        <p className="text-xs text-muted-foreground/60">
+                          Nível usado quando a IA está desativada ou falha.
+                        </p>
+                        <Select
+                          value={urgencyConfig.fallback_urgency}
+                          onValueChange={(v) => updateUrgencyConfig('fallback_urgency', v)}
+                        >
+                          <SelectTrigger className="bg-background/50 border-border/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">🟢 Baixa</SelectItem>
+                            <SelectItem value="medium">🟡 Média</SelectItem>
+                            <SelectItem value="high">🟠 Alta</SelectItem>
+                            <SelectItem value="critical">🔴 Crítica</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="h-px bg-border/50" />
+
+                      {/* Classification prompt */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            Prompt de Classificação
+                          </Label>
+                          <span className="text-xs text-muted-foreground/50 font-mono">
+                            {urgencyConfig.classification_prompt.length} chars
+                          </span>
+                        </div>
+                        <Textarea
+                          value={urgencyConfig.classification_prompt}
+                          onChange={(e) => updateUrgencyConfig('classification_prompt', e.target.value)}
+                          rows={3}
+                          className="bg-background/50 border-border/50 font-mono text-xs leading-relaxed resize-y"
+                        />
+                        <p className="text-xs text-muted-foreground/50">
+                          Instrução enviada à IA como system prompt para classificar a urgência.
+                        </p>
+                      </div>
+
+                      <div className="h-px bg-border/50" />
+
+                      {/* Criteria rules */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                            Critérios de Classificação
+                          </Label>
+                          <span className="text-xs text-muted-foreground/50 font-mono">
+                            {urgencyConfig.criteria_rules.length} chars
+                          </span>
+                        </div>
+                        <Textarea
+                          value={urgencyConfig.criteria_rules}
+                          onChange={(e) => updateUrgencyConfig('criteria_rules', e.target.value)}
+                          rows={5}
+                          className="bg-background/50 border-border/50 text-sm leading-relaxed resize-y"
+                        />
+                        <p className="text-xs text-muted-foreground/50">
+                          Regras que a IA segue para determinar o nível de urgência (low, medium, high, critical).
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Model selection for urgency */}
+                  <Card className="bg-card border-border/50">
+                    <CardContent className="p-5 space-y-4">
+                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Modelo IA para Classificação
+                      </Label>
+                      <ModelSelector
+                        selectedModel={urgencyConfig.ai_model}
+                        onSelect={(id) => updateUrgencyConfig('ai_model', id)}
+                      />
+                    </CardContent>
+                  </Card>
                 </div>
               )}
             </motion.div>

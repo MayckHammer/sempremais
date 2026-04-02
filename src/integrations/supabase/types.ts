@@ -487,6 +487,42 @@ export type Database = {
           },
         ]
       }
+      urgency_config: {
+        Row: {
+          ai_model: string
+          classification_prompt: string
+          criteria_rules: string
+          fallback_urgency: string
+          id: string
+          is_enabled: boolean
+          night_boost: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ai_model?: string
+          classification_prompt?: string
+          criteria_rules?: string
+          fallback_urgency?: string
+          id?: string
+          is_enabled?: boolean
+          night_boost?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ai_model?: string
+          classification_prompt?: string
+          criteria_rules?: string
+          fallback_urgency?: string
+          id?: string
+          is_enabled?: boolean
+          night_boost?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
