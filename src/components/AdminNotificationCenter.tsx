@@ -223,7 +223,7 @@ export default function AdminNotificationCenter() {
         onClick={() => setMuted(!muted)}
         title={muted ? 'Ativar sons' : 'Silenciar notificações'}
       >
-        {muted ? <BellOff className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
+        {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
       </Button>
     </div>
   );
