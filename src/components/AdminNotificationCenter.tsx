@@ -9,7 +9,7 @@ import {
   playHumanEscalation,
   playCriticalUrgency,
 } from '@/lib/adminSounds';
-import { AlertTriangle, MessageSquare, Headphones, Siren, Bell, BellOff } from 'lucide-react';
+import { AlertTriangle, MessageSquare, Headphones, Siren, Bell, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -223,7 +223,7 @@ export default function AdminNotificationCenter() {
         onClick={() => setMuted(!muted)}
         title={muted ? 'Ativar sons' : 'Silenciar notificações'}
       >
-        {muted ? <BellOff className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
+        {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
       </Button>
     </div>
   );
