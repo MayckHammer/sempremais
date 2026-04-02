@@ -105,6 +105,12 @@ export default function AdminSupport() {
     });
   }, [tickets, search]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredTickets.length / PAGE_SIZE));
+  const paginatedTickets = filteredTickets.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Reset page when filter/search changes
+  useEffect(() => { setPage(1); }, [search, filter]);
+
   const counts = {
     all: tickets.length,
     agent_handling: tickets.filter(t => t.status === 'agent_handling').length,
