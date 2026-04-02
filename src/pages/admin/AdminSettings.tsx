@@ -21,12 +21,17 @@ const AI_MODELS = [
   { id: 'openai/gpt-5', name: 'GPT-5', provider: 'OpenAI', badge: 'Máximo', badgeColor: 'text-rose-400', desc: 'Melhor precisão e raciocínio avançado' },
 ];
 
-const TABS = [
+const AGENT_TABS = [
   { id: 'personality', label: 'Personalidade', icon: Brain },
   { id: 'escalation', label: 'Escalação', icon: AlertTriangle },
   { id: 'rules', label: 'Regras', icon: Shield },
   { id: 'model', label: 'Modelo IA', icon: Zap },
-  { id: 'urgency', label: 'Urgência', icon: Zap },
+];
+
+const URGENCY_TABS = [
+  { id: 'urgency-config', label: 'Configuração', icon: Shield },
+  { id: 'urgency-rules', label: 'Regras', icon: Brain },
+  { id: 'urgency-model', label: 'Modelo IA', icon: Zap },
 ];
 
 interface AgentConfig {
@@ -166,7 +171,23 @@ function ModelSelector({ selectedModel, onSelect }: { selectedModel: string; onS
   );
 }
 
+const SECTIONS = [
+  {
+    id: 'agent' as const,
+    label: 'Agente IA',
+    icon: Bot,
+    desc: 'Personalidade, regras e modelo do assistente',
+  },
+  {
+    id: 'urgency' as const,
+    label: 'Classificação de Urgência',
+    icon: AlertTriangle,
+    desc: 'Modelo, prompt e regras de classificação',
+  },
+];
+
 export default function AdminSettings() {
+  const [mainSection, setMainSection] = useState<'agent' | 'urgency'>('agent');
   const [activeTab, setActiveTab] = useState('personality');
   const [config, setConfig] = useState<AgentConfig | null>(null);
   const [urgencyConfig, setUrgencyConfig] = useState<UrgencyConfig | null>(null);
@@ -174,9 +195,16 @@ export default function AdminSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const currentTabs = mainSection === 'agent' ? AGENT_TABS : URGENCY_TABS;
+
   useEffect(() => {
     loadConfig();
   }, []);
+
+  // Reset sub-tab when switching sections
+  useEffect(() => {
+    setActiveTab(mainSection === 'agent' ? 'personality' : 'urgency-config');
+  }, [mainSection]);
 
   const loadConfig = async () => {
     setLoading(true);
@@ -208,7 +236,6 @@ export default function AdminSettings() {
     if (!config) return;
     setSaving(true);
 
-    // Save agent config
     const { id, updated_at, ...rest } = config;
     const agentResult = await supabase.from('agent_config').upsert({ ...rest, id, updated_at: new Date().toISOString() } as any);
 
@@ -245,9 +272,10 @@ export default function AdminSettings() {
     );
   }
 
-  const relativeTime = config.updated_at
+  const activeConfig = mainSection === 'agent' ? config : urgencyConfig;
+  const relativeTime = activeConfig?.updated_at
     ? (() => {
-        const diff = Date.now() - new Date(config.updated_at).getTime();
+        const diff = Date.now() - new Date(activeConfig.updated_at).getTime();
         const mins = Math.floor(diff / 60000);
         if (mins < 1) return 'agora mesmo';
         if (mins < 60) return `${mins}min atrás`;
@@ -257,26 +285,67 @@ export default function AdminSettings() {
       })()
     : null;
 
+  const activeSection = SECTIONS.find(s => s.id === mainSection)!;
+
   return (
     <div className="space-y-6">
+      {/* Section Selector */}
+      <div className="grid grid-cols-2 gap-3">
+        {SECTIONS.map((section) => {
+          const isActive = mainSection === section.id;
+          return (
+            <motion.button
+              key={section.id}
+              onClick={() => setMainSection(section.id)}
+              whileTap={{ scale: 0.98 }}
+              className={`relative overflow-hidden rounded-2xl border p-5 text-left transition-all ${
+                isActive
+                  ? 'bg-gradient-to-br from-primary/8 via-card to-card border-primary/30 shadow-lg shadow-primary/5'
+                  : 'bg-card border-border/50 hover:border-border hover:shadow-md'
+              }`}
+            >
+              {isActive && (
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              )}
+              <div className="relative flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                  isActive
+                    ? 'bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20'
+                    : 'bg-muted'
+                }`}>
+                  <section.icon className={`w-5 h-5 ${isActive ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
+                </div>
+                <div>
+                  <h3 className={`text-sm font-bold ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                    {section.label}
+                  </h3>
+                  <p className="text-xs text-muted-foreground/60">{section.desc}</p>
+                </div>
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+
       {/* Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/8 via-card to-card border border-border/50 p-6">
         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="relative flex items-start justify-between">
           <div className="flex items-center gap-4">
             <motion.div
+              key={mainSection}
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/20"
             >
-              <Bot className="w-6 h-6 text-primary-foreground" />
+              <activeSection.icon className="w-6 h-6 text-primary-foreground" />
             </motion.div>
             <div>
               <h2 className="text-lg font-display font-extrabold text-foreground">
-                Configurar Agente IA
+                {activeSection.label}
               </h2>
               <p className="text-sm text-muted-foreground font-body">
-                Personalize comportamento, regras e modelo do assistente
+                {activeSection.desc}
               </p>
             </div>
           </div>
@@ -294,7 +363,7 @@ export default function AdminSettings() {
         {/* Tabs */}
         <div className="lg:w-56 shrink-0">
           <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-            {TABS.map((tab) => {
+            {currentTabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
@@ -308,7 +377,7 @@ export default function AdminSettings() {
                 >
                   {isActive && (
                     <motion.div
-                      layoutId="activeTab"
+                      layoutId="activeSubTab"
                       className="absolute inset-0 rounded-xl bg-primary/10 border border-primary/20"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
@@ -332,6 +401,7 @@ export default function AdminSettings() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
             >
+              {/* ===== AGENT TABS ===== */}
               {activeTab === 'personality' && (
                 <div className="space-y-5">
                   <Card className="bg-card border-border/50">
@@ -515,11 +585,11 @@ export default function AdminSettings() {
                 <ModelSelector selectedModel={config.ai_model} onSelect={(id) => updateConfig('ai_model', id)} />
               )}
 
-              {activeTab === 'urgency' && urgencyConfig && (
+              {/* ===== URGENCY TABS ===== */}
+              {activeTab === 'urgency-config' && urgencyConfig && (
                 <div className="space-y-5">
                   <Card className="bg-card border-border/50">
                     <CardContent className="p-5 space-y-6">
-                      {/* Enable/Disable */}
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
                           <Label className="text-sm font-semibold text-foreground">
@@ -537,7 +607,6 @@ export default function AdminSettings() {
 
                       <div className="h-px bg-border/50" />
 
-                      {/* Night boost */}
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
                           <Label className="text-sm font-semibold text-foreground">
@@ -555,7 +624,6 @@ export default function AdminSettings() {
 
                       <div className="h-px bg-border/50" />
 
-                      {/* Fallback urgency */}
                       <div className="space-y-2">
                         <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                           Urgência Padrão (Fallback)
@@ -578,10 +646,15 @@ export default function AdminSettings() {
                           </SelectContent>
                         </Select>
                       </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
 
-                      <div className="h-px bg-border/50" />
-
-                      {/* Classification prompt */}
+              {activeTab === 'urgency-rules' && urgencyConfig && (
+                <div className="space-y-5">
+                  <Card className="bg-card border-border/50">
+                    <CardContent className="p-5 space-y-6">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -594,7 +667,7 @@ export default function AdminSettings() {
                         <Textarea
                           value={urgencyConfig.classification_prompt}
                           onChange={(e) => updateUrgencyConfig('classification_prompt', e.target.value)}
-                          rows={3}
+                          rows={4}
                           className="bg-background/50 border-border/50 font-mono text-xs leading-relaxed resize-y"
                         />
                         <p className="text-xs text-muted-foreground/50">
@@ -604,7 +677,6 @@ export default function AdminSettings() {
 
                       <div className="h-px bg-border/50" />
 
-                      {/* Criteria rules */}
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -617,7 +689,7 @@ export default function AdminSettings() {
                         <Textarea
                           value={urgencyConfig.criteria_rules}
                           onChange={(e) => updateUrgencyConfig('criteria_rules', e.target.value)}
-                          rows={5}
+                          rows={6}
                           className="bg-background/50 border-border/50 text-sm leading-relaxed resize-y"
                         />
                         <p className="text-xs text-muted-foreground/50">
@@ -626,20 +698,14 @@ export default function AdminSettings() {
                       </div>
                     </CardContent>
                   </Card>
-
-                  {/* Model selection for urgency */}
-                  <Card className="bg-card border-border/50">
-                    <CardContent className="p-5 space-y-4">
-                      <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Modelo IA para Classificação
-                      </Label>
-                      <ModelSelector
-                        selectedModel={urgencyConfig.ai_model}
-                        onSelect={(id) => updateUrgencyConfig('ai_model', id)}
-                      />
-                    </CardContent>
-                  </Card>
                 </div>
+              )}
+
+              {activeTab === 'urgency-model' && urgencyConfig && (
+                <ModelSelector
+                  selectedModel={urgencyConfig.ai_model}
+                  onSelect={(id) => updateUrgencyConfig('ai_model', id)}
+                />
               )}
             </motion.div>
           </AnimatePresence>
