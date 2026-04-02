@@ -160,7 +160,7 @@ export default function AdminSupport() {
             {search.trim() ? 'Nenhum ticket encontrado para essa busca' : 'Nenhum ticket encontrado'}
           </div>
         ) : (
-          filteredTickets.map(ticket => {
+          paginatedTickets.map(ticket => {
             const statusConf = STATUS_CONFIG[ticket.status] || STATUS_CONFIG.agent_handling;
             const StatusIcon = statusConf.icon;
             return (
@@ -205,6 +205,29 @@ export default function AdminSupport() {
           })
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-2">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="p-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-xs text-muted-foreground font-medium">
+            {page} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="p-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
