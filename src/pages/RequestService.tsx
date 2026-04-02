@@ -172,6 +172,9 @@ export default function RequestService() {
 
       if (error) throw error;
 
+      // Fire-and-forget urgency classification
+      supabase.functions.invoke('classify-urgency', { body: { request_id: inserted.id } }).catch(() => {});
+
       toast({ title: 'Solicitação enviada com sucesso!' });
       navigate(`/cliente/acompanhar/${inserted.id}`);
     } catch (err: any) {

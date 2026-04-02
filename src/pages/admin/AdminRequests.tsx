@@ -20,11 +20,20 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   cancelled: { label: 'Cancelado', color: 'bg-destructive/15 text-destructive' },
 };
 
+const urgencyConfig: Record<string, { label: string; color: string; pulse?: boolean }> = {
+  pending_analysis: { label: 'Analisando', color: 'bg-muted text-muted-foreground' },
+  low: { label: 'Baixa', color: 'bg-emerald-500/15 text-emerald-500' },
+  medium: { label: 'Média', color: 'bg-yellow-500/15 text-yellow-500' },
+  high: { label: 'Alta', color: 'bg-orange-500/15 text-orange-500' },
+  critical: { label: 'Crítica', color: 'bg-destructive/15 text-destructive', pulse: true },
+};
+
 export default function AdminRequests() {
   const [requests, setRequests] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
+  const [urgencyFilter, setUrgencyFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { fetchRequests(); }, []);
@@ -42,7 +51,8 @@ export default function AdminRequests() {
       r.client_phone?.includes(search);
     const matchesStatus = statusFilter === 'all' || r.status === statusFilter;
     const matchesService = serviceFilter === 'all' || r.service_type === serviceFilter;
-    return matchesSearch && matchesStatus && matchesService;
+    const matchesUrgency = urgencyFilter === 'all' || r.urgency === urgencyFilter;
+    return matchesSearch && matchesStatus && matchesService && matchesUrgency;
   });
 
   if (loading) {
@@ -79,6 +89,17 @@ export default function AdminRequests() {
               ))}
             </SelectContent>
           </Select>
+          <Select value={urgencyFilter} onValueChange={setUrgencyFilter}>
+            <SelectTrigger className="w-36 h-9 rounded-lg bg-muted/50 border-border text-sm">
+              <SelectValue placeholder="Urgência" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas urgências</SelectItem>
+              {Object.entries(urgencyConfig).map(([k, v]) => (
+                <SelectItem key={k} value={k}>{v.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="relative w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Buscar cliente, endereço..." value={search} onChange={(e) => setSearch(e.target.value)}
@@ -96,6 +117,7 @@ export default function AdminRequests() {
                 <TableHead className="font-display font-semibold text-xs">Cliente</TableHead>
                 <TableHead className="font-display font-semibold text-xs">Endereço</TableHead>
                 <TableHead className="font-display font-semibold text-xs">Status</TableHead>
+                <TableHead className="font-display font-semibold text-xs">Urgência</TableHead>
                 <TableHead className="font-display font-semibold text-xs">Preço</TableHead>
                 <TableHead className="font-display font-semibold text-xs">Avaliação</TableHead>
                 <TableHead className="font-display font-semibold text-xs">Data</TableHead>
@@ -104,6 +126,7 @@ export default function AdminRequests() {
             <TableBody>
               {filtered.length > 0 ? filtered.map((r) => {
                 const st = statusConfig[r.status] || { label: r.status, color: 'bg-muted text-muted-foreground' };
+                const urg = urgencyConfig[r.urgency] || urgencyConfig.pending_analysis;
                 return (
                   <TableRow key={r.id} className="border-border hover:bg-muted/30">
                     <TableCell className="font-display font-semibold text-sm text-foreground">
@@ -121,6 +144,11 @@ export default function AdminRequests() {
                       </p>
                     </TableCell>
                     <TableCell><Badge className={`${st.color} text-[10px] font-semibold`}>{st.label}</Badge></TableCell>
+                    <TableCell>
+                      <Badge className={`${urg.color} text-[10px] font-semibold ${urg.pulse ? 'animate-pulse' : ''} ${r.urgency === 'pending_analysis' ? 'shimmer' : ''}`}>
+                        {urg.label}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-sm text-foreground font-body">
                       {r.price ? `R$ ${Number(r.price).toFixed(2)}` : '—'}
                     </TableCell>
@@ -138,7 +166,7 @@ export default function AdminRequests() {
                 );
               }) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-sm text-muted-foreground py-10 font-body">
+                  <TableCell colSpan={8} className="text-center text-sm text-muted-foreground py-10 font-body">
                     Nenhuma solicitação encontrada
                   </TableCell>
                 </TableRow>
