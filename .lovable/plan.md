@@ -1,64 +1,53 @@
 
 
-# Flutuantes Compactos com Expansão em Dois Cliques
+# Classificacao Automatica de Urgencia com IA
 
-## Problema
-Os dois botões flutuantes (SB's e Suporte) têm tamanhos diferentes e poluem visualmente a tela. O usuário quer uma interação mais limpa: ícone compacto → clique expande mostrando label → segundo clique executa a ação.
+## Resumo
 
-## Solução
+Quando uma solicitacao de servico e criada, uma Edge Function analisa os dados (tipo de servico, descricao, horario) e classifica a urgencia automaticamente em: **baixa**, **media**, **alta** ou **critica**. O admin ve a urgencia na tabela de solicitacoes com badges coloridos e pode filtrar por urgencia.
 
-### Comportamento dos dois flutuantes
+## Etapas
 
-**Estado 1 — Colapsado (padrão):** Ambos são círculos idênticos (48x48px) mostrando apenas o ícone:
-- SB's: ícone de moedas (Coins) dourado
-- Suporte: ícone de fone (Headphones) com bolinha verde de online
+### 1. Migracaco — adicionar coluna `urgency` na tabela `service_requests`
 
-**Estado 2 — Expandido (1º clique):** O botão expande horizontalmente com animação spring (framer-motion), revelando o label:
-- SB's: mostra `"00 SB's"` (o saldo)
-- Suporte: mostra `"Suporte"`
-
-**Estado 3 — Ação (2º clique, quando já expandido):**
-- SB's: navega para `/cliente/carteira`
-- Suporte: abre a janela de chat
-
-**Auto-colapso:** Se expandido e sem interação por 3 segundos, volta ao estado colapsado.
-
-### Posicionamento
-- SB's: `fixed bottom-6 left-6` (mantém)
-- Suporte: `fixed bottom-6 right-6` (mantém lado direito, ajusta para bottom-6 igual)
-- Ambos com `z-50`, mesmo tamanho base, mesmo estilo de fundo (glassmorphism escuro)
-
-### Estilo visual unificado
-- Background: `bg-foreground/50 backdrop-blur-md` (mesmo estilo atual do SBBadge)
-- Bordas: `rounded-full`
-- Tamanho colapsado: `w-12 h-12`
-- Tamanho expandido: animação de width com `layout` do framer-motion
-
-### Arquivos editados
-
-| Arquivo | Mudança |
-|---------|---------|
-| `src/components/SBBadge.tsx` | Adicionar estado `expanded`, lógica de dois cliques, animação de expansão, auto-colapso com timeout |
-| `src/components/SupportChat.tsx` | Mesmo padrão: estado colapsado (só ícone) → expandido (label) → ação (abre chat). Quando chat aberto, botão vira X como já faz |
-
-### Lógica (ambos componentes)
-
-```
-const [expanded, setExpanded] = useState(false);
-
-onClick:
-  if chat is open (support only) → close chat
-  else if !expanded → setExpanded(true), start 3s timer
-  else → execute action (navigate / open chat)
-
-useEffect: when expanded, setTimeout 3s → setExpanded(false)
+```sql
+ALTER TABLE public.service_requests 
+ADD COLUMN urgency text DEFAULT 'pending_analysis';
 ```
 
-## Seção Técnica
+Valores possiveis: `pending_analysis`, `low`, `medium`, `high`, `critical`.
 
-- Usar `motion.button` com `layout` para animação fluida de largura
-- `AnimatePresence` para o label aparecer/desaparecer
-- Timer de 3s com cleanup no useEffect
-- Prop `position` do SBBadge continua funcionando (top/bottom)
-- Manter toda lógica de negócio (fetch balance, check ticket, realtime) intacta
+### 2. Edge Function `classify-urgency`
+
+Nova funcao que recebe o `request_id`, carrega os dados da solicitacao e chama Lovable AI para classificar a urgencia usando tool calling (structured output).
+
+Criterios que a IA considera:
+- Tipo de servico (reboque/destombamento = mais urgente por natureza)
+- Descricao do cliente
+- Horario (madrugada = mais urgente)
+- Tipo de veiculo (caminhao em rodovia = critico)
+
+Retorna um dos 4 niveis e salva direto no banco.
+
+### 3. Chamar a classificacao apos criar solicitacao
+
+No `RequestService.tsx` e `GuestRequestService.tsx`, apos o insert bem-sucedido, chamar `supabase.functions.invoke('classify-urgency', { body: { request_id } })` de forma assíncrona (fire-and-forget, sem bloquear o usuario).
+
+### 4. Exibir urgencia no painel admin (`AdminRequests.tsx`)
+
+- Nova coluna "Urgencia" na tabela com badges coloridos:
+  - Baixa: verde
+  - Media: amarelo
+  - Alta: laranja
+  - Critica: vermelho pulsante
+  - Analisando: cinza com shimmer
+- Novo filtro de urgencia no topo (dropdown)
+
+## Detalhes Tecnicos
+
+- **Modelo IA**: `google/gemini-2.5-flash-lite` (rapido e barato, classificacao simples)
+- **Structured output** via tool calling para garantir resposta no formato correto (`low`/`medium`/`high`/`critical`)
+- Edge Function usa `SUPABASE_SERVICE_ROLE_KEY` para update direto
+- Chamada fire-and-forget no client para nao atrasar o fluxo do usuario
+- Coluna `urgency` com default `pending_analysis` para requests existentes
 
