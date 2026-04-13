@@ -58,6 +58,18 @@ function formatCPF(value: string) {
   return digits.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 }
 
+function validateCPF(cpf: string): boolean {
+  const digits = cpf.replace(/\D/g, '');
+  if (digits.length !== 11 || /^(\d)\1+$/.test(digits)) return false;
+  for (let t = 9; t < 11; t++) {
+    let sum = 0;
+    for (let i = 0; i < t; i++) sum += parseInt(digits[i]) * (t + 1 - i);
+    const r = (sum * 10) % 11;
+    if ((r === 10 ? 0 : r) !== parseInt(digits[t])) return false;
+  }
+  return true;
+}
+
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11);
   if (digits.length <= 10) return digits.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2');
@@ -137,6 +149,10 @@ export default function ClientSignup() {
     e.preventDefault();
     if (!form.fullName.trim() || !form.cpf.trim() || !form.birthDate || !form.phone.trim()) {
       toast.error('Preencha todos os campos obrigatórios');
+      return;
+    }
+    if (!validateCPF(form.cpf)) {
+      toast.error('CPF inválido. Verifique os dígitos.');
       return;
     }
     if (segmentInfo.segment === 'b2b' && (!form.companyName.trim() || !form.companyCnpj.replace(/\D/g, '').trim())) {
