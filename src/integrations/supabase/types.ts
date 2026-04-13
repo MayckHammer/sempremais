@@ -109,6 +109,7 @@ export type Database = {
           client_segment: string | null
           company_cnpj: string | null
           company_name: string | null
+          company_role: string | null
           complement: string | null
           cpf: string | null
           created_at: string
@@ -138,6 +139,7 @@ export type Database = {
           client_segment?: string | null
           company_cnpj?: string | null
           company_name?: string | null
+          company_role?: string | null
           complement?: string | null
           cpf?: string | null
           created_at?: string
@@ -167,6 +169,7 @@ export type Database = {
           client_segment?: string | null
           company_cnpj?: string | null
           company_name?: string | null
+          company_role?: string | null
           complement?: string | null
           cpf?: string | null
           created_at?: string
