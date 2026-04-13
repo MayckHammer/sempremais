@@ -78,6 +78,22 @@ function formatCNPJ(value: string) {
     .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
 }
 
+function validateCNPJ(cnpj: string): boolean {
+  const digits = cnpj.replace(/\D/g, '');
+  if (digits.length !== 14 || /^(\d)\1+$/.test(digits)) return false;
+  const calc = (len: number) => {
+    let sum = 0;
+    let pos = len - 7;
+    for (let i = 0; i < len; i++) {
+      sum += parseInt(digits[i]) * pos--;
+      if (pos < 2) pos = 9;
+    }
+    const r = sum % 11;
+    return r < 2 ? 0 : 11 - r;
+  };
+  return calc(12) === parseInt(digits[12]) && calc(13) === parseInt(digits[13]);
+}
+
 export default function ClientSignup() {
   const { user, loading: authLoading } = useAuth();
   const [searchParams] = useSearchParams();
