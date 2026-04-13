@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import type { UserRole } from "@/lib/auth";
+import { PendingApproval } from "@/components/PendingApproval";
 
 interface ProtectedRouteProps {
   allowedRoles?: UserRole[];
@@ -30,6 +31,11 @@ export function ProtectedRoute({ allowedRoles, redirectTo = "/login/cliente" }: 
 
   if (!user) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  }
+
+  // Admin users bypass approval check
+  if (user.role !== 'admin' && !user.isApproved) {
+    return <PendingApproval />;
   }
 
   if (allowedRoles && allowedRoles.length > 0) {
