@@ -175,6 +175,20 @@ export default function RequestService() {
       // Fire-and-forget urgency classification
       supabase.functions.invoke('classify-urgency', { body: { request_id: inserted.id } }).catch(() => {});
 
+      // Notifica o n8n para orquestração do fluxo
+      fetch('https://mayckhammer.app.n8n.cloud/webhook/54b541fe-ef7e-4269-b037-ed1d90544957', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          request_id: inserted.id,
+          service_type: serviceType,
+          address: originAddress,
+          vehicle_info: vehicleInfo,
+          client_name: profile?.full_name || 'Cliente',
+          created_at: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+
       toast({ title: 'Solicitação enviada com sucesso!' });
       navigate(`/cliente/acompanhar/${inserted.id}`);
     } catch (err: any) {
