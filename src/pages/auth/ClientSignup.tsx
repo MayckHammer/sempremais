@@ -40,6 +40,7 @@ interface FormData {
   companyName: string;
   companyCnpj: string;
   employeeId: string;
+  companyRole: string;
 }
 
 const initialForm: FormData = {
@@ -49,7 +50,7 @@ const initialForm: FormData = {
   neighborhood: '', city: '', state: '',
   vehicleBrand: '', vehicleModel: '', vehiclePlate: '',
   vehicleYear: '', vehicleColor: '',
-  companyName: '', companyCnpj: '', employeeId: '',
+  companyName: '', companyCnpj: '', employeeId: '', companyRole: '',
 };
 
 function formatCPF(value: string) {
@@ -122,8 +123,8 @@ export default function ClientSignup() {
       toast.error('Preencha todos os campos obrigatórios');
       return;
     }
-    if (segmentInfo.segment === 'b2b' && !form.companyName.trim()) {
-      toast.error('Informe o nome da empresa');
+    if (segmentInfo.segment === 'b2b' && (!form.companyName.trim() || !form.companyCnpj.replace(/\D/g, '').trim())) {
+      toast.error('Informe o nome fantasia e o CNPJ da empresa');
       return;
     }
     if (segmentInfo.segment === 'b2c' && !form.companyName.trim()) {
@@ -151,6 +152,7 @@ export default function ClientSignup() {
         company_name: form.companyName,
         company_cnpj: form.companyCnpj.replace(/\D/g, ''),
         employee_id: form.employeeId,
+        company_role: form.companyRole,
       });
       toast.success('Cadastro recebido! Em até 24 horas sua conta será aprovada.');
       navigate('/login/cliente');
@@ -246,20 +248,28 @@ export default function ClientSignup() {
                 </div>
                 <div className="space-y-3">
                   <div className="space-y-1.5">
-                    <Label htmlFor="companyName" className="text-xs font-display font-semibold">Nome da Empresa *</Label>
-                    <Input id="companyName" value={form.companyName} onChange={e => update('companyName', e.target.value)} placeholder="Nome da empresa" required className={inputClass} />
+                    <Label htmlFor="companyName" className="text-xs font-display font-semibold">
+                      {segmentInfo.segment === 'b2b' ? 'Nome Fantasia *' : 'Nome da Empresa *'}
+                    </Label>
+                    <Input id="companyName" value={form.companyName} onChange={e => update('companyName', e.target.value)} placeholder={segmentInfo.segment === 'b2b' ? 'Nome fantasia da empresa' : 'Nome da empresa onde trabalha'} required className={inputClass} />
                   </div>
-                  {segmentInfo.segment === 'b2b' && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="companyCnpj" className="text-xs font-display font-semibold">CNPJ</Label>
-                      <Input id="companyCnpj" value={form.companyCnpj} onChange={e => update('companyCnpj', formatCNPJ(e.target.value))} placeholder="00.000.000/0001-00" className={inputClass} />
-                    </div>
-                  )}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="companyCnpj" className="text-xs font-display font-semibold">
+                      CNPJ {segmentInfo.segment === 'b2b' ? '*' : ''}
+                    </Label>
+                    <Input id="companyCnpj" value={form.companyCnpj} onChange={e => update('companyCnpj', formatCNPJ(e.target.value))} placeholder="00.000.000/0001-00" required={segmentInfo.segment === 'b2b'} className={inputClass} />
+                  </div>
                   {segmentInfo.segment === 'b2c' && (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="employeeId" className="text-xs font-display font-semibold">Matrícula / ID funcional <span className="text-muted-foreground font-normal">(opcional)</span></Label>
-                      <Input id="employeeId" value={form.employeeId} onChange={e => update('employeeId', e.target.value)} placeholder="Sua matrícula na empresa" className={inputClass} />
-                    </div>
+                    <>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="companyRole" className="text-xs font-display font-semibold">Cargo na empresa</Label>
+                        <Input id="companyRole" value={form.companyRole} onChange={e => update('companyRole', e.target.value)} placeholder="Ex: Analista, Gerente..." className={inputClass} />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="employeeId" className="text-xs font-display font-semibold">Matrícula / ID funcional <span className="text-muted-foreground font-normal">(opcional)</span></Label>
+                        <Input id="employeeId" value={form.employeeId} onChange={e => update('employeeId', e.target.value)} placeholder="Sua matrícula na empresa" className={inputClass} />
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
