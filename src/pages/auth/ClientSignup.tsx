@@ -78,6 +78,22 @@ function formatCNPJ(value: string) {
     .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
 }
 
+function validateCNPJ(cnpj: string): boolean {
+  const digits = cnpj.replace(/\D/g, '');
+  if (digits.length !== 14 || /^(\d)\1+$/.test(digits)) return false;
+  const calc = (len: number) => {
+    let sum = 0;
+    let pos = len - 7;
+    for (let i = 0; i < len; i++) {
+      sum += parseInt(digits[i]) * pos--;
+      if (pos < 2) pos = 9;
+    }
+    const r = sum % 11;
+    return r < 2 ? 0 : 11 - r;
+  };
+  return calc(12) === parseInt(digits[12]) && calc(13) === parseInt(digits[13]);
+}
+
 export default function ClientSignup() {
   const { user, loading: authLoading } = useAuth();
   const [searchParams] = useSearchParams();
@@ -127,8 +143,16 @@ export default function ClientSignup() {
       toast.error('Informe o nome fantasia e o CNPJ da empresa');
       return;
     }
+    if (segmentInfo.segment === 'b2b' && !validateCNPJ(form.companyCnpj)) {
+      toast.error('CNPJ inválido. Verifique os dígitos.');
+      return;
+    }
     if (segmentInfo.segment === 'b2c' && !form.companyName.trim()) {
       toast.error('Informe o nome da empresa onde trabalha');
+      return;
+    }
+    if (segmentInfo.segment === 'b2c' && form.companyCnpj.replace(/\D/g, '').length > 0 && !validateCNPJ(form.companyCnpj)) {
+      toast.error('CNPJ inválido. Verifique os dígitos.');
       return;
     }
     setLoading(true);
