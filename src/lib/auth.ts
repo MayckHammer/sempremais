@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export type UserRole = 'admin' | 'client' | 'provider';
+export type ClientSegment = 'b2b' | 'b2c' | 'b2c_open';
 
 const ACTIVE_ROLE_STORAGE_KEY = 'sempre-active-role';
 const VALID_ROLES: UserRole[] = ['admin', 'client', 'provider'];
@@ -12,6 +13,8 @@ export interface AuthUser {
   roles: UserRole[];
   fullName: string;
   phone?: string;
+  isApproved: boolean;
+  clientSegment?: ClientSegment | null;
 }
 
 function isUserRole(value: string | null | undefined): value is UserRole {
@@ -20,10 +23,8 @@ function isUserRole(value: string | null | undefined): value is UserRole {
 
 function getRoleFromPath(): UserRole | null {
   if (typeof window === 'undefined') return null;
-
   if (window.location.pathname.includes('/prestador')) return 'provider';
   if (window.location.pathname.includes('/cliente')) return 'client';
-
   return null;
 }
 
@@ -39,7 +40,6 @@ export function clearPreferredUserRole() {
 
 export function getPreferredUserRole(): UserRole | null {
   if (typeof window === 'undefined') return null;
-
   const storedRole = window.sessionStorage.getItem(ACTIVE_ROLE_STORAGE_KEY);
   return isUserRole(storedRole) ? storedRole : null;
 }
@@ -73,6 +73,10 @@ export interface SignUpExtraData {
   vehicle_plate?: string;
   vehicle_year?: string;
   vehicle_color?: string;
+  client_segment?: string;
+  company_name?: string;
+  company_cnpj?: string;
+  employee_id?: string;
 }
 
 export async function signUp(
@@ -99,7 +103,6 @@ export async function signUp(
 
   if (error) throw error;
 
-  // Update profile with extra data if provided and user was created
   if (data.user && extraData) {
     const profileUpdate: Record<string, string | undefined> = {};
     for (const [key, value] of Object.entries(extraData)) {
@@ -165,7 +168,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, phone')
+    .select('full_name, phone, is_approved, client_segment')
     .eq('user_id', user.id)
     .single();
 
@@ -176,6 +179,8 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     roles: roles.length > 0 ? roles : ['client'],
     fullName: profile?.full_name || '',
     phone: profile?.phone || undefined,
+    isApproved: profile?.is_approved ?? false,
+    clientSegment: (profile?.client_segment as ClientSegment) || null,
   };
 }
 

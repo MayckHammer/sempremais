@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,15 @@ import { Footer } from '@/components/Footer';
 import { signUp } from '@/lib/auth';
 import logoSempre from '@/assets/logo-sempre.png';
 import { toast } from 'sonner';
-import { User, MapPin, Car } from 'lucide-react';
+import { User, MapPin, Car, Building2, Users, UserPlus } from 'lucide-react';
+
+type ClientSegment = 'b2b' | 'b2c' | 'b2c_open';
+
+const SEGMENT_MAP: Record<string, { segment: ClientSegment; label: string; icon: typeof Building2; color: string }> = {
+  empresario: { segment: 'b2b', label: 'Empresário', icon: Building2, color: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400' },
+  funcionario: { segment: 'b2c', label: 'Funcionário de empresa', icon: Users, color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400' },
+  publico: { segment: 'b2c_open', label: 'Público geral', icon: UserPlus, color: 'bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-400' },
+};
 
 interface FormData {
   fullName: string;
@@ -29,6 +37,9 @@ interface FormData {
   vehiclePlate: string;
   vehicleYear: string;
   vehicleColor: string;
+  companyName: string;
+  companyCnpj: string;
+  employeeId: string;
 }
 
 const initialForm: FormData = {
@@ -38,21 +49,17 @@ const initialForm: FormData = {
   neighborhood: '', city: '', state: '',
   vehicleBrand: '', vehicleModel: '', vehiclePlate: '',
   vehicleYear: '', vehicleColor: '',
+  companyName: '', companyCnpj: '', employeeId: '',
 };
 
 function formatCPF(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11);
-  return digits
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  return digits.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 }
 
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 10) {
-    return digits.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2');
-  }
+  if (digits.length <= 10) return digits.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2');
   return digits.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
 }
 
@@ -61,8 +68,21 @@ function formatCEP(value: string) {
   return digits.replace(/(\d{5})(\d)/, '$1-$2');
 }
 
+function formatCNPJ(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 14);
+  return digits
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+}
+
 export default function ClientSignup() {
   const { user, loading: authLoading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const tipoParam = searchParams.get('tipo') || 'publico';
+  const segmentInfo = SEGMENT_MAP[tipoParam] || SEGMENT_MAP.publico;
+
   const [form, setForm] = useState<FormData>(initialForm);
   const [loading, setLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
@@ -102,6 +122,14 @@ export default function ClientSignup() {
       toast.error('Preencha todos os campos obrigatórios');
       return;
     }
+    if (segmentInfo.segment === 'b2b' && !form.companyName.trim()) {
+      toast.error('Informe o nome da empresa');
+      return;
+    }
+    if (segmentInfo.segment === 'b2c' && !form.companyName.trim()) {
+      toast.error('Informe o nome da empresa onde trabalha');
+      return;
+    }
     setLoading(true);
     try {
       await signUp(form.email, form.password, 'client', form.fullName, form.phone, {
@@ -119,8 +147,12 @@ export default function ClientSignup() {
         vehicle_plate: form.vehiclePlate,
         vehicle_year: form.vehicleYear,
         vehicle_color: form.vehicleColor,
+        client_segment: segmentInfo.segment,
+        company_name: form.companyName,
+        company_cnpj: form.companyCnpj.replace(/\D/g, ''),
+        employee_id: form.employeeId,
       });
-      toast.success('Conta criada! Verifique seu email para confirmar o cadastro.');
+      toast.success('Cadastro recebido! Em até 24 horas sua conta será aprovada.');
       navigate('/login/cliente');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao criar conta');
@@ -130,6 +162,7 @@ export default function ClientSignup() {
   };
 
   const inputClass = "bg-surface border-border h-11 rounded-xl input-glow transition-all duration-200";
+  const SegIcon = segmentInfo.icon;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -158,6 +191,11 @@ export default function ClientSignup() {
             <p className="text-sm text-muted-foreground mt-1 font-body">
               Preencha seus dados para se tornar um associado Sempre+
             </p>
+            {/* Segment badge */}
+            <div className={`inline-flex items-center gap-1.5 mt-3 px-3 py-1.5 rounded-full text-xs font-semibold ${segmentInfo.color}`}>
+              <SegIcon className="w-3.5 h-3.5" />
+              {segmentInfo.label}
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -172,7 +210,6 @@ export default function ClientSignup() {
                   <Label htmlFor="fullName" className="text-xs font-display font-semibold">Nome Completo *</Label>
                   <Input id="fullName" value={form.fullName} onChange={e => update('fullName', e.target.value)} placeholder="Seu nome completo" required className={inputClass} />
                 </div>
-
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label htmlFor="cpf" className="text-xs font-display font-semibold">CPF *</Label>
@@ -183,23 +220,50 @@ export default function ClientSignup() {
                     <Input id="birthDate" type="date" value={form.birthDate} onChange={e => update('birthDate', e.target.value)} required className={inputClass} />
                   </div>
                 </div>
-
                 <div className="space-y-1.5">
                   <Label htmlFor="phone" className="text-xs font-display font-semibold">Telefone/WhatsApp *</Label>
                   <Input id="phone" type="tel" value={form.phone} onChange={e => update('phone', formatPhone(e.target.value))} placeholder="(11) 99999-9999" required className={inputClass} />
                 </div>
-
                 <div className="space-y-1.5">
                   <Label htmlFor="email" className="text-xs font-display font-semibold">Email *</Label>
                   <Input id="email" type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="seu@email.com" required className={inputClass} />
                 </div>
-
                 <div className="space-y-1.5">
                   <Label htmlFor="password" className="text-xs font-display font-semibold">Senha *</Label>
                   <Input id="password" type="password" value={form.password} onChange={e => update('password', e.target.value)} placeholder="Mínimo 6 caracteres" required minLength={6} className={inputClass} />
                 </div>
               </div>
             </div>
+
+            {/* === Dados da Empresa (B2B / B2C) === */}
+            {(segmentInfo.segment === 'b2b' || segmentInfo.segment === 'b2c') && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Building2 className="w-4 h-4 text-primary" />
+                  <h3 className="font-display text-sm font-bold text-foreground">
+                    {segmentInfo.segment === 'b2b' ? 'Dados da Empresa' : 'Empresa onde trabalha'}
+                  </h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="companyName" className="text-xs font-display font-semibold">Nome da Empresa *</Label>
+                    <Input id="companyName" value={form.companyName} onChange={e => update('companyName', e.target.value)} placeholder="Nome da empresa" required className={inputClass} />
+                  </div>
+                  {segmentInfo.segment === 'b2b' && (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="companyCnpj" className="text-xs font-display font-semibold">CNPJ</Label>
+                      <Input id="companyCnpj" value={form.companyCnpj} onChange={e => update('companyCnpj', formatCNPJ(e.target.value))} placeholder="00.000.000/0001-00" className={inputClass} />
+                    </div>
+                  )}
+                  {segmentInfo.segment === 'b2c' && (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="employeeId" className="text-xs font-display font-semibold">Matrícula / ID funcional <span className="text-muted-foreground font-normal">(opcional)</span></Label>
+                      <Input id="employeeId" value={form.employeeId} onChange={e => update('employeeId', e.target.value)} placeholder="Sua matrícula na empresa" className={inputClass} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* === Endereço === */}
             <div>
@@ -218,12 +282,10 @@ export default function ClientSignup() {
                     <Input id="state" value={form.state} onChange={e => update('state', e.target.value)} placeholder="SP" maxLength={2} disabled={cepLoading} className={inputClass} />
                   </div>
                 </div>
-
                 <div className="space-y-1.5">
                   <Label htmlFor="street" className="text-xs font-display font-semibold">Rua</Label>
                   <Input id="street" value={form.street} onChange={e => update('street', e.target.value)} placeholder="Rua / Avenida" disabled={cepLoading} className={inputClass} />
                 </div>
-
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
                     <Label htmlFor="streetNumber" className="text-xs font-display font-semibold">Nº</Label>
@@ -234,7 +296,6 @@ export default function ClientSignup() {
                     <Input id="complement" value={form.complement} onChange={e => update('complement', e.target.value)} placeholder="Apto, Bloco..." className={inputClass} />
                   </div>
                 </div>
-
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <Label htmlFor="neighborhood" className="text-xs font-display font-semibold">Bairro</Label>
@@ -280,6 +341,12 @@ export default function ClientSignup() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Approval notice */}
+            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-3.5 text-center">
+              <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">⏳ Em até 24 horas seu cadastro será aprovado</p>
+              <p className="text-[11px] text-amber-600 dark:text-amber-500 mt-0.5">Após a aprovação, você terá acesso completo à plataforma.</p>
             </div>
 
             <Button type="submit" className="w-full gradient-primary h-12 rounded-xl font-display font-bold btn-glow shadow-premium text-base" disabled={loading}>
