@@ -17,6 +17,7 @@ const ClientLogin = lazy(() => import("./pages/auth/ClientLogin"));
 const ClientSignup = lazy(() => import("./pages/auth/ClientSignup"));
 const ProviderLogin = lazy(() => import("./pages/auth/ProviderLogin"));
 const ProviderSignup = lazy(() => import("./pages/auth/ProviderSignup"));
+const PartnerSignup = lazy(() => import("./pages/auth/PartnerSignup"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 
 // Cliente
@@ -29,6 +30,9 @@ const ClientProfile = lazy(() => import("./pages/ClientProfile"));
 
 // Prestador
 const ProviderDashboard = lazy(() => import("./pages/ProviderDashboard"));
+
+// Parceiro
+const PartnerDashboard = lazy(() => import("./pages/PartnerDashboard"));
 
 // Admin
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -71,6 +75,7 @@ const App = () => (
               <Route path="/cadastro/cliente" element={<ClientSignup />} />
               <Route path="/login/prestador" element={<ProviderLogin />} />
               <Route path="/cadastro/prestador" element={<ProviderSignup />} />
+              <Route path="/cadastro/parceiro" element={<PartnerSignup />} />
               <Route path="/admin/login" element={<AdminLogin />} />
 
               {/* Cliente (protegido) */}
@@ -86,6 +91,11 @@ const App = () => (
               {/* Prestador (protegido) */}
               <Route element={<ProtectedRoute allowedRoles={["provider"]} redirectTo="/login/prestador" />}>
                 <Route path="/prestador" element={<ProviderDashboard />} />
+              </Route>
+
+              {/* Parceiro (protegido) */}
+              <Route element={<ProtectedRoute allowedRoles={["client"]} redirectTo="/login/cliente" />}>
+                <Route path="/parceiro" element={<PartnerDashboard />} />
               </Route>
 
               {/* Admin (protegido) */}
