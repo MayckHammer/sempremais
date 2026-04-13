@@ -1,36 +1,26 @@
 
 
-# Route Guards + Lazy Loading + ProtectedRoute
+# Atualizar chat-agent com consciência de urgência
 
 ## Resumo
 
-Criar o componente `ProtectedRoute` e refatorar `App.tsx` para adicionar proteção de rotas por role e lazy loading de todas as páginas.
+Substituir o conteúdo de `supabase/functions/chat-agent/index.ts` pela versão que inclui contexto de urgência do acionamento vinculado ao ticket, adaptando tom do agente IA e forçando escalação automática para casos críticos.
 
-## Etapas
+## O que muda
 
-### 1. Criar `src/components/ProtectedRoute.tsx`
+1. **Nova função `loadUrgencyContext`** — busca `service_requests.urgency` via `ticket.service_request_id`
+2. **Instruções de tom por urgência** — bloco `URGENCY_INSTRUCTIONS` com regras específicas para critical/high/medium/low/pending
+3. **`buildUrgencyBlock`** — injeta dados do acionamento (serviço, veículo, local, horário) + instrução de tom no system prompt
+4. **Escalação forçada** — `shouldForceEscalation`: se urgência = critical e cliente enviou 2+ mensagens, escala para human_handling automaticamente
+5. **Metadados enriquecidos** — cada resposta do agente salva `urgency_context` no campo metadata
 
-Componente que:
-- Exibe loading spinner enquanto `AuthContext` resolve a sessão
-- Redireciona para login se não autenticado (preservando `location` no state)
-- Verifica `user.roles[]` (array multi-role) contra `allowedRoles`
-- Se role não permitido, redireciona para a home do role ativo do usuário
-- Renderiza `<Outlet />` se tudo OK
-
-### 2. Refatorar `src/App.tsx`
-
-- Trocar todos os imports estáticos por `lazy()`
-- Envolver as rotas em `<Suspense fallback={null}>`
-- Agrupar rotas `/cliente/*` em `<ProtectedRoute allowedRoles={["client"]}>`
-- Agrupar rota `/prestador` em `<ProtectedRoute allowedRoles={["provider"]}>`
-- Agrupar rotas `/admin/*` em `<ProtectedRoute allowedRoles={["admin"]}>`
-- Manter rotas públicas (`/`, `/assistencia`, auth pages) sem proteção
-- Adicionar `staleTime: 5min` e `retry: 1` no QueryClient
-
-## Arquivos
+## Arquivo
 
 | Arquivo | Ação |
 |---|---|
-| `src/components/ProtectedRoute.tsx` | Criar |
-| `src/App.tsx` | Reescrever |
+| `supabase/functions/chat-agent/index.ts` | Reescrever com versão urgency-aware |
+
+## Após deploy
+
+Testar via `deploy_edge_functions` + verificar logs.
 
