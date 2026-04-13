@@ -106,12 +106,17 @@ export type Database = {
           birth_date: string | null
           cep: string | null
           city: string | null
+          client_segment: string | null
+          company_cnpj: string | null
+          company_name: string | null
           complement: string | null
           cpf: string | null
           created_at: string
           current_plan_id: string | null
+          employee_id: string | null
           full_name: string
           id: string
+          is_approved: boolean
           neighborhood: string | null
           phone: string | null
           state: string | null
@@ -130,12 +135,17 @@ export type Database = {
           birth_date?: string | null
           cep?: string | null
           city?: string | null
+          client_segment?: string | null
+          company_cnpj?: string | null
+          company_name?: string | null
           complement?: string | null
           cpf?: string | null
           created_at?: string
           current_plan_id?: string | null
+          employee_id?: string | null
           full_name: string
           id?: string
+          is_approved?: boolean
           neighborhood?: string | null
           phone?: string | null
           state?: string | null
@@ -154,12 +164,17 @@ export type Database = {
           birth_date?: string | null
           cep?: string | null
           city?: string | null
+          client_segment?: string | null
+          company_cnpj?: string | null
+          company_name?: string | null
           complement?: string | null
           cpf?: string | null
           created_at?: string
           current_plan_id?: string | null
+          employee_id?: string | null
           full_name?: string
           id?: string
+          is_approved?: boolean
           neighborhood?: string | null
           phone?: string | null
           state?: string | null
