@@ -1,26 +1,36 @@
 
 
-# Atualizar chat-agent com consciência de urgência
+# Adicionar webhook n8n ao fluxo de solicitação
 
 ## Resumo
 
-Substituir o conteúdo de `supabase/functions/chat-agent/index.ts` pela versão que inclui contexto de urgência do acionamento vinculado ao ticket, adaptando tom do agente IA e forçando escalação automática para casos críticos.
+Adicionar chamada fire-and-forget ao webhook de produção do n8n logo após a classificação de urgência, enviando os dados da solicitação para orquestração externa.
 
-## O que muda
-
-1. **Nova função `loadUrgencyContext`** — busca `service_requests.urgency` via `ticket.service_request_id`
-2. **Instruções de tom por urgência** — bloco `URGENCY_INSTRUCTIONS` com regras específicas para critical/high/medium/low/pending
-3. **`buildUrgencyBlock`** — injeta dados do acionamento (serviço, veículo, local, horário) + instrução de tom no system prompt
-4. **Escalação forçada** — `shouldForceEscalation`: se urgência = critical e cliente enviou 2+ mensagens, escala para human_handling automaticamente
-5. **Metadados enriquecidos** — cada resposta do agente salva `urgency_context` no campo metadata
-
-## Arquivo
+## Alteração
 
 | Arquivo | Ação |
 |---|---|
-| `supabase/functions/chat-agent/index.ts` | Reescrever com versão urgency-aware |
+| `src/pages/RequestService.tsx` | Adicionar fetch ao webhook n8n após classify-urgency |
 
-## Após deploy
+## Detalhe
 
-Testar via `deploy_edge_functions` + verificar logs.
+No `handleSubmit`, logo após a linha do `classify-urgency`, inserir:
+
+```typescript
+// Notifica o n8n para orquestração do fluxo
+fetch('https://mayckhammer.app.n8n.cloud/webhook/54b541fe-ef7e-4269-b037-ed1d90544957', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    request_id: inserted.id,
+    service_type: serviceType,
+    address: originAddress,
+    vehicle_info: vehicleInfo,
+    client_name: profile?.full_name || 'Cliente',
+    created_at: new Date().toISOString(),
+  }),
+}).catch(() => {});
+```
+
+URL de produção (`webhook/` sem `-test`) para funcionar 24/7.
 
