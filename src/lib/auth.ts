@@ -77,6 +77,7 @@ export interface SignUpExtraData {
   company_name?: string;
   company_cnpj?: string;
   employee_id?: string;
+  company_role?: string;
 }
 
 export async function signUp(

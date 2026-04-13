@@ -40,6 +40,7 @@ interface FormData {
   companyName: string;
   companyCnpj: string;
   employeeId: string;
+  companyRole: string;
 }
 
 const initialForm: FormData = {
@@ -49,7 +50,7 @@ const initialForm: FormData = {
   neighborhood: '', city: '', state: '',
   vehicleBrand: '', vehicleModel: '', vehiclePlate: '',
   vehicleYear: '', vehicleColor: '',
-  companyName: '', companyCnpj: '', employeeId: '',
+  companyName: '', companyCnpj: '', employeeId: '', companyRole: '',
 };
 
 function formatCPF(value: string) {
