@@ -143,8 +143,16 @@ export default function ClientSignup() {
       toast.error('Informe o nome fantasia e o CNPJ da empresa');
       return;
     }
+    if (segmentInfo.segment === 'b2b' && !validateCNPJ(form.companyCnpj)) {
+      toast.error('CNPJ inválido. Verifique os dígitos.');
+      return;
+    }
     if (segmentInfo.segment === 'b2c' && !form.companyName.trim()) {
       toast.error('Informe o nome da empresa onde trabalha');
+      return;
+    }
+    if (segmentInfo.segment === 'b2c' && form.companyCnpj.replace(/\D/g, '').length > 0 && !validateCNPJ(form.companyCnpj)) {
+      toast.error('CNPJ inválido. Verifique os dígitos.');
       return;
     }
     setLoading(true);
