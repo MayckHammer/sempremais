@@ -52,7 +52,7 @@ export default function AdminClients() {
   };
 
   const handleApprove = async (userId: string) => {
-    const { error } = await supabase.from('profiles').update({ is_approved: true } as any).eq('user_id', userId);
+    const { error } = await supabase.from('profiles').update({ is_approved: true }).eq('user_id', userId);
     if (error) {
       toast.error('Erro ao aprovar cliente');
       return;
