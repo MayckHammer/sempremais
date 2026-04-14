@@ -1,11 +1,44 @@
-import { Clock, LogOut, Mail } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Clock, LogOut, Mail, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from '@/lib/auth';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import logoSempre from '@/assets/logo-sempre.png';
 
 export function PendingApproval() {
   const navigate = useNavigate();
+  const { user, refreshUser } = useAuth();
+  const [checking, setChecking] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const checkApproval = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('profiles')
+      .select('is_approved')
+      .eq('user_id', user.id)
+      .single();
+
+    if (data?.is_approved) {
+      await refreshUser();
+    }
+  };
+
+  // Poll every 10s
+  useEffect(() => {
+    intervalRef.current = setInterval(checkApproval, 10000);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [user]);
+
+  const handleManualCheck = async () => {
+    setChecking(true);
+    await checkApproval();
+    setChecking(false);
+  };
 
   const handleLogout = async () => {
     await signOut();
@@ -44,8 +77,18 @@ export function PendingApproval() {
 
         <Button
           variant="outline"
-          onClick={handleLogout}
+          onClick={handleManualCheck}
+          disabled={checking}
           className="w-full rounded-xl h-11"
+        >
+          <RefreshCw className={`w-4 h-4 mr-2 ${checking ? 'animate-spin' : ''}`} />
+          Verificar status
+        </Button>
+
+        <Button
+          variant="ghost"
+          onClick={handleLogout}
+          className="w-full rounded-xl h-11 text-muted-foreground"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sair
