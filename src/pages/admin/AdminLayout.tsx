@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { setPreferredUserRole, signOut } from '@/lib/auth';
 import { SidebarProvider, SidebarTrigger, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { NavLink } from '@/components/NavLink';
-import { LayoutDashboard, Users, Wrench, Handshake, ClipboardList, DollarSign, Coins, Settings, LogOut, Crown, Headphones } from 'lucide-react';
+import { LayoutDashboard, Users, Wrench, Handshake, ClipboardList, DollarSign, Coins, Settings, LogOut, Crown, Headphones, Calculator } from 'lucide-react';
 import logoSempre from '@/assets/logo-sempre.png';
 import { Button } from '@/components/ui/button';
 import AdminNotificationCenter from '@/components/AdminNotificationCenter';
@@ -18,6 +18,7 @@ const navItems = [
   { title: 'Preços', url: '/admin/pricing', icon: DollarSign },
   { title: 'Planos', url: '/admin/plans', icon: Crown },
   { title: 'Carteira SBs', url: '/admin/wallets', icon: Coins },
+  { title: 'Calculadora SB$', url: '/admin/calculator', icon: Calculator },
   { title: 'Suporte', url: '/admin/support', icon: Headphones },
   { title: 'Configurações', url: '/admin/settings', icon: Settings },
 ];

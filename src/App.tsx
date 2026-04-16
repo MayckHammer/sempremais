@@ -46,6 +46,7 @@ const AdminSBWallets = lazy(() => import("./pages/admin/AdminSBWallets"));
 const AdminPlans = lazy(() => import("./pages/admin/AdminPlans"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminSupport = lazy(() => import("./pages/admin/AdminSupport"));
+const AdminCalculator = lazy(() => import("./pages/admin/AdminCalculator"));
 const AdminTicketDetail = lazy(() => import("./pages/admin/AdminTicketDetail"));
 
 const queryClient = new QueryClient({
@@ -109,6 +110,7 @@ const App = () => (
                   <Route path="pricing" element={<AdminPricing />} />
                   <Route path="plans" element={<AdminPlans />} />
                   <Route path="wallets" element={<AdminSBWallets />} />
+                  <Route path="calculator" element={<AdminCalculator />} />
                   <Route path="support" element={<AdminSupport />} />
                   <Route path="support/:ticketId" element={<AdminTicketDetail />} />
                   <Route path="settings" element={<AdminSettings />} />
