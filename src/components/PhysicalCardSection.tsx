@@ -181,7 +181,7 @@ export function PhysicalCardSection() {
               <p className="text-xs font-bold text-white/50 uppercase tracking-wide">{displayName}</p>
             </div>
             <div className="text-right">
-              <p className="text-[8px] text-white/30 uppercase tracking-wider">Validade</p>
+              <p className="text-[8px] uppercase tracking-wider text-secondary">Validade</p>
               <p className="text-xs font-bold text-white/50">{getValidityDate()}</p>
             </div>
           </div>
