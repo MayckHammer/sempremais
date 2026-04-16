@@ -149,6 +149,9 @@ export default function ClientWallet() {
             </div>
           </div>
 
+          {/* Physical card section */}
+          <PhysicalCardSection />
+
           {/* SB$ info banner */}
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
             <div className="flex items-start gap-3">
