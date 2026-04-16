@@ -172,17 +172,17 @@ export function PhysicalCardSection() {
           </div>
 
           {/* Card number */}
-          <p className="text-sm font-mono tracking-[0.15em] text-white/90">{displayNumber}</p>
+          <p className="text-sm font-mono tracking-[0.15em] text-white/50">{displayNumber}</p>
 
           {/* Bottom row */}
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-[8px] text-white/40 uppercase tracking-wider">Nome do associado</p>
-              <p className="text-xs font-bold text-white uppercase tracking-wide">{displayName}</p>
+              <p className="text-[8px] text-white/30 uppercase tracking-wider">Nome do associado</p>
+              <p className="text-xs font-bold text-white/50 uppercase tracking-wide">{displayName}</p>
             </div>
             <div className="text-right">
-              <p className="text-[8px] text-white/40 uppercase tracking-wider">Validade</p>
-              <p className="text-xs font-bold text-white">{getValidityDate()}</p>
+              <p className="text-[8px] text-white/30 uppercase tracking-wider">Validade</p>
+              <p className="text-xs font-bold text-white/50">{getValidityDate()}</p>
             </div>
           </div>
 
