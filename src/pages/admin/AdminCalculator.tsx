@@ -41,8 +41,6 @@ export default function AdminCalculator() {
   const [sb, setSb] = useState(50);
   const [rate, setRate] = useState(60);
 
-  const isCustom = category === 'custom';
-
   const calc = useMemo(() => {
     const r = rate / 100;
     const fee = 0.075;
@@ -162,7 +160,7 @@ export default function AdminCalculator() {
             <input type="range" className="calc-range teal" min={10} max={800} step={10} value={sb} onChange={(e) => setSb(+e.target.value)} />
           </div>
 
-          <div className="mb-[18px]" style={{ opacity: isCustom ? 1 : 0.6 }}>
+          <div className="mb-[18px]">
             <div className="flex justify-between items-center mb-1.5">
               <span className="text-xs text-slate-500">Taxa de resgate (%)</span>
               <span className="text-sm font-semibold text-slate-800">{rate}%</span>
@@ -175,7 +173,6 @@ export default function AdminCalculator() {
               step={5}
               value={rate}
               onChange={(e) => setRate(+e.target.value)}
-              disabled={!isCustom}
             />
           </div>
 
