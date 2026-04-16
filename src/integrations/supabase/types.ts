@@ -100,6 +100,42 @@ export type Database = {
           },
         ]
       }
+      physical_cards: {
+        Row: {
+          amount_paid: number
+          card_number: string
+          created_at: string | null
+          id: string
+          is_replacement: boolean | null
+          issued_at: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          card_number: string
+          created_at?: string | null
+          id?: string
+          is_replacement?: boolean | null
+          issued_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          card_number?: string
+          created_at?: string | null
+          id?: string
+          is_replacement?: boolean | null
+          issued_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PhysicalCardSection } from '@/components/PhysicalCardSection';
 
 interface Transaction {
   id: string;
@@ -147,6 +148,9 @@ export default function ClientWallet() {
               ))}
             </div>
           </div>
+
+          {/* Physical card section */}
+          <PhysicalCardSection />
 
           {/* SB$ info banner */}
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
