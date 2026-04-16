@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CreditCard, Wifi, Loader2 } from 'lucide-react';
+import { CreditCard, Wifi, Loader2, Eye, EyeOff, ShieldAlert } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,6 @@ interface PhysicalCard {
   created_at: string;
 }
 
-interface Profile {
-  full_name: string;
-  current_plan_id: string | null;
-}
-
 const generateCardNumber = () => {
   const segments = Array.from({ length: 4 }, () =>
     String(Math.floor(1000 + Math.random() * 9000))
@@ -27,9 +22,10 @@ const generateCardNumber = () => {
   return segments.join(' ');
 };
 
-const maskCardNumber = (num: string) => {
+const maskCardNumber = (num: string, show: boolean) => {
+  if (show) return num;
   const parts = num.split(' ');
-  if (parts.length < 4) return num;
+  if (parts.length < 4) return '•••• •••• •••• ••••';
   return `${parts[0]} •••• •••• ${parts[3]}`;
 };
 
@@ -42,10 +38,10 @@ const getValidityDate = () => {
 export function PhysicalCardSection() {
   const { user } = useAuth();
   const [card, setCard] = useState<PhysicalCard | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [planName, setPlanName] = useState('Membro');
+  const [profileName, setProfileName] = useState('ASSOCIADO');
   const [loading, setLoading] = useState(true);
   const [requesting, setRequesting] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -58,7 +54,7 @@ export function PhysicalCardSection() {
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(1),
-        supabase.from('profiles').select('full_name, current_plan_id').eq('user_id', user.id).single(),
+        supabase.from('profiles').select('full_name').eq('user_id', user.id).single(),
       ]);
 
       if (cardRes.data && cardRes.data.length > 0) {
@@ -66,16 +62,7 @@ export function PhysicalCardSection() {
       }
 
       if (profileRes.data) {
-        const p = profileRes.data as Profile;
-        setProfile(p);
-        if (p.current_plan_id) {
-          const { data: plan } = await supabase
-            .from('subscription_plans')
-            .select('name')
-            .eq('id', p.current_plan_id)
-            .single();
-          if (plan) setPlanName(plan.name);
-        }
+        setProfileName(profileRes.data.full_name || 'ASSOCIADO');
       }
       setLoading(false);
     };
@@ -101,7 +88,6 @@ export function PhysicalCardSection() {
       toast({ title: 'Erro ao solicitar cartão', description: error.message, variant: 'destructive' });
     } else {
       toast({ title: 'Cartão solicitado!', description: `Valor: R$ ${amount.toFixed(2).replace('.', ',')}` });
-      // Refresh
       const { data } = await supabase
         .from('physical_cards')
         .select('*')
@@ -122,15 +108,27 @@ export function PhysicalCardSection() {
     );
   }
 
-  const displayName = profile?.full_name || 'ASSOCIADO';
-  const displayNumber = card ? maskCardNumber(card.card_number) : '•••• •••• •••• ••••';
+  const displayName = showDetails ? profileName : '•••••••••••';
+  const displayNumber = card
+    ? maskCardNumber(card.card_number, showDetails)
+    : '•••• •••• •••• ••••';
   const isPending = card?.status === 'pending';
   const isActive = card?.status === 'active';
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-foreground">Cartão Físico</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-bold text-foreground">Cartão Físico</h3>
+          {card && (
+            <button
+              onClick={() => setShowDetails(!showDetails)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showDetails ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          )}
+        </div>
         {isPending && (
           <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 border-0 text-[10px]">
             Em produção
@@ -149,7 +147,6 @@ export function PhysicalCardSection() {
           background: 'linear-gradient(135deg, #0a1628 0%, #132744 40%, #1a3a5c 70%, #0d2137 100%)',
         }}
       >
-        {/* Subtle decorative arcs */}
         <div className="absolute inset-0 opacity-10"
           style={{
             background: 'radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(100,180,255,0.1) 0%, transparent 50%)',
@@ -157,7 +154,6 @@ export function PhysicalCardSection() {
         />
 
         <div className="relative z-10 flex flex-col justify-between h-full p-5">
-          {/* Top row: logo + NFC */}
           <div className="flex items-start justify-between">
             <div>
               <p className="text-[10px] font-bold tracking-[0.3em] text-white/60 uppercase">Sempre</p>
@@ -166,15 +162,12 @@ export function PhysicalCardSection() {
             <Wifi className="w-6 h-6 text-white/40 rotate-90" />
           </div>
 
-          {/* Chip */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-7 rounded-md bg-gradient-to-br from-amber-300/80 to-amber-500/60 border border-amber-400/30" />
           </div>
 
-          {/* Card number */}
           <p className="text-sm font-mono tracking-[0.15em] text-white/50">{displayNumber}</p>
 
-          {/* Bottom row */}
           <div className="flex items-end justify-between">
             <div>
               <p className="text-[8px] uppercase tracking-wider text-secondary">Nome do associado</p>
@@ -182,13 +175,8 @@ export function PhysicalCardSection() {
             </div>
             <div className="text-right">
               <p className="text-[8px] uppercase tracking-wider text-secondary">Validade</p>
-              <p className="text-xs font-bold text-white/50">{getValidityDate()}</p>
+              <p className="text-xs font-bold text-white/50">{showDetails ? getValidityDate() : '••/••'}</p>
             </div>
-          </div>
-
-          {/* Plan badge */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-            <span className="text-[9px] font-semibold tracking-[0.2em] text-white/30 uppercase">{planName}</span>
           </div>
         </div>
       </div>
@@ -214,6 +202,14 @@ export function PhysicalCardSection() {
           Solicitar 2ª Via — R$ 32,00
         </Button>
       ) : null}
+
+      {/* Support notice */}
+      <div className="flex items-start gap-3 rounded-2xl border border-amber-200/50 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/30 p-3">
+        <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+        <p className="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">
+          Em caso de perda ou bloqueio do cartão físico, entre em contato com o <span className="font-semibold">suporte na página inicial</span> do app.
+        </p>
+      </div>
     </div>
   );
 }
